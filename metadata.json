@@ -1,0 +1,11 @@
+{
+  "name": "Hardware Tester",
+  "description": "Online PC Hardware Diagnostics - test keyboard, mouse, camera, microphone, speakers, and display.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
