@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { KeyboardTest } from './KeyboardTest';
-import { MouseTest } from './MouseTest';
 import { CameraTest } from './CameraTest';
 import { MicrophoneTest } from './MicrophoneTest';
 import { SpeakerTest } from './SpeakerTest';
@@ -17,7 +16,6 @@ interface FullTestWizardProps {
 
 const STEPS: { id: TestId; title: string; icon: string }[] = [
   { id: 'keyboard', title: 'Keyboard', icon: '⌨' },
-  { id: 'mouse', title: 'Mouse', icon: '🖱' },
   { id: 'camera', title: 'Camera', icon: '🎥' },
   { id: 'microphone', title: 'Microphone', icon: '🎤' },
   { id: 'speaker', title: 'Speaker', icon: '🔊' },
@@ -77,7 +75,7 @@ export const FullTestWizard: React.FC<FullTestWizardProps> = ({
         </div>
 
         {/* Step Indicators */}
-        <div className="grid grid-cols-6 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-2">
           {STEPS.map((step, idx) => {
             const isCompleted = testResults[step.id]?.status === 'passed';
             const isFailed = testResults[step.id]?.status === 'failed';
@@ -114,14 +112,6 @@ export const FullTestWizard: React.FC<FullTestWizardProps> = ({
             onNext={handleNext}
             onBack={handlePrev}
             onStatusChange={(status, details) => onUpdateStatus('keyboard', status, details)}
-          />
-        )}
-        {currentStep.id === 'mouse' && (
-          <MouseTest
-            isWizard
-            onNext={handleNext}
-            onBack={handlePrev}
-            onStatusChange={(status, details) => onUpdateStatus('mouse', status, details)}
           />
         )}
         {currentStep.id === 'camera' && (

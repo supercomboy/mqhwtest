@@ -3,7 +3,6 @@ import { TestId, TestStatus } from '../types';
 import {
   ShieldCheck,
   Keyboard,
-  MousePointer,
   Camera,
   Mic,
   Volume2,
@@ -23,7 +22,6 @@ interface NavbarProps {
 const NAV_ITEMS: { id: TestId; label: string; icon: React.ReactNode }[] = [
   { id: 'dashboard', label: 'Dashboard', icon: <LayoutGrid className="w-4 h-4" /> },
   { id: 'keyboard', label: 'Keyboard', icon: <Keyboard className="w-4 h-4" /> },
-  { id: 'mouse', label: 'Mouse', icon: <MousePointer className="w-4 h-4" /> },
   { id: 'camera', label: 'Camera', icon: <Camera className="w-4 h-4" /> },
   { id: 'microphone', label: 'Mic', icon: <Mic className="w-4 h-4" /> },
   { id: 'speaker', label: 'Speaker', icon: <Volume2 className="w-4 h-4" /> },
@@ -45,7 +43,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-[#161B22] border-b border-[#2D333B]">
+    <header className="sticky top-0 z-40 w-full bg-[#161B22]/90 backdrop-blur border-b border-[#2D333B] shadow-[0_8px_24px_rgba(0,0,0,0.18)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-8 py-3 sm:py-4 flex items-center justify-between gap-4">
         {/* Logo & Brand matching Sleek Interface */}
         <div
@@ -68,7 +66,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
 
         {/* Navigation Tabs (Desktop) */}
-        <nav className="hidden lg:flex items-center gap-1 bg-[#0D1117] p-1 rounded-md border border-[#2D333B] text-xs">
+        <nav className="hidden lg:flex items-center gap-1 bg-[#0D1117] p-1 rounded-lg border border-[#2D333B] text-xs shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
           {NAV_ITEMS.map((item) => {
             const isActive = currentView === item.id;
             const status = item.id !== 'dashboard' ? testResults[item.id]?.status : undefined;
@@ -78,9 +76,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                 key={item.id}
                 id={`nav-${item.id}`}
                 onClick={() => onSelectView(item.id)}
-                className={`px-3 py-1.5 rounded text-xs font-mono uppercase tracking-tight flex items-center gap-1.5 transition-all ${
+                className={`px-3 py-1.5 rounded-md text-xs font-mono uppercase tracking-tight flex items-center gap-1.5 transition-all ${
                   isActive
-                    ? 'bg-[#21262D] text-white border-l-2 border-[#00E5FF] font-bold shadow-sm'
+                    ? 'bg-[#21262D] text-white border-l-2 border-[#00E5FF] font-bold shadow-[0_0_0_1px_rgba(0,229,255,0.18)]'
                     : 'text-[#8892B0] hover:text-white hover:bg-[#21262D]/60'
                 }`}
               >

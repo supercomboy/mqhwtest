@@ -1,9 +1,9 @@
 import React from 'react';
 import { TestId, TestStatus } from '../types';
 import { SystemHardwareInfo } from '../utils/systemInfo';
+import { summarizeTestResults } from '../utils/testResults';
 import {
   Keyboard,
-  MousePointer,
   Camera,
   Mic,
   Volume2,
@@ -44,13 +44,6 @@ const TEST_CARDS: TestCardConfig[] = [
     tags: ['Keys', 'Scancodes', 'Full Layout'],
   },
   {
-    id: 'mouse',
-    title: 'Mouse & Pointer',
-    subtitle: 'Left, Right, Middle clicks, wheel scrolling & motion sensor tracking',
-    icon: <MousePointer className="w-7 h-7 text-cyan-400" />,
-    tags: ['Clicks', 'Scroll Wheel', 'Movement'],
-  },
-  {
     id: 'camera',
     title: 'Camera / Webcam',
     subtitle: 'MediaDevices video stream, resolution detection, FPS measurement & snapshot',
@@ -88,24 +81,25 @@ export const Dashboard: React.FC<DashboardProps> = ({
   testResults,
   systemInfo,
 }) => {
-  const passedCount = TEST_CARDS.filter((c) => testResults[c.id]?.status === 'passed').length;
-  const progressPercent = Math.round((passedCount / TEST_CARDS.length) * 100);
+  const { passed: passedCount, total } = summarizeTestResults(testResults);
+  const progressPercent = Math.round((passedCount / total) * 100);
 
   return (
     <div className="w-full max-w-6xl mx-auto space-y-6">
       {/* Hero Header Section matching Sleek Interface */}
-      <div className="relative bg-[#161B22] border border-[#2D333B] rounded-lg p-6 sm:p-8 shadow-xl text-center space-y-6">
-        <div className="space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-[#21262D] border border-[#30363D] text-[#00E5FF] text-[10px] uppercase tracking-wider font-mono">
-            <span className="w-2 h-2 rounded-full bg-[#00E5FF]"></span>
+      <div className="relative overflow-hidden bg-[#161B22] border border-[#2D333B] rounded-xl p-6 sm:p-8 shadow-[0_18px_45px_rgba(0,0,0,0.32)] text-center space-y-6">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(0,229,255,0.12),_transparent_40%)]" />
+        <div className="relative space-y-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#21262D] border border-[#30363D] text-[#00E5FF] text-[10px] uppercase tracking-[0.18em] font-mono shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
+            <span className="w-2 h-2 rounded-full bg-[#00E5FF] shadow-[0_0_10px_rgba(0,229,255,0.9)]"></span>
             <span>Online PC Hardware Diagnostics Suite</span>
           </div>
 
-          <h1 className="text-2xl sm:text-4xl font-bold text-white uppercase tracking-tight">
+          <h1 className="text-2xl sm:text-4xl font-bold text-white uppercase tracking-tight leading-none">
             Hardware Tester <span className="text-xs sm:text-sm font-mono text-[#00E5FF] ml-2 opacity-90">v1.1</span>
           </h1>
-          <p className="text-xs sm:text-sm text-[#8892B0] max-w-xl mx-auto">
-            Comprehensive, client-side diagnostics for keyboard, mouse, camera, microphone, speakers, and display.
+          <p className="text-xs sm:text-sm text-[#8892B0] max-w-xl mx-auto leading-relaxed">
+            Comprehensive, client-side diagnostics for keyboard, camera, microphone, speakers, and display.
           </p>
         </div>
 
@@ -121,21 +115,21 @@ export const Dashboard: React.FC<DashboardProps> = ({
           </button>
 
           <span className="text-[11px] font-mono text-[#8892B0]">
-            Guided sequential verification of all 6 components
+            Guided sequential verification of all 5 components
           </span>
         </div>
 
         {/* Progress & Quick Actions */}
-        <div className="pt-4 border-t border-[#2D333B] flex flex-wrap items-center justify-between gap-4 text-xs font-mono">
+        <div className="relative pt-4 border-t border-[#2D333B] flex flex-wrap items-center justify-between gap-4 text-xs font-mono">
           <div className="flex items-center gap-3">
-            <div className="w-32 sm:w-48 bg-[#0D1117] h-2 rounded overflow-hidden border border-[#30363D]">
+            <div className="w-32 sm:w-48 bg-[#0D1117] h-2.5 rounded-full overflow-hidden border border-[#30363D] shadow-inner">
               <div
-                className="bg-[#00E5FF] h-full transition-all duration-500 shadow-[0_0_8px_rgba(0,229,255,0.5)]"
+                className="bg-gradient-to-r from-[#00E5FF] to-[#58A6FF] h-full transition-all duration-500 shadow-[0_0_10px_rgba(0,229,255,0.45)]"
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
             <span className="text-[#8892B0]">
-              <strong className="text-white">{passedCount}</strong>/{TEST_CARDS.length} PASSED ({progressPercent}%)
+              <strong className="text-white">{passedCount}</strong>/{total} PASSED ({progressPercent}%)
             </span>
           </div>
 
@@ -169,7 +163,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
           <span className="text-[10px] font-mono text-[#8892B0]">SELECT MODULE TO TEST</span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {TEST_CARDS.map((card) => {
             const status = testResults[card.id]?.status || 'untested';
 

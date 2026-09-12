@@ -239,11 +239,14 @@ export function playDrumBeat(
 }
 
 /**
- * Synthesizes a rich Stereo Music Demo Arpeggio that sweeps across channels
+ * Synthesizes a rich Stereo Music Demo Arpeggio that sweeps across channels.
+ * By default it runs for a short 4s demo, but can be extended for a 30s
+ * left/right balance test when the caller passes a longer duration.
  */
 export function playStereoMusicDemo(
   volume = 0.5,
-  onProgress?: (channel: 'left' | 'center' | 'right' | 'surround') => void
+  onProgress?: (channel: 'left' | 'center' | 'right' | 'surround') => void,
+  durationSec = 4
 ): { stop: () => void } {
   const ctx = getAudioContext();
   const masterGain = ctx.createGain();
@@ -253,24 +256,21 @@ export function playStereoMusicDemo(
   let isStopped = false;
   const timeouts: number[] = [];
 
-  // Notes sequence: C4, E4, G4, B4, C5, E5, G5, C6
-  // Panning from Left (-1) -> Center (0) -> Right (1) -> Full Stereo
   const sequence = [
-    { note: 261.63, pan: -1.0, delay: 0, tag: 'left' as const },
-    { note: 329.63, pan: -0.7, delay: 0.35, tag: 'left' as const },
-    { note: 392.0, pan: -0.3, delay: 0.7, tag: 'left' as const },
-    { note: 523.25, pan: 0.0, delay: 1.05, tag: 'center' as const },
-    { note: 659.25, pan: 0.4, delay: 1.4, tag: 'right' as const },
-    { note: 783.99, pan: 0.8, delay: 1.75, tag: 'right' as const },
-    { note: 1046.5, pan: 1.0, delay: 2.1, tag: 'right' as const },
-    // Final stereo chords
-    { note: 523.25, pan: 0.0, delay: 2.5, tag: 'surround' as const },
-    { note: 659.25, pan: 0.0, delay: 2.5, tag: 'surround' as const },
-    { note: 783.99, pan: 0.0, delay: 2.5, tag: 'surround' as const },
-    { note: 1046.5, pan: 0.0, delay: 2.5, tag: 'surround' as const },
+    { note: 261.63, pan: -1.0, tag: 'left' as const },
+    { note: 329.63, pan: -0.7, tag: 'left' as const },
+    { note: 392.0, pan: -0.3, tag: 'left' as const },
+    { note: 523.25, pan: 0.0, tag: 'center' as const },
+    { note: 659.25, pan: 0.4, tag: 'right' as const },
+    { note: 783.99, pan: 0.8, tag: 'right' as const },
+    { note: 1046.5, pan: 1.0, tag: 'right' as const },
+    { note: 523.25, pan: 0.0, tag: 'surround' as const },
+    { note: 659.25, pan: 0.0, tag: 'surround' as const },
+    { note: 783.99, pan: 0.0, tag: 'surround' as const },
+    { note: 1046.5, pan: 0.0, tag: 'surround' as const },
   ];
 
-  sequence.forEach((item) => {
+  const scheduleNote = (item: (typeof sequence)[number], delay: number) => {
     const tId = window.setTimeout(() => {
       if (isStopped) return;
       const now = ctx.currentTime;
@@ -287,10 +287,25 @@ export function playStereoMusicDemo(
 
       playBellNote(ctx, noteGain, item.note, now, 1.2, 0.4);
       if (onProgress) onProgress(item.tag);
-    }, item.delay * 1000);
+    }, delay * 1000);
 
     timeouts.push(tId);
-  });
+  };
+
+  const totalLoops = Math.max(1, Math.ceil(durationSec / 3));
+
+  for (let loop = 0; loop < totalLoops; loop++) {
+    sequence.forEach((item, index) => {
+      scheduleNote(item, loop * 3 + index * 0.35);
+    });
+  }
+
+  const stopAt = window.setTimeout(() => {
+    if (!isStopped) {
+      if (onProgress) onProgress('surround');
+    }
+  }, durationSec * 1000);
+  timeouts.push(stopAt);
 
   return {
     stop: () => {

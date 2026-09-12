@@ -67,18 +67,22 @@ export const SpeakerTest: React.FC<SpeakerTestProps> = ({
     }, playDuration);
   };
 
-  const playMusicDemo = () => {
+  const playMusicDemo = (durationSec = 4) => {
     stopActiveAudio();
     setPlayingChannel('both');
-    const demo = playStereoMusicDemo(volume, (stage) => {
-      setMusicStage(stage);
-    });
+    const demo = playStereoMusicDemo(
+      volume,
+      (stage) => {
+        setMusicStage(stage);
+      },
+      durationSec
+    );
     activeSoundRef.current = demo;
 
     setTimeout(() => {
       setPlayingChannel(null);
       setMusicStage(null);
-    }, 4000);
+    }, durationSec * 1000 + 200);
   };
 
   const startSweep = () => {
@@ -357,11 +361,20 @@ export const SpeakerTest: React.FC<SpeakerTestProps> = ({
 
               <button
                 id="play-music-demo-btn"
-                onClick={playMusicDemo}
+                onClick={() => playMusicDemo(4)}
                 className="py-2.5 px-3 rounded bg-[#21262D] hover:bg-[#30363D] border border-[#30363D] text-white text-xs font-bold uppercase flex items-center justify-center gap-2 transition-colors active:scale-95"
               >
                 <Music className="w-3.5 h-3.5 text-[#00E5FF]" />
-                <span>{musicStage ? `STEREO: ${musicStage.toUpperCase()}` : 'NHẠC MẪU STEREO'}</span>
+                <span>{musicStage ? `STEREO: ${musicStage.toUpperCase()}` : 'NHẠC MẪU 4S'}</span>
+              </button>
+
+              <button
+                id="play-long-music-demo-btn"
+                onClick={() => playMusicDemo(30)}
+                className="py-2.5 px-3 rounded bg-[#00E5FF]/10 hover:bg-[#00E5FF]/15 border border-[#00E5FF]/40 text-[#00E5FF] text-xs font-bold uppercase flex items-center justify-center gap-2 transition-colors active:scale-95"
+              >
+                <Disc className="w-3.5 h-3.5" />
+                <span>{musicStage ? `30S: ${musicStage.toUpperCase()}` : 'NHẠC 30S • TEST 2 LOA'}</span>
               </button>
 
               <button

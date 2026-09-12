@@ -1,4 +1,4 @@
-export type TestId = 'dashboard' | 'keyboard' | 'mouse' | 'camera' | 'microphone' | 'speaker' | 'display';
+export type TestId = 'dashboard' | 'keyboard' | 'camera' | 'microphone' | 'speaker' | 'display';
 
 export type TestStatus = 'untested' | 'testing' | 'passed' | 'failed';
 

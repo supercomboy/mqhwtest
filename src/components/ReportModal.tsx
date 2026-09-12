@@ -2,6 +2,7 @@ import React from 'react';
 import { X, Printer, Download, CheckCircle2, XCircle, AlertTriangle, Cpu, ShieldCheck } from 'lucide-react';
 import { TestId, TestStatus } from '../types';
 import { SystemHardwareInfo } from '../utils/systemInfo';
+import { summarizeTestResults } from '../utils/testResults';
 
 interface ReportModalProps {
   isOpen: boolean;
@@ -20,15 +21,13 @@ export const ReportModal: React.FC<ReportModalProps> = ({
 
   const modules: { id: TestId; name: string; icon: string }[] = [
     { id: 'keyboard', name: 'Keyboard', icon: '⌨' },
-    { id: 'mouse', name: 'Mouse & Pointer', icon: '🖱' },
     { id: 'camera', name: 'Webcam / Camera', icon: '🎥' },
     { id: 'microphone', name: 'Microphone & Audio Input', icon: '🎤' },
     { id: 'speaker', name: 'Speakers & Stereo Output', icon: '🔊' },
     { id: 'display', name: 'Display & Dead Pixels', icon: '🖥' },
   ];
 
-  const passedCount = modules.filter((m) => testResults[m.id]?.status === 'passed').length;
-  const failedCount = modules.filter((m) => testResults[m.id]?.status === 'failed').length;
+  const { passed: passedCount, failed: failedCount, untested } = summarizeTestResults(testResults);
 
   const handlePrint = () => {
     window.print();
@@ -138,7 +137,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
                 <span className="text-[10px] text-[#8892B0]">FAILED</span>
               </div>
               <div className="text-center px-3 py-1.5 rounded bg-[#161B22] border border-[#2D333B]">
-                <span className="text-[#8892B0] font-bold text-base block">{6 - passedCount - failedCount}</span>
+                <span className="text-[#8892B0] font-bold text-base block">{untested}</span>
                 <span className="text-[10px] text-[#8892B0]">UNTESTED</span>
               </div>
             </div>

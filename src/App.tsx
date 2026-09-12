@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { TestId, TestStatus } from './types';
 import { detectSystemInfo, SystemHardwareInfo } from './utils/systemInfo';
+import { createInitialTestResults, TestResultsMap, updateTestResult } from './utils/testResults';
 import { Navbar } from './components/Navbar';
 import { Dashboard } from './components/Dashboard';
 import { KeyboardTest } from './components/KeyboardTest';
-import { MouseTest } from './components/MouseTest';
 import { CameraTest } from './components/CameraTest';
 import { MicrophoneTest } from './components/MicrophoneTest';
 import { SpeakerTest } from './components/SpeakerTest';
@@ -19,17 +19,7 @@ export default function App() {
 
   const [systemInfo, setSystemInfo] = useState<SystemHardwareInfo>(() => detectSystemInfo());
 
-  const [testResults, setTestResults] = useState<
-    Record<TestId, { status: TestStatus; details?: Record<string, string | number | boolean> }>
-  >({
-    dashboard: { status: 'untested' },
-    keyboard: { status: 'untested' },
-    mouse: { status: 'untested' },
-    camera: { status: 'untested' },
-    microphone: { status: 'untested' },
-    speaker: { status: 'untested' },
-    display: { status: 'untested' },
-  });
+  const [testResults, setTestResults] = useState<TestResultsMap>(() => createInitialTestResults());
 
   useEffect(() => {
     setSystemInfo(detectSystemInfo());
@@ -40,17 +30,7 @@ export default function App() {
     status: TestStatus,
     details?: Record<string, string | number | boolean>
   ) => {
-    setTestResults((prev) => ({
-      ...prev,
-      [id]: {
-        status,
-        details: {
-          ...(prev[id]?.details || {}),
-          ...(details || {}),
-          lastUpdated: new Date().toLocaleTimeString(),
-        },
-      },
-    }));
+    setTestResults((prev) => updateTestResult(prev, id, status, details));
   };
 
   const handleSelectView = (view: TestId) => {
@@ -66,15 +46,7 @@ export default function App() {
   };
 
   const handleResetAll = () => {
-    setTestResults({
-      dashboard: { status: 'untested' },
-      keyboard: { status: 'untested' },
-      mouse: { status: 'untested' },
-      camera: { status: 'untested' },
-      microphone: { status: 'untested' },
-      speaker: { status: 'untested' },
-      display: { status: 'untested' },
-    });
+    setTestResults(createInitialTestResults());
   };
 
   return (
@@ -113,13 +85,6 @@ export default function App() {
               <KeyboardTest
                 onBack={() => setCurrentView('dashboard')}
                 onStatusChange={(status, details) => handleUpdateStatus('keyboard', status, details)}
-              />
-            )}
-
-            {currentView === 'mouse' && (
-              <MouseTest
-                onBack={() => setCurrentView('dashboard')}
-                onStatusChange={(status, details) => handleUpdateStatus('mouse', status, details)}
               />
             )}
 
