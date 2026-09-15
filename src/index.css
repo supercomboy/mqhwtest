@@ -1,0 +1,222 @@
+/* ============================================================
+ * MQ Device Tester — Design Tokens + Tailwind v4 setup
+ * Nguồn: docs/DESIGN_SYSTEM.md
+ * ============================================================ */
+
+/* ---- Fonts (self-hosted) ---- */
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/jetbrains-mono";
+
+/* ---- Tailwind v4 ---- */
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* ---- Dark mode qua class .dark trên <html> ---- */
+@custom-variant dark (&:is(.dark *));
+
+/* ============================================================
+ * LIGHT MODE — Design tokens
+ * ============================================================ */
+:root {
+  /* Surfaces */
+  --background: hsl(210 17% 98%);           /* #F7F8FA */
+  --foreground: hsl(222 47% 11%);           /* #0F172A */
+
+  --card: hsl(0 0% 100%);                   /* #FFFFFF */
+  --card-foreground: hsl(222 47% 11%);
+
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(222 47% 11%);
+
+  /* Primary (CTA) */
+  --primary: hsl(221 83% 53%);              /* #2563EB */
+  --primary-foreground: hsl(0 0% 100%);
+
+  /* Secondary */
+  --secondary: hsl(210 40% 96%);            /* #F1F5F9 */
+  --secondary-foreground: hsl(222 47% 11%);
+
+  /* Muted */
+  --muted: hsl(210 40% 96%);
+  --muted-foreground: hsl(215 16% 47%);     /* #64748B */
+
+  /* Accent (shadcn dùng cho hover các item nav) */
+  --accent: hsl(210 40% 96%);
+  --accent-foreground: hsl(222 47% 11%);
+
+  /* Borders & inputs */
+  --border: hsl(214 32% 91%);               /* #E2E8F0 */
+  --input: hsl(214 32% 91%);
+  --ring: hsl(221 83% 53%);
+
+  /* Status */
+  --success: hsl(142 76% 36%);              /* #16A34A */
+  --success-foreground: hsl(0 0% 100%);
+
+  --warning: hsl(32 95% 44%);               /* #D97706 */
+  --warning-foreground: hsl(0 0% 100%);
+
+  --error: hsl(0 72% 51%);                  /* #DC2626 */
+  --error-foreground: hsl(0 0% 100%);
+
+  --info: hsl(200 98% 39%);                 /* #0284C7 */
+  --info-foreground: hsl(0 0% 100%);
+
+  /* shadcn dùng tên "destructive" cho nút nguy hiểm — map về error */
+  --destructive: hsl(0 72% 51%);
+  --destructive-foreground: hsl(0 0% 100%);
+
+  /* Radius — 6px theo design system */
+  --radius: 0.375rem;
+}
+
+/* ============================================================
+ * DARK MODE — Design tokens
+ * ============================================================ */
+.dark {
+  --background: hsl(222 47% 5%);            /* #070B14 */
+  --foreground: hsl(210 40% 96%);           /* #F1F5F9 */
+
+  --card: hsl(222 40% 8%);                  /* #0C1322 */
+  --card-foreground: hsl(210 40% 96%);
+
+  --popover: hsl(222 40% 10%);              /* #0F1729 */
+  --popover-foreground: hsl(210 40% 96%);
+
+  --primary: hsl(217 91% 60%);              /* #3B82F6 */
+  --primary-foreground: hsl(222 47% 11%);
+
+  --secondary: hsl(217 33% 15%);            /* #1A2234 */
+  --secondary-foreground: hsl(210 40% 96%);
+
+  --muted: hsl(217 33% 15%);
+  --muted-foreground: hsl(215 20% 65%);     /* #94A3B8 */
+
+  --accent: hsl(217 33% 15%);
+  --accent-foreground: hsl(210 40% 96%);
+
+  --border: hsl(217 33% 20%);               /* #22304A */
+  --input: hsl(217 33% 20%);
+  --ring: hsl(217 91% 60%);
+
+  --success: hsl(142 71% 45%);              /* #22C55E */
+  --success-foreground: hsl(222 47% 11%);
+
+  --warning: hsl(38 92% 50%);               /* #F59E0B */
+  --warning-foreground: hsl(222 47% 11%);
+
+  --error: hsl(0 84% 60%);                  /* #EF4444 */
+  --error-foreground: hsl(0 0% 100%);
+
+  --info: hsl(199 89% 48%);                 /* #0EA5E9 */
+  --info-foreground: hsl(222 47% 11%);
+
+  --destructive: hsl(0 84% 60%);
+  --destructive-foreground: hsl(0 0% 100%);
+}
+
+/* ============================================================
+ * Map tokens → Tailwind utilities
+ * `inline` giúp Tailwind tham chiếu thẳng biến, không tạo biến mới
+ * ============================================================ */
+@theme inline {
+  /* Colors — surfaces */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  /* Colors — interactive */
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  /* Colors — structure */
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Colors — status (custom cho MQ Device Tester) */
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-error: var(--error);
+  --color-error-foreground: var(--error-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+
+  /* Radius — suy ra từ --radius (6px) */
+  --radius-sm: calc(var(--radius) - 2px);   /* 4px */
+  --radius-md: var(--radius);               /* 6px */
+  --radius-lg: calc(var(--radius) + 2px);   /* 8px */
+  --radius-xl: calc(var(--radius) + 6px);   /* 12px */
+
+  /* Typography — font families */
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, SFMono-Regular,
+    Menlo, monospace;
+}
+
+/* ============================================================
+ * Base layer
+ * ============================================================ */
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Focus ring mặc định cho mọi element có thể focus */
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+
+  /* Số luôn canh cột — tránh layout shift khi số đổi */
+  .tabular-nums,
+  code,
+  kbd,
+  samp,
+  pre {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Tôn trọng prefers-reduced-motion */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+
+    /* Tắt hẳn pulse/glow animation không cần thiết */
+    .animate-ping,
+    .animate-pulse,
+    .animate-spin {
+      animation: none !important;
+    }
+  }
+}
