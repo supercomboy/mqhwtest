@@ -1,9 +1,8 @@
 import { useEffect, useMemo } from "react";
 import { RotateCcw } from "lucide-react";
-import { useDocumentTitle } from "@/hooks/useDocumentTitle";
+
 import { PageHeader } from "@/components/common/PageHeader";
 import { StatusBadge } from "@/components/dashboard/StatusBadge";
-import { EventHistory } from "@/components/keyboard/EventHistory";
 import { KeyInfoPanel } from "@/components/keyboard/KeyInfoPanel";
 import { KeyboardLayout } from "@/components/keyboard/KeyboardLayout";
 import { KeyboardLimitations } from "@/components/keyboard/KeyboardLimitations";
@@ -15,8 +14,7 @@ import { useDeviceStatus } from "@/providers/DeviceStatusProvider";
 import type { DeviceStatus } from "@/types/device";
 
 export function KeyboardPage() {
-  useDocumentTitle("Keyboard Test");
-  const { pressed, tested, lastEvent, history, reset } = useKeyboard();
+  const { pressed, tested, lastEvent, reset } = useKeyboard();
   const { getEntry, setStatus, reset: resetDeviceStatus } = useDeviceStatus();
 
   const entry = getEntry("keyboard");
@@ -69,31 +67,27 @@ export function KeyboardPage() {
           variant="outline"
           size="sm"
           onClick={handleReset}
-          disabled={testedCount === 0 && history.length === 0}
+          disabled={testedCount === 0 && !lastEvent}
         >
           <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" />
           Reset
         </Button>
       </div>
 
-           {/* Info + History — xếp dọc */}
-      <div className="space-y-4">
-        <KeyInfoPanel lastEvent={lastEvent} />
-        <EventHistory history={history} />
-      </div>
+      {/* Last Key — full width */}
+      <KeyInfoPanel lastEvent={lastEvent} />
 
-      {/* Keyboard layout — tự scale, không scroll trên desktop */}
+      {/* Keyboard layout — to hơn */}
       <section
         aria-label="Keyboard layout"
         className="overflow-x-auto rounded-lg border border-border bg-secondary/30 p-4 lg:overflow-x-visible"
         style={
           {
             containerType: "inline-size",
-            "--kb-u": "clamp(22px, 3.4cqw, 48px)",
+            "--kb-u": "clamp(28px, 4.5cqw, 56px)",
           } as React.CSSProperties
         }
       >
-        {/* Chỉ áp min-width khi ở mobile để đảm bảo readable */}
         <div className="min-w-[680px] lg:min-w-0">
           <KeyboardLayout pressed={pressed} tested={tested} />
         </div>

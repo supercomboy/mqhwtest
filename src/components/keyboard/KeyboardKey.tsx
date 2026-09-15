@@ -56,8 +56,9 @@ function KeyboardKeyImpl({
         "relative flex select-none items-center justify-center overflow-hidden rounded border px-1 text-center transition-colors duration-75",
         "h-[var(--kb-u)]",
         !isPressed && !isTested && "border-border bg-card text-foreground",
-        !isPressed && isTested && "border-success/40 bg-success/10 text-foreground",
-        isPressed && "border-primary bg-primary text-primary-foreground shadow-sm",
+                !isPressed && isTested && "border-success/40 bg-success/10 text-foreground",
+        isPressed &&
+          "border-yellow-400 bg-yellow-200 text-yellow-950 shadow-sm dark:border-yellow-500 dark:bg-yellow-300 dark:text-yellow-950",
         isModifier && "font-medium",
       )}
     >
