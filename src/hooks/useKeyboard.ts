@@ -32,8 +32,10 @@ const HISTORY_LIMIT = 50;
  * chữ, số, dấu) đều bị chặn để tránh scroll / đổi focus / trigger button.
  */
 function isAllowedKey(e: KeyboardEvent): boolean {
+  // Cho phép các tổ hợp có modifier (Ctrl/Meta/Alt) + Escape.
+  // F-keys giờ bị chặn — preventDefault sẽ chặn được F1–F12 trừ các phím
+  // mà browser/OS reserve cứng (F11, F12 trên một số hệ điều hành).
   if (e.ctrlKey || e.metaKey || e.altKey) return true;
-  if (/^F\d{1,2}$/.test(e.code)) return true;
   if (e.code === "Escape") return true;
   return false;
 }

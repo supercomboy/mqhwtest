@@ -6,6 +6,7 @@ import {
   Play,
   RotateCcw,
   Square,
+  Trash2,
 } from "lucide-react";
 
 import { StatusBadge } from "@/components/dashboard/StatusBadge";
@@ -21,15 +22,14 @@ interface MicrophonePanelProps {
   confirmed: boolean;
 }
 
-/** Map MicStatus → DeviceStatus để hiển thị badge. */
-function toBadgeStatus(s: MicStatus, detected: boolean): DeviceStatus {
+function toBadgeStatus(s: MicStatus): DeviceStatus {
   switch (s) {
     case "idle":
       return "ready";
     case "requesting":
       return "permission-required";
     case "listening":
-      return detected ? "testing" : "testing";
+      return "testing";
     case "stopped":
       return "ready";
     case "denied":
@@ -53,7 +53,7 @@ const STATUS_LABEL: Record<MicStatus, string> = {
   denied: "Permission denied",
   "no-device": "No microphone",
   unsupported: "Not supported",
-  insecure: "Insecure context",
+  insecure: "Insecure context — use HTTPS or localhost",
   error: "Error",
 };
 
@@ -70,56 +70,67 @@ export function MicrophonePanel({
     detected,
     deviceLabel,
     levelBarRef,
+    hasRecording,
+    isPlayingBack,
+    supportsRecording,
     start,
     stop,
     reset,
+    playRecording,
+    stopPlayback,
+    clearRecording,
   } = mic;
 
   const isActive = status === "listening";
   const isRequesting = status === "requesting";
   const canConfirm = status === "stopped" && detected && !confirmed;
-  const badgeStatus = toBadgeStatus(status, detected);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* Device status */}
-      <div className="rounded-lg border border-border bg-card p-4">
+      <div className="rounded-md border border-border bg-card p-3">
         <div className="flex items-start justify-between gap-3">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <div
               className={cn(
-                "flex h-10 w-10 shrink-0 items-center justify-center rounded-md",
+                "flex h-8 w-8 shrink-0 items-center justify-center rounded",
                 isActive ? "bg-primary/10 text-primary" : "bg-secondary",
               )}
             >
               {isActive ? (
-                <Mic className="h-5 w-5" aria-hidden="true" />
+                <Mic className="h-4 w-4" aria-hidden="true" />
               ) : (
                 <MicOff
-                  className="h-5 w-5 text-secondary-foreground"
+                  className="h-4 w-4 text-secondary-foreground"
                   aria-hidden="true"
                 />
               )}
             </div>
             <div className="min-w-0">
-              <p className="font-mono text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+              <p className="font-mono text-[9px] font-medium uppercase tracking-wider text-muted-foreground">
                 Microphone
               </p>
-              <p className="truncate text-sm font-medium" title={deviceLabel ?? undefined}>
+              <p
+                className="truncate text-xs font-medium"
+                title={deviceLabel ?? undefined}
+              >
                 {deviceLabel ?? (isActive ? "Connected" : "Not connected")}
               </p>
             </div>
           </div>
-          <StatusBadge status={badgeStatus} />
+          <StatusBadge status={toBadgeStatus(status)} />
         </div>
 
-        <div className="mt-4 flex items-center justify-between border-t border-border pt-3">
-          <p className="text-xs text-muted-foreground">
-            Status: <span className="font-medium text-foreground">{STATUS_LABEL[status]}</span>
+        <div className="mt-2 flex items-center justify-between border-t border-border pt-2">
+          <p className="text-[10px] text-muted-foreground">
+            Status:{" "}
+            <span className="font-medium text-foreground">
+              {STATUS_LABEL[status]}
+            </span>
           </p>
           {detected && isActive && (
-            <span className="flex items-center gap-1 font-mono text-[10px] uppercase tracking-wider text-success">
-              <CheckCircle2 className="h-3 w-3" aria-hidden="true" />
+            <span className="flex items-center gap-1 font-mono text-[9px] uppercase tracking-wider text-success">
+              <CheckCircle2 className="h-2.5 w-2.5" aria-hidden="true" />
               Input detected
             </span>
           )}
@@ -127,81 +138,128 @@ export function MicrophonePanel({
       </div>
 
       {/* Level meter */}
-      <div className="rounded-lg border border-border bg-card p-4">
+      <div className="rounded-md border border-border bg-card p-3">
         <MicrophoneLevelMeter
           levelBarRef={levelBarRef}
           peak={peak}
           active={isActive}
         />
 
-        <div className="mt-4 flex flex-wrap items-center gap-2">
+        <div className="mt-3 flex flex-wrap items-center gap-2">
           {!isActive ? (
             <Button
               onClick={start}
-              disabled={isRequesting || status === "unsupported" || status === "insecure"}
-              size="lg"
+              disabled={isRequesting || status === "unsupported"}
+              size="sm"
             >
-              <Play className="h-4 w-4" aria-hidden="true" />
+              <Play className="h-3.5 w-3.5" aria-hidden="true" />
               {isRequesting ? "Requesting…" : "Start Test"}
             </Button>
           ) : (
-            <Button onClick={stop} variant="secondary" size="lg">
-              <Square className="h-4 w-4" aria-hidden="true" />
+            <Button onClick={stop} variant="secondary" size="sm">
+              <Square className="h-3.5 w-3.5" aria-hidden="true" />
               Stop Test
             </Button>
           )}
 
           <Button
             variant="outline"
-            size="lg"
+            size="sm"
             onClick={reset}
             disabled={status === "idle" && !error}
           >
-            <RotateCcw className="h-4 w-4" aria-hidden="true" />
+            <RotateCcw className="h-3 w-3" aria-hidden="true" />
             Reset
           </Button>
         </div>
 
         {/* Numeric readout */}
-        <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
-          <div className="rounded border border-border/60 px-3 py-2">
-            <p className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+        <div className="mt-3 grid grid-cols-2 gap-1.5 text-[11px]">
+          <div className="rounded border border-border/60 px-2 py-1">
+            <p className="font-mono text-[9px] uppercase tracking-wider text-muted-foreground">
               Level
             </p>
-            <p className="font-mono text-lg tabular-nums">
+            <p className="font-mono text-sm tabular-nums">
               {level}
-              <span className="text-xs text-muted-foreground">%</span>
+              <span className="text-[10px] text-muted-foreground">%</span>
             </p>
           </div>
-          <div className="rounded border border-border/60 px-3 py-2">
-            <p className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+          <div className="rounded border border-border/60 px-2 py-1">
+            <p className="font-mono text-[9px] uppercase tracking-wider text-muted-foreground">
               Peak
             </p>
-            <p className="font-mono text-lg tabular-nums">
+            <p className="font-mono text-sm tabular-nums">
               {peak}
-              <span className="text-xs text-muted-foreground">%</span>
+              <span className="text-[10px] text-muted-foreground">%</span>
             </p>
           </div>
         </div>
 
-        {/* Hint */}
+        {/* Playback section */}
+        {supportsRecording && hasRecording && (
+          <div className="mt-3 rounded border border-border/60 bg-background p-2">
+            <div className="mb-1.5 flex items-center justify-between">
+              <p className="font-mono text-[9px] font-medium uppercase tracking-wider text-muted-foreground">
+                Recording
+              </p>
+              <p className="font-mono text-[9px] text-muted-foreground">
+                {isActive ? "recording…" : "ready"}
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {!isPlayingBack ? (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={playRecording}
+                  disabled={isActive}
+                >
+                  <Play className="h-3 w-3" aria-hidden="true" />
+                  Play recording
+                </Button>
+              ) : (
+                <Button size="sm" variant="secondary" onClick={stopPlayback}>
+                  <Square className="h-3 w-3" aria-hidden="true" />
+                  Stop playback
+                </Button>
+              )}
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={clearRecording}
+                disabled={isActive}
+              >
+                <Trash2 className="h-3 w-3" aria-hidden="true" />
+                Delete
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* Hints */}
         {isActive && !detected && (
-          <p className="mt-3 text-xs text-muted-foreground">
+          <p className="mt-2 text-[10px] text-muted-foreground">
             Try speaking, tapping the microphone, or saying &quot;test&quot;.
           </p>
         )}
         {isActive && detected && (
-          <p className="mt-3 text-xs text-success">
-            Input detected. You can stop the test whenever you are ready.
+          <p className="mt-2 text-[10px] text-success">
+            Input detected. Stop the test whenever you are ready — then you can
+            play the recording back.
+          </p>
+        )}
+        {!supportsRecording && (
+          <p className="mt-2 text-[10px] text-muted-foreground">
+            Recording playback is not available in this browser.
           </p>
         )}
       </div>
 
       {/* Error state */}
       {error && (
-        <div className="flex items-start gap-2 rounded-lg border border-error/30 bg-error/5 p-3 text-xs">
+        <div className="flex items-start gap-2 rounded border border-error/30 bg-error/5 p-2 text-[10px]">
           <AlertCircle
-            className="mt-0.5 h-3.5 w-3.5 shrink-0 text-error"
+            className="mt-0.5 h-3 w-3 shrink-0 text-error"
             aria-hidden="true"
           />
           <p className="text-error">{error}</p>
@@ -211,7 +269,7 @@ export function MicrophonePanel({
       {/* Confirmation */}
       <div
         className={cn(
-          "rounded-lg border p-4 transition-colors",
+          "rounded-md border p-3 transition-colors",
           confirmed
             ? "border-success/30 bg-success/5"
             : canConfirm
@@ -220,17 +278,17 @@ export function MicrophonePanel({
         )}
       >
         {confirmed ? (
-          <p className="text-sm text-success">
+          <p className="text-xs text-success">
             <strong className="font-semibold">Confirmed.</strong> You verified
             that the microphone input responds.
           </p>
         ) : canConfirm ? (
-          <div className="space-y-3">
-            <p className="text-sm font-medium">
+          <div className="space-y-2">
+            <p className="text-xs font-medium">
               Test finished. Did the input level respond when you spoke or
               tapped the microphone?
             </p>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1.5">
               <Button size="sm" onClick={() => onConfirm(true)}>
                 Yes, it responded
               </Button>
@@ -244,13 +302,13 @@ export function MicrophonePanel({
             </div>
           </div>
         ) : (
-          <p className="text-sm text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             Press{" "}
             <strong className="font-semibold text-foreground">
               Start Test
             </strong>{" "}
             and allow microphone access. Speak into the microphone and watch
-            the input level. Then stop the test to record your result.
+            the input level. Stop the test to record your result.
           </p>
         )}
       </div>

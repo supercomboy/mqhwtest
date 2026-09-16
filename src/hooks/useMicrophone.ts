@@ -19,14 +19,23 @@ export interface UseMicrophoneResult {
   detected: boolean;
   deviceLabel: string | null;
   levelBarRef: React.RefObject<HTMLDivElement | null>;
+
+  /** Có recording sẵn sàng để phát lại không. */
+  hasRecording: boolean;
+  /** Đang phát lại recording. */
+  isPlayingBack: boolean;
+  /** MediaRecorder có được hỗ trợ không. */
+  supportsRecording: boolean;
+
   start: () => Promise<void>;
   stop: () => void;
   reset: () => void;
+  playRecording: () => Promise<void>;
+  stopPlayback: () => void;
+  clearRecording: () => void;
 }
 
-/** Ngưỡng RMS (0–1) coi như có input thật. */
 const DETECT_THRESHOLD = 0.02;
-/** Số frame liên tiếp vượt ngưỡng để set `detected = true`. */
 const DETECT_FRAMES_NEEDED = 18;
 
 export function useMicrophone(): UseMicrophoneResult {
@@ -37,6 +46,12 @@ export function useMicrophone(): UseMicrophoneResult {
   const [detected, setDetected] = useState(false);
   const [deviceLabel, setDeviceLabel] = useState<string | null>(null);
 
+  const [hasRecording, setHasRecording] = useState(false);
+  const [isPlayingBack, setIsPlayingBack] = useState(false);
+  const [supportsRecording] = useState(
+    () => typeof MediaRecorder !== "undefined",
+  );
+
   const levelBarRef = useRef<HTMLDivElement | null>(null);
 
   const streamRef = useRef<MediaStream | null>(null);
@@ -44,9 +59,13 @@ export function useMicrophone(): UseMicrophoneResult {
   const analyserRef = useRef<AnalyserNode | null>(null);
   const sourceRef = useRef<MediaStreamAudioSourceNode | null>(null);
   const rafRef = useRef<number | null>(null);
-
-  // ⚠️ FIX 1: khai báo generic <ArrayBuffer> tường minh
   const dataArrayRef = useRef<Uint8Array<ArrayBuffer> | null>(null);
+
+  // Recording
+  const recorderRef = useRef<MediaRecorder | null>(null);
+  const chunksRef = useRef<Blob[]>([]);
+  const recordedUrlRef = useRef<string | null>(null);
+  const playbackAudioRef = useRef<HTMLAudioElement | null>(null);
 
   const smoothedRef = useRef(0);
   const peakRef = useRef(0);
@@ -60,13 +79,36 @@ export function useMicrophone(): UseMicrophoneResult {
     }
   }, []);
 
+  const stopPlayback = useCallback(() => {
+    if (playbackAudioRef.current) {
+      playbackAudioRef.current.pause();
+      playbackAudioRef.current.currentTime = 0;
+      playbackAudioRef.current = null;
+    }
+    setIsPlayingBack(false);
+  }, []);
+
   const releaseResources = useCallback(async () => {
     stopLoop();
+    stopPlayback();
+
+    // Dừng recorder nếu đang chạy (không cần đợi sự kiện)
+    const recorder = recorderRef.current;
+    if (recorder && recorder.state !== "inactive") {
+      try {
+        recorder.stop();
+      } catch {
+        /* ignore */
+      }
+    }
+    recorderRef.current = null;
+
     sourceRef.current?.disconnect();
     sourceRef.current = null;
     analyserRef.current = null;
     streamRef.current?.getTracks().forEach((t) => t.stop());
     streamRef.current = null;
+
     if (audioCtxRef.current && audioCtxRef.current.state !== "closed") {
       try {
         await audioCtxRef.current.close();
@@ -79,7 +121,7 @@ export function useMicrophone(): UseMicrophoneResult {
     smoothedRef.current = 0;
     detectCountRef.current = 0;
     if (levelBarRef.current) levelBarRef.current.style.width = "0%";
-  }, [stopLoop]);
+  }, [stopLoop, stopPlayback]);
 
   const startLoop = useCallback(() => {
     const tick = () => {
@@ -95,7 +137,6 @@ export function useMicrophone(): UseMicrophoneResult {
         sumSq += v * v;
       }
       const rms = Math.sqrt(sumSq / data.length);
-
       const scaled = Math.min(100, Math.pow(rms * 3.5, 0.7) * 100);
 
       smoothedRef.current = smoothedRef.current * 0.65 + scaled * 0.35;
@@ -141,20 +182,31 @@ export function useMicrophone(): UseMicrophoneResult {
     smoothedRef.current = 0;
     detectCountRef.current = 0;
 
+    // Xoá recording cũ khi bắt đầu test mới
+    if (recordedUrlRef.current) {
+      URL.revokeObjectURL(recordedUrlRef.current);
+      recordedUrlRef.current = null;
+    }
+    chunksRef.current = [];
+    setHasRecording(false);
+    stopPlayback();
+
+    if (typeof window === "undefined" || !window.isSecureContext) {
+      setStatus("insecure");
+      setError(
+        "Microphone access requires a secure context. Open this page at https:// or http://localhost — not via a LAN IP over HTTP.",
+      );
+      return;
+    }
+
     if (
       typeof navigator === "undefined" ||
       !navigator.mediaDevices ||
       typeof navigator.mediaDevices.getUserMedia !== "function"
     ) {
       setStatus("unsupported");
-      setError("Your browser does not support microphone access.");
-      return;
-    }
-
-    if (typeof window !== "undefined" && !window.isSecureContext) {
-      setStatus("insecure");
       setError(
-        "Microphone access requires a secure context (HTTPS or localhost).",
+        "This browser does not expose the MediaDevices API. This can happen with strict privacy extensions, enterprise policies, or very old browsers.",
       );
       return;
     }
@@ -189,10 +241,37 @@ export function useMicrophone(): UseMicrophoneResult {
 
       source.connect(analyser);
 
-      // ⚠️ FIX 2: tạo Uint8Array từ ArrayBuffer tường minh
       dataArrayRef.current = new Uint8Array(
         new ArrayBuffer(analyser.fftSize),
       );
+
+      // Khởi động MediaRecorder nếu browser hỗ trợ
+      if (supportsRecording) {
+        try {
+          const recorder = new MediaRecorder(stream);
+          chunksRef.current = [];
+          recorder.ondataavailable = (ev) => {
+            if (ev.data && ev.data.size > 0) {
+              chunksRef.current.push(ev.data);
+            }
+          };
+          recorder.onstop = () => {
+            if (chunksRef.current.length === 0) return;
+            const mime = recorder.mimeType || "audio/webm";
+            const blob = new Blob(chunksRef.current, { type: mime });
+            if (recordedUrlRef.current) {
+              URL.revokeObjectURL(recordedUrlRef.current);
+            }
+            recordedUrlRef.current = URL.createObjectURL(blob);
+            chunksRef.current = [];
+            setHasRecording(true);
+          };
+          recorder.start();
+          recorderRef.current = recorder;
+        } catch {
+          recorderRef.current = null;
+        }
+      }
 
       setStatus("listening");
       startLoop();
@@ -218,15 +297,34 @@ export function useMicrophone(): UseMicrophoneResult {
         setError(message || "An unexpected microphone error occurred.");
       }
     }
-  }, [releaseResources, startLoop]);
+  }, [releaseResources, startLoop, stopPlayback, supportsRecording]);
 
   const stop = useCallback(() => {
+    // Dừng recorder trước để chunks cuối cùng được flush
+    const recorder = recorderRef.current;
+    if (recorder && recorder.state !== "inactive") {
+      try {
+        recorder.stop();
+      } catch {
+        /* ignore */
+      }
+    }
+    recorderRef.current = null;
+
     void releaseResources();
     setLevel(0);
     setStatus("stopped");
   }, [releaseResources]);
 
   const reset = useCallback(() => {
+    if (recordedUrlRef.current) {
+      URL.revokeObjectURL(recordedUrlRef.current);
+      recordedUrlRef.current = null;
+    }
+    chunksRef.current = [];
+    setHasRecording(false);
+    stopPlayback();
+
     void releaseResources();
     setLevel(0);
     setPeak(0);
@@ -237,10 +335,47 @@ export function useMicrophone(): UseMicrophoneResult {
     peakRef.current = 0;
     smoothedRef.current = 0;
     detectCountRef.current = 0;
-  }, [releaseResources]);
+  }, [releaseResources, stopPlayback]);
 
+  const playRecording = useCallback(async () => {
+    const url = recordedUrlRef.current;
+    if (!url) return;
+
+    if (playbackAudioRef.current) {
+      playbackAudioRef.current.pause();
+      playbackAudioRef.current = null;
+    }
+
+    const audio = new Audio(url);
+    playbackAudioRef.current = audio;
+    audio.onended = () => setIsPlayingBack(false);
+    audio.onerror = () => setIsPlayingBack(false);
+    setIsPlayingBack(true);
+    try {
+      await audio.play();
+    } catch {
+      setIsPlayingBack(false);
+      playbackAudioRef.current = null;
+    }
+  }, []);
+
+  const clearRecording = useCallback(() => {
+    stopPlayback();
+    if (recordedUrlRef.current) {
+      URL.revokeObjectURL(recordedUrlRef.current);
+      recordedUrlRef.current = null;
+    }
+    chunksRef.current = [];
+    setHasRecording(false);
+  }, [stopPlayback]);
+
+  // Cleanup khi unmount
   useEffect(() => {
     return () => {
+      if (recordedUrlRef.current) {
+        URL.revokeObjectURL(recordedUrlRef.current);
+        recordedUrlRef.current = null;
+      }
       void releaseResources();
     };
   }, [releaseResources]);
@@ -253,8 +388,14 @@ export function useMicrophone(): UseMicrophoneResult {
     detected,
     deviceLabel,
     levelBarRef,
+    hasRecording,
+    isPlayingBack,
+    supportsRecording,
     start,
     stop,
     reset,
+    playRecording,
+    stopPlayback,
+    clearRecording,
   };
 }

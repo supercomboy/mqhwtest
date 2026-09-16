@@ -3,11 +3,9 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 interface PageHeaderProps {
-  /** Nhãn nhỏ phía trên tiêu đề. VD: "DEVICE TEST" */
   eyebrow?: string;
   title: string;
   description?: string;
-  /** Nút action bên phải tiêu đề */
   action?: ReactNode;
   className?: string;
 }
@@ -22,19 +20,19 @@ export function PageHeader({
   return (
     <header
       className={cn(
-        "flex flex-col gap-4 border-b border-border pb-6 sm:flex-row sm:items-start sm:justify-between",
+        "flex flex-col gap-2 border-b border-border pb-3 sm:flex-row sm:items-start sm:justify-between",
         className,
       )}
     >
-      <div className="space-y-2">
+      <div className="space-y-0.5">
         {eyebrow && (
-          <p className="font-mono text-xs font-medium uppercase tracking-wider text-muted-foreground">
+          <p className="font-mono text-[9px] font-medium uppercase tracking-wider text-muted-foreground">
             {eyebrow}
           </p>
         )}
-        <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
+        <h1 className="text-base font-bold tracking-tight">{title}</h1>
         {description && (
-          <p className="max-w-2xl text-sm text-muted-foreground">
+          <p className="max-w-2xl text-[11px] leading-snug text-muted-foreground">
             {description}
           </p>
         )}
