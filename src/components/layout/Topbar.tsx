@@ -8,8 +8,11 @@ interface TopbarProps {
 }
 
 export function Topbar({ onMenuClick }: TopbarProps) {
+  const base = import.meta.env.BASE_URL;
+
   return (
-    <header className="flex h-14 shrink-0 items-center justify-between border-b border-border bg-background px-4">
+    <header className="relative flex h-16 shrink-0 items-center justify-between border-b border-border bg-background px-4">
+      {/* Left: mobile menu */}
       <div className="flex items-center gap-2">
         <Button
           variant="ghost"
@@ -20,20 +23,33 @@ export function Topbar({ onMenuClick }: TopbarProps) {
         >
           <Menu className="h-5 w-5" aria-hidden="true" />
         </Button>
-        <div className="flex items-center gap-2">
-          <img
-            src={`${import.meta.env.BASE_URL}logo.png`}
-            alt="MQ Device Tester logo"
-            width={28}
-            height={28}
-            className="h-7 w-7 object-contain"
-          />
-          <span className="hidden font-semibold tracking-tight sm:inline">
-            MQ Device Tester
-          </span>
-        </div>
       </div>
 
+      {/* Center: theme-aware logo + title */}
+      <div className="pointer-events-none absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-3">
+        {/* Light mode logo */}
+        <img
+          src={`${base}logo.png`}
+          alt="MQ Device Tester logo"
+          width={48}
+          height={48}
+          className="h-12 w-12 object-contain dark:hidden"
+        />
+        {/* Dark mode logo */}
+        <img
+          src={`${base}logo1.png`}
+          alt=""
+          aria-hidden="true"
+          width={48}
+          height={48}
+          className="hidden h-12 w-12 object-contain dark:block"
+        />
+        <span className="hidden text-base font-semibold tracking-tight sm:inline">
+          MQ Device Tester
+        </span>
+      </div>
+
+      {/* Right: theme toggle */}
       <div className="flex items-center gap-1">
         <ThemeToggle />
       </div>

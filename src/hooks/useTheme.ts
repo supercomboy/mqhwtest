@@ -21,10 +21,19 @@ export function useTheme() {
     resolveTheme(getStoredTheme()),
   );
 
-  // Áp theme mỗi khi thay đổi
+  // Áp theme + đổi favicon theo theme
   useEffect(() => {
     applyThemeToDOM(theme);
-    setResolved(resolveTheme(theme));
+    const r = resolveTheme(theme);
+    setResolved(r);
+
+    // Đổi favicon
+    const favicon = document.getElementById("app-favicon");
+    if (favicon instanceof HTMLLinkElement) {
+      const base = import.meta.env.BASE_URL;
+      favicon.href =
+        r === "dark" ? `${base}logo1.png` : `${base}logo.png`;
+    }
   }, [theme]);
 
   // Lắng nghe thay đổi từ tab khác

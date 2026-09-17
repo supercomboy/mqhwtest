@@ -74,7 +74,15 @@ export function AppShell() {
               alt="MQ Device Tester logo"
               width={24}
               height={24}
-              className="h-6 w-6 object-contain"
+              className="h-6 w-6 object-contain dark:hidden"
+            />
+            <img
+              src={`${import.meta.env.BASE_URL}logo1.png`}
+              alt=""
+              aria-hidden="true"
+              width={24}
+              height={24}
+              className="hidden h-6 w-6 object-contain dark:block"
             />
             <span className="font-semibold tracking-tight">
               MQ Device Tester

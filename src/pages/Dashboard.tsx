@@ -1,26 +1,40 @@
 import { useMemo } from "react";
 import { Info } from "lucide-react";
-import { useDocumentTitle } from "@/hooks/useDocumentTitle";
-import { PageHeader } from "@/components/common/PageHeader";
+
 import { DashboardStats } from "@/components/dashboard/DashboardStats";
 import { DeviceCard } from "@/components/dashboard/DeviceCard";
 import { SystemInfo } from "@/components/dashboard/SystemInfo";
 import { DEVICES } from "@/data/devices";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { useDeviceStatus } from "@/providers/DeviceStatusProvider";
 import { detectCapabilities } from "@/utils/capabilities";
 
 export function Dashboard() {
-    useDocumentTitle("Dashboard");
+  useDocumentTitle("Dashboard");
   const { getEntry } = useDeviceStatus();
   const capabilities = useMemo(() => detectCapabilities(), []);
+  const base = import.meta.env.BASE_URL;
 
   return (
-    <div className="space-y-8">
-      <PageHeader
-        eyebrow="Overview"
-        title="MQ Device Tester"
-        description="Test your computer hardware directly from your browser. All tests run locally — nothing is uploaded."
-      />
+    <div className="space-y-6">
+      {/* Logo header — theme-aware */}
+      <header className="flex flex-col items-center gap-2 pb-2 text-center">
+        <img
+          src={`${base}logo.png`}
+          alt="MQ Device Tester logo"
+          width={80}
+          height={80}
+          className="h-30 w-30 object-contain dark:hidden"
+        />
+        <img
+          src={`${base}logo1.png`}
+          alt=""
+          aria-hidden="true"
+          width={80}
+          height={80}
+          className="hidden h-30 w-30 object-contain dark:block"
+        />
+      </header>
 
       <DashboardStats />
 
