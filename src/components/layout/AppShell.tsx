@@ -68,7 +68,14 @@ export function AppShell() {
             drawerOpen ? "translate-x-0" : "-translate-x-full",
           )}
         >
-          <div className="flex h-14 items-center border-b border-border px-4">
+          <div className="flex h-14 items-center gap-2 border-b border-border px-4">
+            <img
+              src={`${import.meta.env.BASE_URL}logo.png`}
+              alt="MQ Device Tester logo"
+              width={24}
+              height={24}
+              className="h-6 w-6 object-contain"
+            />
             <span className="font-semibold tracking-tight">
               MQ Device Tester
             </span>

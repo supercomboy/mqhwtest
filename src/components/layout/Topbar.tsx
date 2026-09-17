@@ -21,9 +21,13 @@ export function Topbar({ onMenuClick }: TopbarProps) {
           <Menu className="h-5 w-5" aria-hidden="true" />
         </Button>
         <div className="flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary text-primary-foreground">
-            <span className="font-mono text-xs font-bold">MQ</span>
-          </div>
+          <img
+            src={`${import.meta.env.BASE_URL}logo.png`}
+            alt="MQ Device Tester logo"
+            width={28}
+            height={28}
+            className="h-7 w-7 object-contain"
+          />
           <span className="hidden font-semibold tracking-tight sm:inline">
             MQ Device Tester
           </span>
