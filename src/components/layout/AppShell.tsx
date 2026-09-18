@@ -3,6 +3,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import { SkipToContent } from "@/components/common/SkipToContent";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Topbar } from "@/components/layout/Topbar";
+import { MascotWidget } from "@/components/common/MascotWidget";
 import { cn } from "@/lib/utils";
 
 export function AppShell() {
@@ -101,6 +102,7 @@ export function AppShell() {
           </div>
         </main>
       </div>
+      <MascotWidget />
     </div>
   );
 }
