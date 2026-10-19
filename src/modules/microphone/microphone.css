@@ -1,0 +1,376 @@
+/* Giao diện bài kiểm tra micro. Mọi kích thước/màu lấy từ src/styles/tokens.css. */
+.mic {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.mic__intro {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.mic__notice {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--glass-bg-inner);
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.mic__notice:empty {
+  display: none;
+}
+
+/* ---- Thẻ bắt đầu ---- */
+.mic__start {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--glass-bg-inner);
+}
+
+.mic__start[hidden] {
+  display: none;
+}
+
+.mic__start-text {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.mic__enable {
+  min-width: 160px;
+}
+
+/* ---- Khu vực đo mức âm ---- */
+.mic__live {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.mic__live[hidden] {
+  display: none;
+}
+
+.mic__meter {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mic__wave {
+  display: block;
+  width: 100%;
+  height: 78px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--surface-alt);
+}
+
+.mic__level {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mic__level-track {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 10px;
+  border: 1px solid var(--line);
+  border-radius: 980px;
+  background: var(--surface-alt);
+  overflow: hidden;
+}
+
+.mic__level-fill {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: 980px;
+  background: var(--accent);
+}
+
+.mic__level-fill--clip {
+  background: var(--bad);
+}
+
+.mic__db {
+  flex: 0 0 auto;
+  min-width: 92px;
+  text-align: right;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+.mic__warn {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--bad);
+}
+
+.mic__warn:empty {
+  display: none;
+}
+
+/* ---- Hàng điều khiển ---- */
+.mic__controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+}
+
+.mic__rec {
+  min-width: 150px;
+}
+
+.mic__rec-state {
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+.mic__rec-state:empty {
+  display: none;
+}
+
+.mic__device {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.mic__device[hidden] {
+  display: none;
+}
+
+.mic__device-label {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.mic__select {
+  min-height: 44px;
+  max-width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 15px;
+}
+
+.mic__select:focus-visible {
+  outline: 3px solid var(--text-soft);
+  outline-offset: 2px;
+}
+
+/* ---- Công tắc thiết lập thu ---- */
+.mic__toggles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 20px;
+}
+
+.mic__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.mic__toggle-input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--accent);
+}
+
+.mic__toggle-input:focus-visible {
+  outline: 3px solid var(--text-soft);
+  outline-offset: 2px;
+}
+
+.mic__hint {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+/* ---- Nghe lại bản ghi ---- */
+.mic__playback {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--glass-bg-inner);
+}
+
+.mic__playback[hidden] {
+  display: none;
+}
+
+.mic__audio {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* ---- Nhóm nút tự đánh giá ---- */
+.mic__section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mic__section-title {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.mic-seg {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-self: flex-start;
+  max-width: 100%;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 980px;
+  background: var(--glass-bg-inner);
+}
+
+.mic-seg__btn {
+  appearance: none;
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 980px;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+  transition:
+    background var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+
+.mic-seg__btn:hover {
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
+.mic-seg__btn:focus-visible {
+  outline: 3px solid var(--text-soft);
+  outline-offset: 2px;
+}
+
+.mic-seg__btn[aria-pressed='true'] {
+  background: var(--accent);
+  color: var(--accent-text);
+}
+
+/* ---- Bảng tổng hợp kết quả ---- */
+.mic-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.mic-table caption {
+  padding-bottom: 8px;
+  text-align: left;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.mic-table th,
+.mic-table td {
+  padding: 8px 10px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--line);
+}
+
+.mic-table thead th {
+  font-weight: 600;
+}
+
+.mic-table tbody th {
+  width: 34%;
+  font-weight: 600;
+}
+
+.mic-table tbody tr:last-child th,
+.mic-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.mic-table__value--bad {
+  color: var(--bad);
+  font-weight: 600;
+}
+
+.mic__advice {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.mic__advice:empty {
+  display: none;
+}
+
+/* ---- Hẹp: xếp dọc, không cuộn ngang ---- */
+@media (max-width: 640px) {
+  .mic__controls {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .mic-seg {
+    align-self: stretch;
+  }
+
+  .mic__device {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .mic__select {
+    width: 100%;
+  }
+
+  .mic__db {
+    min-width: 76px;
+    font-size: 13px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mic-seg__btn {
+    transition: none;
+  }
+}

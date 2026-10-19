@@ -1,0 +1,417 @@
+/* Bài kiểm tra bàn phím. Màu/font/bo góc lấy từ tokens.css, không viết mã màu trực tiếp.
+   Bàn phím co giãn theo bề rộng khung chứa (container query) nên luôn hiển thị trọn vẹn, không cuộn ngang. */
+
+.kbm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ---- Thanh điều khiển: đếm phím, chuyển chế độ và Đặt lại trên cùng một hàng ---- */
+.kbm__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+}
+
+.kbm__stats {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: var(--text);
+  font-size: 15px;
+}
+
+.kbm__progress b {
+  color: var(--text);
+}
+
+.kbm__progress.is-done {
+  color: var(--ok);
+}
+
+.kbm__reset {
+  padding: 8px 18px;
+  font-size: 15px;
+}
+
+.kbm__modes {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--line);
+  background: var(--glass-bg-inner);
+  border-radius: 980px;
+}
+
+.kbm__mode {
+  padding: 7px 16px;
+  border: 0;
+  border-radius: 980px;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+
+.kbm__mode.is-on {
+  background: var(--accent);
+  color: var(--accent-text);
+}
+
+.kbm__mode:focus-visible {
+  outline: 3px solid var(--text-soft);
+  outline-offset: 2px;
+}
+
+/* ---- Nhắc nhở trên màn hình hẹp (không cố nhét bàn phím vào điện thoại) ---- */
+.kbm__mobile {
+  display: none;
+  margin: 0;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--glass-bg-inner);
+  color: var(--text);
+  font-size: 14px;
+}
+
+@media (max-width: 720px) {
+  .kbm__mobile {
+    display: block;
+  }
+}
+
+/* ---- Thông báo layout ---- */
+.kbm__notice:empty {
+  display: none;
+}
+
+.kbm__notice {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--surface-alt);
+}
+
+.kbm__notice-line {
+  margin: 0;
+  font-size: 15px;
+  color: var(--text);
+}
+
+.kbm__notice-line--ok {
+  color: var(--ok);
+}
+
+.kbm__notice-line--warn {
+  color: var(--bad);
+}
+
+/* ---- Kiểm tra bằng cách gõ dòng mẫu (thu gọn, mặc định đóng) ---- */
+.kbm__typing {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--glass-bg-inner);
+}
+
+.kbm__typing-summary {
+  padding: 10px 14px;
+  font-size: 15px;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.kbm__typing-summary:focus-visible {
+  outline: 3px solid var(--text-soft);
+  outline-offset: 2px;
+  border-radius: var(--radius-control);
+}
+
+.kbm__typing-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 14px 12px;
+}
+
+.kbm__typing-sample {
+  margin: 0;
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 16px;
+  letter-spacing: 0.08em;
+}
+
+.kbm__typing-input {
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 16px;
+}
+
+.kbm__typing-input:focus-visible {
+  outline: 3px solid var(--text-soft);
+  outline-offset: 2px;
+}
+
+.kbm__typing-result {
+  margin: 0;
+  font-size: 15px;
+}
+
+.kbm__typing-result.is-ok {
+  color: var(--ok);
+}
+
+.kbm__typing-result.is-warn {
+  color: var(--bad);
+}
+
+/* ---- Bàn phím: một khung hình duy nhất, mọi kích thước tính theo --u ---- */
+.kbm__stage {
+  container-type: inline-size;
+  width: 100%;
+  min-width: 0;
+}
+
+.kb {
+  /* --u suy ra từ bề rộng khung chứa: tổng đơn vị do layout.ts cung cấp qua --kb-total.
+     Chặn trên để bàn phím không cao quá (chế độ Laptop có ít khối nên phím sẽ to ra),
+     nhờ đó hộp thoại không phải cuộn dọc trên màn hình rộng. */
+  --u: min(calc(100cqw / var(--kb-total, 23)), var(--kb-u-max, 52px));
+  --kb-gap: calc(var(--u) * 0.07);
+  --kb-radius: clamp(4px, calc(var(--u) * 0.16), 10px);
+  display: flex;
+  align-items: flex-start;
+  gap: calc(var(--u) * var(--kb-block-gap, 0.5));
+  width: 100%;
+}
+
+.kb__main-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kb-gap);
+}
+
+.kb-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  grid-auto-rows: calc(var(--u) - var(--kb-gap));
+  gap: var(--kb-gap);
+  width: calc(var(--u) * var(--units));
+}
+
+.kb__mid {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: calc(var(--u) * 6);
+  padding-top: var(--u);
+}
+
+.kb__numpad {
+  padding-top: var(--u);
+}
+
+/* Chế độ Laptop: không có bàn phím số và cụm điều hướng, mũi tên nằm sát đáy. */
+.kbm__stage--laptop .kb__numpad,
+.kbm__stage--laptop .kb__nav {
+  display: none;
+}
+
+.kbm__stage--laptop .kb__mid {
+  justify-content: flex-end;
+}
+
+.kb-key {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--kb-radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-key);
+  color: var(--text);
+  font-size: clamp(10px, calc(var(--u) * 0.24), 15px);
+  line-height: 1;
+  overflow: hidden;
+  user-select: none;
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease);
+}
+
+.kb-key--spacer {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.kb-key.is-checked {
+  border-color: var(--key-done-line);
+  background: var(--key-done);
+  color: var(--text);
+}
+
+.kb-key.is-active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-text);
+}
+
+.kb-key__label {
+  max-width: 100%;
+  padding: 0 3px;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: clip;
+  white-space: nowrap;
+}
+
+.kb-key__shift {
+  position: absolute;
+  top: calc(var(--u) * 0.06);
+  left: calc(var(--u) * 0.1);
+  font-size: clamp(8px, calc(var(--u) * 0.19), 12px);
+  opacity: 0.65;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: clip;
+  white-space: nowrap;
+}
+
+/* Ẩn nhãn Shift khi cỡ chữ của nó sẽ nhỏ hơn 8px: u*0,19 < 8px → u < 42,1px.
+   PC: u = w/23 → w < 968px. Laptop: u = w/18,5 → w < 779px. */
+@container (max-width: 968px) {
+  .kbm__stage--pc .kb-key__shift {
+    display: none;
+  }
+}
+
+@container (max-width: 779px) {
+  .kbm__stage--laptop .kb-key__shift {
+    display: none;
+  }
+}
+
+/* ---- Thông tin phụ ---- */
+.kbm__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.kbm__locks {
+  display: flex;
+  gap: 6px;
+}
+
+.kbm__lock {
+  padding: 4px 10px;
+  border: 1px solid var(--line);
+  border-radius: 980px;
+  background: var(--glass-bg-inner);
+  font-size: 13px;
+}
+
+.kbm__lock.is-on {
+  border-color: transparent;
+  background: var(--ok);
+  color: var(--accent-text);
+}
+
+.kbm__chip {
+  padding: 4px 10px;
+  border: 1px solid var(--line);
+  border-radius: 980px;
+  background: var(--glass-bg-inner);
+  font-size: 13px;
+}
+
+.kbm__chip.is-bad {
+  border-color: transparent;
+  background: var(--bad);
+  color: var(--accent-text);
+}
+
+/* ---- Nhật ký phím: tối đa một hàng, mục cũ bị cắt bớt ---- */
+.kbm__log {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.kbm__log-title {
+  flex: none;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.kbm__log-list {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+  overflow: hidden;
+  list-style: none;
+}
+
+.kbm__log-item {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--glass-bg-inner);
+  font-size: 13px;
+}
+
+.kbm__log-item.is-up {
+  opacity: 0.6;
+}
+
+.kbm__log-code {
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 12px;
+}
+
+.kbm__log-time {
+  color: var(--text);
+  opacity: 0.7;
+}
+
+.kbm__hint {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text);
+  opacity: 0.85;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kb-key,
+  .kbm__mode {
+    transition: none;
+  }
+}

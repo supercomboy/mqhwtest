@@ -1,0 +1,335 @@
+/* Giao diện bài kiểm tra camera. Mọi kích thước/màu lấy từ src/styles/tokens.css. */
+.cam {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.cam__intro {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.cam__notice {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--glass-bg-inner);
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.cam__notice:empty {
+  display: none;
+}
+
+/* ---- Thẻ bắt đầu ---- */
+.cam__start {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--glass-bg-inner);
+}
+
+.cam__start[hidden] {
+  display: none;
+}
+
+.cam__start-text {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.cam__enable {
+  min-width: 160px;
+}
+
+/* ---- Khu vực xem trước ---- */
+.cam__live {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cam__live[hidden] {
+  display: none;
+}
+
+.cam__frame {
+  position: relative;
+  line-height: 0;
+}
+
+.cam__video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--surface-alt);
+  transform-origin: center;
+  transition: transform var(--dur) var(--ease);
+}
+
+.cam__video--mirror {
+  transform: scaleX(-1);
+}
+
+.cam__chips {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  line-height: 1.2;
+}
+
+.cam__chip {
+  padding: 4px 10px;
+  border: 1px solid transparent;
+  border-radius: 980px;
+  /* Chip nằm trên hình video nên dùng nền mờ tối + chữ trắng để luôn đủ tương phản AA.
+     Không dùng backdrop-filter cho khung con (chỉ panel ngoài cùng mới có kính). */
+  background: var(--scrim);
+  color: var(--scrim-text);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Hàng điều khiển ---- */
+.cam__controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+}
+
+.cam__shot-btn {
+  min-width: 120px;
+}
+
+.cam__switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.cam__mirror-input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--accent);
+}
+
+.cam__mirror-input:focus-visible {
+  outline: 3px solid var(--text-soft);
+  outline-offset: 2px;
+}
+
+.cam__device {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.cam__device[hidden] {
+  display: none;
+}
+
+.cam__device-label {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.cam__select {
+  min-height: 44px;
+  max-width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 15px;
+}
+
+.cam__select:focus-visible {
+  outline: 3px solid var(--text-soft);
+  outline-offset: 2px;
+}
+
+/* ---- Ảnh chụp thử ---- */
+.cam__shot {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+}
+
+.cam__shot[hidden] {
+  display: none;
+}
+
+.cam__shot-img {
+  display: block;
+  max-width: 100%;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--surface-alt);
+}
+
+.cam__shot-caption {
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* ---- Nhóm nút tự đánh giá ---- */
+.cam__section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cam__section-title {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.cam-seg {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-self: flex-start;
+  max-width: 100%;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 980px;
+  background: var(--glass-bg-inner);
+}
+
+.cam-seg__btn {
+  appearance: none;
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 980px;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+  transition:
+    background var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+
+.cam-seg__btn:hover {
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
+.cam-seg__btn:focus-visible {
+  outline: 3px solid var(--text-soft);
+  outline-offset: 2px;
+}
+
+.cam-seg__btn[aria-pressed='true'] {
+  background: var(--accent);
+  color: var(--accent-text);
+}
+
+/* ---- Bảng tổng hợp kết quả ---- */
+.cam-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.cam-table caption {
+  padding-bottom: 8px;
+  text-align: left;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.cam-table th,
+.cam-table td {
+  padding: 8px 10px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--line);
+}
+
+.cam-table thead th {
+  font-weight: 600;
+}
+
+.cam-table tbody th {
+  width: 34%;
+  font-weight: 600;
+}
+
+.cam-table tbody tr:last-child th,
+.cam-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.cam-table__value--bad {
+  color: var(--bad);
+  font-weight: 600;
+}
+
+.cam__advice {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.cam__advice:empty {
+  display: none;
+}
+
+/* ---- Hẹp: xếp dọc, không cuộn ngang ---- */
+@media (max-width: 640px) {
+  .cam__controls {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .cam-seg {
+    align-self: stretch;
+  }
+
+  .cam__device {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .cam__select {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cam__video,
+  .cam-seg__btn {
+    transition: none;
+  }
+}

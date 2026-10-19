@@ -1,0 +1,260 @@
+/* Giao diện bài kiểm tra loa. Mọi kích thước/màu lấy từ src/styles/tokens.css. */
+.spk {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.spk__intro {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.spk__notice {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--glass-bg-inner);
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.spk__notice:empty {
+  display: none;
+}
+
+/* ---- Chọn thiết bị phát ---- */
+.spk__device {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.spk__device[hidden] {
+  display: none;
+}
+
+.spk__device-label {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.spk__device-select {
+  min-height: 44px;
+  max-width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 15px;
+}
+
+.spk__device-select:focus-visible {
+  outline: 3px solid var(--text-soft);
+  outline-offset: 2px;
+}
+
+/* ---- Thẻ trình phát ---- */
+.spk__tracks {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.spk-track {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--glass-bg-inner);
+}
+
+.spk-track__title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.spk-track__desc {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.spk-track__controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.spk-play {
+  min-width: 104px;
+}
+
+.spk-time {
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.spk-range {
+  flex: 1 1 150px;
+  min-width: 0;
+  min-height: 44px;
+  accent-color: var(--accent);
+}
+
+.spk-range:disabled {
+  opacity: 0.5;
+}
+
+.spk-range:focus-visible {
+  outline: 3px solid var(--text-soft);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.spk-volume {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.spk-volume__label {
+  flex: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.spk-volume .spk-range {
+  flex: 1 1 120px;
+}
+
+/* ---- Nhóm nút dạng viên (chọn kênh, tự đánh giá) ---- */
+.spk__section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.spk__section-title {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.spk-seg {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-self: flex-start;
+  max-width: 100%;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 980px;
+  background: var(--glass-bg-inner);
+}
+
+.spk-seg__btn {
+  appearance: none;
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 980px;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+  transition:
+    background var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+
+.spk-seg__btn:hover {
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
+.spk-seg__btn:focus-visible {
+  outline: 3px solid var(--text-soft);
+  outline-offset: 2px;
+}
+
+.spk-seg__btn[aria-pressed='true'] {
+  background: var(--accent);
+  color: var(--accent-text);
+}
+
+/* ---- Bảng tổng hợp kết quả ---- */
+.spk-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.spk-table caption {
+  padding-bottom: 8px;
+  text-align: left;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.spk-table th,
+.spk-table td {
+  padding: 8px 10px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--line);
+}
+
+.spk-table thead th {
+  font-weight: 600;
+}
+
+.spk-table tbody th {
+  width: 34%;
+  font-weight: 600;
+}
+
+.spk-table tbody tr:last-child th,
+.spk-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.spk__advice {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.spk__advice:empty {
+  display: none;
+}
+
+/* ---- Hẹp: xếp dọc, không cuộn ngang ---- */
+@media (max-width: 640px) {
+  .spk__tracks {
+    grid-template-columns: 1fr;
+  }
+
+  .spk-seg {
+    align-self: stretch;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spk-seg__btn {
+    transition: none;
+  }
+}

@@ -1,0 +1,1 @@
+export { mountCamera } from './camera';

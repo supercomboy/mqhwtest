@@ -1,0 +1,175 @@
+/* Bài kiểm tra màn hình. Mọi màu giao diện lấy từ tokens.css;
+   màu của vật thể kiểm tra (trắng/đen/đỏ…) nằm trong display.ts vì đó là nội dung test. */
+.dsp {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.dsp__intro {
+  margin: 0;
+  font-size: 15px;
+}
+
+.dsp__notice {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--glass-bg-inner);
+  padding: 10px 14px;
+  font-size: 14px;
+}
+
+.dsp__notice:empty {
+  display: none;
+}
+
+.dsp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.dsp-table caption {
+  text-align: left;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 0 0 8px;
+}
+
+.dsp-table th,
+.dsp-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+
+.dsp-table tbody th {
+  width: 46%;
+  font-weight: 600;
+}
+
+.dsp-table td {
+  font-variant-numeric: tabular-nums;
+}
+
+.dsp-table tbody tr:last-child th,
+.dsp-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.dsp__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+}
+
+.dsp__start {
+  min-width: 180px;
+}
+
+.dsp__hint {
+  margin: 0;
+  font-size: 14px;
+}
+
+/* Khung bài kiểm tra: khi vào toàn màn hình thì chính nó là phần tử fullscreen. */
+/* Nền đặc: bài kiểm tra toàn màn hình không được có kính hay lớp mờ nào. */
+.dsp-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--surface-alt);
+}
+
+/* Phương án thay thế khi trình duyệt không có Fullscreen API (ví dụ iPhone Safari). */
+.dsp-stage--overlay {
+  position: fixed;
+  inset: 0;
+  height: 100dvh;
+  z-index: 60;
+}
+
+.dsp-canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Khối vuông chạy ngang: chỉ animate transform (không dùng left) cho mượt.
+   Màu nền được đặt từ display.ts. */
+.dsp-square {
+  position: absolute;
+  top: calc(50% - 45px);
+  left: 0;
+  width: 90px;
+  height: 90px;
+  will-change: transform;
+}
+
+.dsp-badge {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  max-width: calc(100% - 32px);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: var(--radius-control);
+  background: var(--scrim);
+  color: var(--scrim-text);
+  font-size: 14px;
+  opacity: 1;
+  transition: opacity var(--dur) var(--ease);
+  pointer-events: none;
+}
+
+.dsp-badge--hidden {
+  opacity: 0;
+}
+
+.dsp-badge__count {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.dsp-badge__name {
+  font-weight: 600;
+}
+
+.dsp-badge__hint {
+  flex-basis: 100%;
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+@media (max-width: 640px) {
+  .dsp-table {
+    font-size: 14px;
+  }
+
+  .dsp-table th,
+  .dsp-table td {
+    padding: 6px 8px;
+  }
+
+  .dsp-table tbody th {
+    width: 50%;
+  }
+
+  .dsp__start {
+    min-width: 0;
+  }
+}
+
+/* Chỉ tắt hiệu ứng giao diện. Bài "Chuyển động" vẫn chạy vì đó chính là nội dung kiểm tra. */
+@media (prefers-reduced-motion: reduce) {
+  .dsp-badge {
+    transition: none;
+  }
+}

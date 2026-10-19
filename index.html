@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Kiểm tra bàn phím, loa, camera, microphone và màn hình ngay trên trình duyệt. Dữ liệu không rời khỏi máy của bạn." />
+    <title>Device Check</title>
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <link rel="apple-touch-icon" href="/logo.png" />
+  </head>
+  <body>
+    <header class="nav" id="nav">
+      <a class="nav__brand" href="#top">
+        <span class="nav__logo">
+          <img class="nav__logo-img" src="/logo.png" alt="MQ Tech &amp; Co" width="1254" height="1254" />
+        </span>
+        <span class="nav__brand-text">Device Check</span>
+      </a>
+      <nav class="nav__links" id="nav-links" aria-label="Các bài kiểm tra"></nav>
+    </header>
+
+    <main id="top">
+      <section class="hero reveal">
+        <h1>Kiểm tra thiết bị của bạn.<br />Nhanh. Riêng tư.</h1>
+        <p class="hero__sub">Bàn phím, loa, camera, microphone và màn hình, ngay trên trình duyệt. Không cài đặt, không tải dữ liệu lên máy chủ.</p>
+        <a class="btn" href="#tests">Bắt đầu kiểm tra</a>
+      </section>
+
+      <section id="tests" class="grid" aria-label="Danh sách bài kiểm tra"></section>
+
+      <section class="privacy reveal">
+        <h2>Dữ liệu không rời khỏi máy bạn</h2>
+        <p>Hình ảnh từ camera và âm thanh từ microphone chỉ được xử lý trong trình duyệt và không bao giờ được gửi đi đâu cả.</p>
+      </section>
+    </main>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
