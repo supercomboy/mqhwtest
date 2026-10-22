@@ -39,11 +39,19 @@ function isInteractiveTarget(target: EventTarget | null): boolean {
   return Boolean(target.closest('button, a, input, select, textarea, [contenteditable]'));
 }
 
-/** Phím cần chặn hành vi mặc định khi bài kiểm tra đang mở. */
+/**
+ * F1–F12 luôn bị chặn: trình duyệt và hệ điều hành dùng chúng cho trợ giúp (F1), tìm kiếm (F3),
+ * tải lại (F5), thanh địa chỉ (F6), caret browsing (F7), thanh menu (F10), toàn màn hình (F11)
+ * và công cụ phát triển (F12).
+ */
+const FUNCTION_KEYS = new Set<string>(Array.from({ length: 12 }, (_, i) => `F${i + 1}`));
+
+/** Phím điều hướng và phím hệ thống cần chặn hành vi mặc định (cuộn trang, lùi lịch sử, menu). */
 const PREVENT_CODES = new Set<string>([
   'Space',
   'Backspace',
   'ContextMenu',
+  'Tab',
   'ArrowUp',
   'ArrowDown',
   'ArrowLeft',
@@ -54,15 +62,47 @@ const PREVENT_CODES = new Set<string>([
   'PageDown',
   'AltLeft',
   'AltRight',
-  ...Array.from({ length: 12 }, (_, i) => `F${i + 1}`).filter((f) => f !== 'F11'),
 ]);
 
+/** Ô nhập văn bản — nơi phải cho phép gõ bình thường, kể cả ký tự AltGr của tiếng Việt. */
+function isTextField(target: EventTarget | null): boolean {
+  if (target instanceof HTMLInputElement) {
+    return !['button', 'checkbox', 'color', 'file', 'radio', 'range', 'reset', 'submit'].includes(
+      target.type,
+    );
+  }
+  if (target instanceof HTMLTextAreaElement) return true;
+  return target instanceof HTMLElement && target.isContentEditable;
+}
+
+/**
+ * Chặn phím tắt của trình duyệt khi bài kiểm tra đang mở. Việc ghi nhận phím vẫn diễn ra
+ * độc lập, nên phím bị chặn vẫn được tính là đã kiểm tra.
+ */
 function shouldPrevent(e: KeyboardEvent): boolean {
-  if ((e.ctrlKey || e.metaKey) && (e.code === 'KeyR' || e.code === 'KeyW')) return true;
-  if (!PREVENT_CODES.has(e.code)) return false;
-  // Để nút/ô nhập vẫn kích hoạt được bằng Space khi đang được focus.
-  if (e.code === 'Space' && isInteractiveTarget(e.target)) return false;
-  return true;
+  if (FUNCTION_KEYS.has(e.code)) return true;
+
+  if (isTextField(e.target)) {
+    // Trong ô nhập: AltGr trên Windows gửi Ctrl+Alt, nên chỉ chặn Ctrl/⌘ đơn thuần.
+    if (e.metaKey) return true;
+    return e.ctrlKey && !e.altKey;
+  }
+
+  // Ngoài ô nhập: chặn mọi tổ hợp có phím bổ trợ (Ctrl/⌘+F, +S, +P, +D, Ctrl+phím số…).
+  if (e.ctrlKey || e.metaKey || e.altKey) return true;
+
+  // Vẫn để Tab, Space và Enter kích hoạt nút hoặc ô nhập đang được focus.
+  if (
+    (e.code === 'Tab' || e.code === 'Space' || e.code === 'Enter') &&
+    isInteractiveTarget(e.target)
+  ) {
+    return false;
+  }
+
+  // Phím chữ và dấu in được: chặn "tìm nhanh" của Firefox và các phím tắt một phím.
+  if (e.key.length === 1) return true;
+
+  return PREVENT_CODES.has(e.code);
 }
 
 // ---- Tổng số đơn vị (u) của từng chế độ, suy ra từ dữ liệu bố cục ----
@@ -278,7 +318,7 @@ export function mountKeyboard(container: HTMLElement): () => void {
   const hint = el(
     'p',
     'kbm__hint',
-    'Một số phím như Fn, phím hệ thống (Windows/Cmd) hoặc tổ hợp bị hệ điều hành giữ lại có thể không bắt được — không tính là lỗi.',
+    'Khi bài kiểm tra đang mở, phím tắt của trình duyệt (F1–F12, Tab, Ctrl/⌘+S, Ctrl/⌘+P, Ctrl/⌘+F…) đều bị chặn để không tác động tới trình duyệt. Vài tổ hợp do hệ điều hành giữ riêng như Ctrl/⌘+T, Ctrl+Tab, Alt+Tab, phím Windows/⌘ và phím Fn thì trang web không chặn được — không tính là lỗi.',
   );
 
   root.append(bar, mobileNotice, notice, stage, meta, logBox, hint);

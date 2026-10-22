@@ -39,6 +39,18 @@ Khi làm việc với `src/modules/keyboard/`. Kết hợp với skill `apple-br
 ## Phím không bắt được
 Fn, một số phím media/độ sáng, phím Windows/Cmd, Alt+Tab có thể bị hệ điều hành giữ. Đánh dấu "không áp dụng", cho phép bỏ qua, không tính là lỗi.
 
+## Chặn phím tắt của trình duyệt
+Bài kiểm tra chỉ có ích khi phím tắt không kéo theo hành vi của trình duyệt. `shouldPrevent(e)` trong `keyboard.ts` quyết định gọi `e.preventDefault()`, và việc ghi nhận phím vẫn chạy độc lập (phím bị chặn vẫn được tính):
+
+1. `FUNCTION_KEYS`: F1–F12 luôn chặn, kể cả F11 (toàn màn hình) — không dùng `.filter()` bỏ F11.
+2. Ô nhập văn bản (`isTextField`): trả về `false` để gõ bình thường; chỉ chặn `metaKey`, hoặc `ctrlKey && !altKey` (giữ AltGr = Ctrl+Alt cho tiếng Việt).
+3. Ngoài ô nhập: chặn mọi tổ hợp có `ctrlKey || metaKey || altKey` (Ctrl/⌘+F, +S, +P, +D, Ctrl+phím số…).
+4. Ngoại lệ cho `Tab`, `Space`, `Enter` khi focus đang ở phần tử tương tác — nếu không sẽ mất khả năng dùng bàn phím.
+5. `e.key.length === 1`: chặn phím chữ/dấu in được để tắt "tìm nhanh" của Firefox (`/`, `'`).
+6. `PREVENT_CODES`: Space, Backspace, ContextMenu, Tab, các phím mũi tên, Home/End/PageUp/PageDown, Alt trái/phải.
+
+Không chặn được (phải ghi rõ trong giao diện, đừng coi là lỗi): Ctrl/⌘+T, Ctrl/⌘+W, Ctrl/⌘+N, Ctrl+Shift+N/T/Q, Ctrl+Tab, Ctrl+1–9, Ctrl+= / Ctrl+- (zoom), Alt+Tab, phím Windows/⌘, F-Lock.
+
 ## Tính năng bổ sung
 - Nhật ký phím gần nhất (code, key, thời gian).
 - Phát hiện kẹt phím: `keydown` lặp kéo dài (`event.repeat`) mà không có `keyup`.
@@ -48,4 +60,4 @@ Fn, một số phím media/độ sáng, phím Windows/Cmd, Alt+Tab có thể b�
 ## Kiểm tra trước khi xong
 - Nhấn từng phím: đúng phím sáng, không trùng phím trái/phải.
 - Đổi sang bộ gõ tiếng Việt: vẫn đánh dấu đúng (nhờ `code`).
-- Không có phím nào làm trang cuộn, tải lại hay mở menu của trình duyệt.
+- Không có phím nào làm trang cuộn, tải lại, mở menu hay bật toàn màn hình của trình duyệt (F1–F12, F11, Tab, Ctrl/⌘+F/S/P, `/`, `'`).
