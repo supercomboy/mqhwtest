@@ -4,14 +4,16 @@ import './keyboard.css';
 import {
   arrowRows,
   functionRow,
+  macRowBottom,
   mainRows,
   navCluster,
   numpadKeys,
   type KeyDef,
+  type LayoutMode,
 } from './layout';
 import { checkUsLayout, compareTyped, ISO_CODES, TYPING_SAMPLE } from './detect';
 
-type Mode = 'pc' | 'laptop';
+type Mode = LayoutMode;
 
 const LOG_LIMIT = 6;
 const STUCK_REPEAT_THRESHOLD = 60;
@@ -65,12 +67,20 @@ function shouldPrevent(e: KeyboardEvent): boolean {
 
 // ---- Tổng số đơn vị (u) của từng chế độ, suy ra từ dữ liệu bố cục ----
 const widthOf = (k: KeyDef): number => k.width ?? 1;
+/** Bề rộng ở chế độ MacBook: bàn phím Mac hẹp hơn để Backspace/Enter/Shift đúng dáng. */
+const widthMacOf = (k: KeyDef): number => k.widthMac ?? widthOf(k);
 const rowUnits = (row: KeyDef[]): number => row.reduce((sum, k) => sum + widthOf(k), 0);
 const maxRowUnits = (rows: KeyDef[][]): number => Math.max(...rows.map(rowUnits));
+/** Tổng đơn vị của một hàng ở chế độ MacBook — bỏ những phím chỉ có trên bàn phím PC. */
+const macRowUnits = (row: KeyDef[]): number =>
+  row.reduce((sum, k) => (k.mode === 'pc' ? sum : sum + widthMacOf(k)), 0);
 const round = (v: number): number => Number(v.toFixed(3));
 
-/** Khối phím chính luôn rộng 15u. */
+/** Khối phím chính rộng 15u ở PC, 14,5u ở MacBook. */
 const MAIN_UNITS = round(maxRowUnits(mainRows));
+const MAIN_UNITS_MAC = round(
+  Math.max(...mainRows.map(macRowUnits), macRowUnits(macRowBottom)),
+);
 /** Cụm điều hướng 3u (chỉ có ở chế độ PC). */
 const NAV_UNITS = round(maxRowUnits(navCluster));
 /** Cụm mũi tên 3u. */
@@ -82,13 +92,16 @@ const NUMPAD_UNITS = round(
 
 const TOTAL_UNITS: Record<Mode, number> = {
   pc: round(MAIN_UNITS + BLOCK_GAP_UNITS + NAV_UNITS + BLOCK_GAP_UNITS + NUMPAD_UNITS),
-  laptop: round(MAIN_UNITS + BLOCK_GAP_UNITS + ARROW_UNITS),
+  // MacBook: chỉ còn khối phím chính — mũi tên đã nằm ngay trong hàng dưới.
+  mac: round(MAIN_UNITS_MAC),
 };
 
-/** Các phím không xuất hiện ở chế độ Laptop. */
-const LAPTOP_HIDDEN = new Set<string>(
-  [...navCluster.flat(), ...numpadKeys].map((k) => k.code),
-);
+/** Các phím không xuất hiện ở chế độ MacBook. */
+const MAC_HIDDEN = new Set<string>([
+  ...[...navCluster.flat(), ...numpadKeys].map((k) => k.code),
+  'ContextMenu',
+  'ControlRight',
+]);
 
 export function mountKeyboard(container: HTMLElement): () => void {
   // ---- Trạng thái ----
@@ -98,12 +111,24 @@ export function mountKeyboard(container: HTMLElement): () => void {
   const stuck = new Set<string>();
   let maxRollover = 0;
   let isoDetected = false;
-  let mode: Mode = window.innerWidth < 900 ? 'laptop' : 'pc';
+  let mode: Mode = window.innerWidth < 900 ? 'mac' : 'pc';
   let locks = { CapsLock: false, NumLock: false, ScrollLock: false };
   const log: Array<{ code: string; key: string; type: 'down' | 'up'; at: number }> = [];
   const startedAt = performance.now();
 
-  const codeEls = new Map<string, HTMLElement>();
+  /** Một mã phím có thể có nhiều phần tử: mũi tên xuất hiện ở cụm giữa (PC) và ở hàng dưới (MacBook). */
+  const codeEls = new Map<string, HTMLElement[]>();
+  const registerKey = (node: HTMLElement, code: string): void => {
+    const list = codeEls.get(code);
+    if (list) list.push(node);
+    else codeEls.set(code, [node]);
+  };
+  /** Phần tử có bề rộng khác nhau giữa hai chế độ — đổi khi chuyển chế độ. */
+  const widthEls: Array<{ node: HTMLElement; def: KeyDef }> = [];
+  const applyKeyWidth = (node: HTMLElement, k: KeyDef): void => {
+    const units = mode === 'mac' ? widthMacOf(k) : widthOf(k);
+    node.style.gridColumn = `span ${Math.round(units * COLS_PER_UNIT)}`;
+  };
 
   // ---- Khung giao diện ----
   const root = el('div', 'kbm');
@@ -124,9 +149,9 @@ export function mountKeyboard(container: HTMLElement): () => void {
   modes.setAttribute('aria-label', 'Chế độ bố cục');
   const pcBtn = el('button', 'kbm__mode', 'PC');
   pcBtn.type = 'button';
-  const laptopBtn = el('button', 'kbm__mode', 'Laptop');
-  laptopBtn.type = 'button';
-  modes.append(pcBtn, laptopBtn);
+  const macBtn = el('button', 'kbm__mode', 'MacBook');
+  macBtn.type = 'button';
+  modes.append(pcBtn, macBtn);
 
   bar.append(stats, modes);
 
@@ -160,18 +185,48 @@ export function mountKeyboard(container: HTMLElement): () => void {
   setGrid(arrowGrid, ARROW_UNITS);
   setGrid(numpad, NUMPAD_UNITS);
 
-  const makeKeyEl = (k: KeyDef, withShift = true): HTMLElement => {
+  /** Chỉ hiện ở một chế độ: CSS ẩn phần tử của chế độ còn lại. */
+  const applyModeClass = (node: HTMLElement, k: KeyDef): void => {
+    if (k.mode) node.classList.add(k.mode === 'pc' ? 'kb-key--pc-only' : 'kb-key--mac-only');
+  };
+
+  const makeKeyEl = (k: KeyDef, withShift = true, inStack = false): HTMLElement => {
     if (k.spacer) {
       const s = el('div', 'kb-key kb-key--spacer');
-      s.style.gridColumn = `span ${Math.round((k.width ?? 1) * COLS_PER_UNIT)}`;
+      applyModeClass(s, k);
+      if (!inStack) {
+        widthEls.push({ node: s, def: k });
+        applyKeyWidth(s, k);
+      }
       return s;
     }
+    if (k.stack) {
+      // Ô ▲/▼ xếp chồng của MacBook: một ô 1u chứa hai phím nửa chiều cao.
+      const wrap = el('div', 'kb-key-stack');
+      applyModeClass(wrap, k);
+      widthEls.push({ node: wrap, def: k });
+      applyKeyWidth(wrap, k);
+      for (const sub of k.stack) wrap.appendChild(makeKeyEl(sub, false, true));
+      return wrap;
+    }
     const node = el('div', 'kb-key');
+    applyModeClass(node, k);
+    if (k.compactLabel) node.classList.add('kb-key--label-sm');
+    if (!inStack) {
+      widthEls.push({ node, def: k });
+      applyKeyWidth(node, k);
+    }
+    if (k.decor) {
+      // Phím có thật trên máy (fn) nhưng trình duyệt không báo sự kiện — chỉ để nhìn.
+      node.classList.add('kb-key--decor');
+      if (k.hint) node.title = k.hint;
+      node.appendChild(el('span', 'kb-key__label', k.label));
+      return node;
+    }
     node.dataset.code = k.code;
-    node.style.gridColumn = `span ${Math.round((k.width ?? 1) * COLS_PER_UNIT)}`;
     if (withShift && k.shift) node.appendChild(el('span', 'kb-key__shift', k.shift));
     node.appendChild(el('span', 'kb-key__label', k.label));
-    codeEls.set(k.code, node);
+    registerKey(node, k.code);
     return node;
   };
 
@@ -183,12 +238,14 @@ export function mountKeyboard(container: HTMLElement): () => void {
     }`;
     node.style.gridRow = `${k.row} / span ${k.height ?? 1}`;
     node.appendChild(el('span', 'kb-key__label', k.label));
-    codeEls.set(k.code, node);
+    registerKey(node, k.code);
     return node;
   };
 
   for (const k of functionRow) fnRow.appendChild(makeKeyEl(k, false));
   for (const row of mainRows) for (const k of row) mainGrid.appendChild(makeKeyEl(k));
+  // Hàng dưới riêng của MacBook: chỉ hiện khi chọn chế độ MacBook.
+  for (const k of macRowBottom) mainGrid.appendChild(makeKeyEl(k));
   for (const row of navCluster) for (const k of row) navGrid.appendChild(makeKeyEl(k, false));
   for (const row of arrowRows) for (const k of row) arrowGrid.appendChild(makeKeyEl(k, false));
   for (const k of numpadKeys) numpad.appendChild(makeNumpadKeyEl(k));
@@ -228,7 +285,7 @@ export function mountKeyboard(container: HTMLElement): () => void {
   container.appendChild(root);
 
   // ---- Hàm cập nhật ----
-  const isVisible = (code: string): boolean => mode === 'pc' || !LAPTOP_HIDDEN.has(code);
+  const isVisible = (code: string): boolean => mode === 'pc' || !MAC_HIDDEN.has(code);
 
   const visibleTotal = (): number => {
     let n = 0;
@@ -243,10 +300,12 @@ export function mountKeyboard(container: HTMLElement): () => void {
   };
 
   const applyState = (code: string, active: boolean): void => {
-    const node = codeEls.get(code);
-    if (!node) return;
-    node.classList.toggle('is-active', active);
-    node.classList.toggle('is-checked', seen.has(code));
+    const nodes = codeEls.get(code);
+    if (!nodes) return;
+    for (const node of nodes) {
+      node.classList.toggle('is-active', active);
+      node.classList.toggle('is-checked', seen.has(code));
+    }
   };
 
   const refreshStats = (): void => {
@@ -300,14 +359,19 @@ export function mountKeyboard(container: HTMLElement): () => void {
   // ---- Chế độ bố cục ----
   const applyMode = (): void => {
     const isPc = mode === 'pc';
+    const units = isPc ? MAIN_UNITS : MAIN_UNITS_MAC;
     stage.classList.toggle('kbm__stage--pc', isPc);
-    stage.classList.toggle('kbm__stage--laptop', !isPc);
+    stage.classList.toggle('kbm__stage--mac', !isPc);
     kb.style.setProperty('--kb-total', String(TOTAL_UNITS[mode]));
     kb.style.setProperty('--kb-block-gap', String(BLOCK_GAP_UNITS));
+    // Lưới phím chính hẹp lại ở MacBook, nên phải đặt lại số cột và bề rộng từng phím.
+    setGrid(fnRow, units);
+    setGrid(mainGrid, units);
+    for (const { node, def } of widthEls) applyKeyWidth(node, def);
     pcBtn.classList.toggle('is-on', isPc);
     pcBtn.setAttribute('aria-pressed', String(isPc));
-    laptopBtn.classList.toggle('is-on', !isPc);
-    laptopBtn.setAttribute('aria-pressed', String(!isPc));
+    macBtn.classList.toggle('is-on', !isPc);
+    macBtn.setAttribute('aria-pressed', String(!isPc));
     refreshStats();
   };
 
@@ -315,8 +379,8 @@ export function mountKeyboard(container: HTMLElement): () => void {
     mode = 'pc';
     applyMode();
   });
-  laptopBtn.addEventListener('click', () => {
-    mode = 'laptop';
+  macBtn.addEventListener('click', () => {
+    mode = 'mac';
     applyMode();
   });
 
@@ -389,7 +453,9 @@ export function mountKeyboard(container: HTMLElement): () => void {
     repeatCounts.clear();
     log.length = 0;
     maxRollover = 0;
-    for (const [, node] of codeEls) node.classList.remove('is-active', 'is-checked');
+    for (const nodes of codeEls.values()) {
+      for (const node of nodes) node.classList.remove('is-active', 'is-checked');
+    }
     refreshStats();
     refreshRollover();
     refreshLog();

@@ -17,7 +17,7 @@ export const modules: TestModule[] = [
   {
     id: 'keyboard',
     title: 'Bàn phím',
-    description: 'Bố cục US ANSI cho PC và laptop. Mỗi phím nhấn sẽ sáng lên.',
+    description: 'Bố cục US ANSI cho PC và MacBook. Mỗi phím nhấn sẽ sáng lên.',
     mount: mountKeyboard,
   },
   {

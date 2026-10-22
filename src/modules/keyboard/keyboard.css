@@ -185,14 +185,17 @@
 }
 
 .kb {
-  /* --u suy ra từ bề rộng khung chứa: tổng đơn vị do layout.ts cung cấp qua --kb-total.
-     Chặn trên để bàn phím không cao quá (chế độ Laptop có ít khối nên phím sẽ to ra),
-     nhờ đó hộp thoại không phải cuộn dọc trên màn hình rộng. */
+  /* --u suy ra từ bề rộng khung chứa: tổng đơn vị do layout.ts cung cấp qua --kb-total
+     (23 ở PC, 14,5 ở MacBook). Chặn trên để bàn phím không cao quá (chế độ MacBook có
+     ít khối nên phím sẽ to ra), nhờ đó hộp thoại không phải cuộn dọc trên màn hình rộng. */
   --u: min(calc(100cqw / var(--kb-total, 23)), var(--kb-u-max, 52px));
   --kb-gap: calc(var(--u) * 0.07);
   --kb-radius: clamp(4px, calc(var(--u) * 0.16), 10px);
   display: flex;
   align-items: flex-start;
+  /* Căn giữa: bàn phím PC rộng 23u còn MacBook chỉ 14,5u — nhờ vậy MacBook nằm giữa
+     thay vì dồn về bên trái, và hai chế độ vẫn dùng cùng một cỡ phím. */
+  justify-content: center;
   gap: calc(var(--u) * var(--kb-block-gap, 0.5));
   width: 100%;
 }
@@ -223,14 +226,17 @@
   padding-top: var(--u);
 }
 
-/* Chế độ Laptop: không có bàn phím số và cụm điều hướng, mũi tên nằm sát đáy. */
-.kbm__stage--laptop .kb__numpad,
-.kbm__stage--laptop .kb__nav {
+/* Chế độ MacBook: không có bàn phím số, không có cụm điều hướng và không có cột giữa —
+   mũi tên đã nằm ở cuối hàng dưới, đúng như bàn phím MacBook thật. */
+.kbm__stage--mac .kb__numpad,
+.kbm__stage--mac .kb__mid {
   display: none;
 }
 
-.kbm__stage--laptop .kb__mid {
-  justify-content: flex-end;
+/* Phím chỉ thuộc một chế độ (hàng dưới của PC khác hàng dưới của MacBook). */
+.kbm__stage--pc .kb-key--mac-only,
+.kbm__stage--mac .kb-key--pc-only {
+  display: none;
 }
 
 .kb-key {
@@ -260,6 +266,28 @@
   box-shadow: none;
 }
 
+/* Ô ▲/▼ của MacBook: một ô 1u chứa hai phím nửa chiều cao. */
+.kb-key-stack {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  gap: var(--kb-gap);
+  min-width: 0;
+}
+
+.kb-key-stack > .kb-key {
+  font-size: clamp(8px, calc(var(--u) * 0.19), 12px);
+}
+
+/* Phím fn của MacBook: có thật trên máy nhưng trình duyệt không báo sự kiện,
+   nên chỉ vẽ cho đúng hình dáng và không tính vào bài kiểm tra. */
+.kb-key--decor {
+  border-style: dashed;
+  background: transparent;
+  box-shadow: none;
+  opacity: 0.55;
+  cursor: help;
+}
+
 .kb-key.is-checked {
   border-color: var(--key-done-line);
   background: var(--key-done);
@@ -281,6 +309,17 @@
   white-space: nowrap;
 }
 
+/* Nhãn dài như "⌘ command": chữ nhỏ hơn và cho xuống dòng để vừa phím 1,25u,
+   nhờ vậy không bao giờ bị cắt mất chữ. */
+.kb-key--label-sm {
+  font-size: clamp(8px, calc(var(--u) * 0.19), 12px);
+}
+
+.kb-key--label-sm .kb-key__label {
+  white-space: normal;
+  line-height: 1.15;
+}
+
 .kb-key__shift {
   position: absolute;
   top: calc(var(--u) * 0.06);
@@ -294,15 +333,15 @@
 }
 
 /* Ẩn nhãn Shift khi cỡ chữ của nó sẽ nhỏ hơn 8px: u*0,19 < 8px → u < 42,1px.
-   PC: u = w/23 → w < 968px. Laptop: u = w/18,5 → w < 779px. */
+   PC: u = w/23 → w < 968px. MacBook: u = w/14,5 → w < 610px. */
 @container (max-width: 968px) {
   .kbm__stage--pc .kb-key__shift {
     display: none;
   }
 }
 
-@container (max-width: 779px) {
-  .kbm__stage--laptop .kb-key__shift {
+@container (max-width: 610px) {
+  .kbm__stage--mac .kb-key__shift {
     display: none;
   }
 }

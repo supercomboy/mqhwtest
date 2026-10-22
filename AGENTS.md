@@ -26,7 +26,7 @@ Website tĩnh kiểm tra bàn phím (chuẩn US), loa (2 file mp3), camera, micr
 ## Skill có sẵn (trong `.opencode/skills/`)
 
 - `apple-brown-design`: quy tắc giao diện
-- `keyboard-tester`: bàn phím US ANSI, PC và laptop
+- `keyboard-tester`: bàn phím US ANSI, PC và MacBook
 - `speaker-tester`: loa và 2 file mp3
 - `camera-mic-tester`: camera và microphone
 - `display-tester`: màn hình

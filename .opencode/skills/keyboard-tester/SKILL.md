@@ -1,6 +1,6 @@
 ---
 name: keyboard-tester
-description: Xây bài kiểm tra bàn phím chuẩn US ANSI cho PC (đầy đủ) và laptop (không có phím số). Dùng khi tạo hoặc sửa module keyboard, bố cục phím, nhận diện phím, cảnh báo layout không phải US.
+description: Xây bài kiểm tra bàn phím chuẩn US ANSI cho PC (đầy đủ) và MacBook. Dùng khi tạo hoặc sửa module keyboard, bố cục phím, nhận diện phím, cảnh báo layout không phải US.
 ---
 
 # Bài kiểm tra bàn phím (US ANSI)
@@ -21,9 +21,15 @@ Khi làm việc với `src/modules/keyboard/`. Kết hợp với skill `apple-br
 - PrintScreen trên Windows chỉ phát `keyup`: xử lý cả `keydown` và `keyup`.
 
 ## Hai chế độ bố cục
-- PC (khoảng 104 phím): hàng Esc/F1–F12, cụm Insert/Home/PageUp/Delete/End/PageDown, mũi tên, bàn phím số (`Numpad0`–`Numpad9`, `NumpadAdd`, `NumpadSubtract`, `NumpadMultiply`, `NumpadDivide`, `NumpadDecimal`, `NumpadEnter`, `NumLock`).
-- Laptop: bỏ bàn phím số; công tắc chuyển chế độ, tự gợi ý theo kích thước màn hình.
-- Hàng chính US ANSI: `Backquote, Digit1–Digit0, Minus, Equal, Backspace` / `Tab, KeyQ…KeyP, BracketLeft, BracketRight, Backslash` / `CapsLock, KeyA…KeyL, Semicolon, Quote, Enter` / `ShiftLeft, KeyZ…KeyM, Comma, Period, Slash, ShiftRight` / `ControlLeft, MetaLeft, AltLeft, Space, AltRight, MetaRight, ContextMenu, ControlRight`.
+- PC (khoảng 104 phím, 23u): hàng Esc/F1–F12, cụm Insert/Home/PageUp/Delete/End/PageDown, mũi tên, bàn phím số (`Numpad0`–`Numpad9`, `NumpadAdd`, `NumpadSubtract`, `NumpadMultiply`, `NumpadDivide`, `NumpadDecimal`, `NumpadEnter`, `NumLock`).
+- MacBook (14,5u): không có bàn phím số, không có cụm điều hướng và không có cột giữa — mũi tên nằm ngay cuối hàng dưới. Hàng dưới: `fn · control · option · ⌘ command · space · ⌘ command · option · ← · ▲▼ · →`.
+- Khác biệt bề rộng so với PC, khai báo bằng `widthMac` trong `layout.ts`: Backspace 1,5u, Enter 1,75u, Shift trái 2u, Shift phải 2,5u, `\` 1u, khoảng trống đầu hàng F 0,5u. Mọi hàng Mac vẫn phải cộng đúng 14,5u để mép phải thẳng.
+- Phím chỉ có ở một chế độ đánh dấu `mode: 'pc' | 'mac'`; CSS ẩn phần của chế độ còn lại (`.kb-key--pc-only`, `.kb-key--mac-only`), nhờ vậy hai hàng dưới dùng chung một lưới.
+- Phím `fn` là `decor: true`: có thật trên máy nhưng trình duyệt không báo sự kiện, nên chỉ vẽ (nét đứt, mờ) và không tính vào tổng phím.
+- Cụm ▲/▼ dùng `stack: [ArrowUp, ArrowDown]`: một ô 1u chứa hai phím nửa chiều cao.
+- Một `event.code` có thể ứng với nhiều phần tử (mũi tên ở cụm giữa của PC và ở hàng dưới của MacBook), nên sổ đăng ký phím phải là `Map<string, HTMLElement[]>`.
+- Công tắc chuyển chế độ; mặc định chọn MacBook khi cửa sổ hẹp (< 900px).
+- Hàng chính US ANSI: `Backquote, Digit1–Digit0, Minus, Equal, Backspace` / `Tab, KeyQ…KeyP, BracketLeft, BracketRight, Backslash` / `CapsLock, KeyA…KeyL, Semicolon, Quote, Enter` / `ShiftLeft, KeyZ…KeyM, Comma, Period, Slash, ShiftRight` / `ControlLeft, MetaLeft, AltLeft, Space, AltRight, MetaRight, ContextMenu, ControlRight` (hàng cuối là của PC).
 
 ## Kiểm tra "chuẩn US"
 1. Nếu có `navigator.keyboard?.getLayoutMap` (Chrome/Edge): `const map = await navigator.keyboard.getLayoutMap()`; layout US khi `map.get('KeyQ') === 'q'`, `map.get('KeyA') === 'a'`, `map.get('KeyZ') === 'z'`, `map.get('Backquote') === '`'`, `map.get('Backslash') === '\\'`. Sai thì cảnh báo "layout hệ thống không phải US".
