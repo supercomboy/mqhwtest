@@ -1,110 +1,55 @@
-/* Design tokens: kiểu Apple, chữ nâu nhạt. Mọi màu phải lấy từ đây, không viết mã màu trực tiếp trong component. */
+/* Design tokens: kiểu Apple, một tông tối duy nhất (nâu đậm) với chữ kem #FFE2B8.
+   Mọi màu phải lấy từ đây, không viết mã màu trực tiếp trong component.
+
+   Vì sao chỉ còn một bảng màu: chữ kem #FFE2B8 rất sáng — trên nền sáng cũ (#fbfbfd/#ffffff)
+   chỉ đạt ~1.2:1 tương phản, gần như không đọc được. Nên nền được đưa về nâu đậm và dùng chung
+   cho cả chế độ sáng lẫn tối của hệ điều hành; nhờ vậy chữ đạt 12–14:1 ở mọi nơi. */
 :root {
-  --bg: #fbfbfd;
-  --surface: #ffffff;
-  --surface-alt: #f5f5f7;
+  color-scheme: dark;           /* thanh cuộn, ô nhập, audio control… cũng theo tông tối */
 
-  --text: #7a5c45;            /* chữ chính, tương phản ~5.9:1 trên nền trắng (đạt AA) */
-  --text-soft: #a68a73;       /* chữ phụ, chỉ dùng cỡ >= 18px hoặc phần trang trí (~3:1) */
-  --line: rgba(122, 92, 69, 0.14);
+  --bg: #1d1b19;                /* nền trang */
+  --surface: #26231f;           /* mặt thẻ, hộp thoại */
+  --surface-alt: #2e2a26;       /* mặt phụ (dòng kẻ, ô lồng trong thẻ) */
 
-  --accent: #7a5c45;          /* nút chính */
-  --accent-text: #ffffff;
+  --text: #ffe2b8;              /* chữ chính, kem: ~13.8:1 trên --bg, ~12.5:1 trên --surface (AAA) */
+  --text-soft: #bfae96;         /* chữ phụ, chỉ dùng cỡ >= 18px hoặc phần trang trí (~7.6:1) */
+  --line: rgba(255, 226, 184, 0.16);
 
-  --ok: #4c9a6a;
-  --bad: #c25450;
+  --accent: #ffe2b8;            /* màu nhấn: nền nút chính (kem), chữ nâu đậm bên trên */
+  --accent-text: #1d1b19;
 
-  --key-done: #fbf2c8;        /* phím đã bấm: vàng nhạt */
-  --key-done-line: #e4cf83;
+  --ok: #6fbf8d;                /* trạng thái đạt (~7.8:1) */
+  --bad: #e58984;               /* trạng thái lỗi (~6.7:1) */
 
-  --scrim: rgba(0, 0, 0, 0.55);   /* nền mờ cho chữ nổi trên mọi màu (bài kiểm tra màn hình) */
-  --scrim-text: #ffffff;          /* chữ trên nền mờ đó */
+  --key-done: #4a4130;          /* phím đã bấm: nâu vàng trầm */
+  --key-done-line: #7d6b3d;
 
-  --logo-plate: transparent;      /* đế sau logo: nền sáng đã đủ tương phản cho logo đen + vàng */
+  --scrim: rgba(0, 0, 0, 0.6);  /* nền mờ cho chữ nổi trên mọi màu (bài kiểm tra màn hình) */
+  --scrim-text: #ffffff;        /* chữ trên nền mờ đó */
+
+  --logo-plate: rgba(255, 255, 255, 0.92);  /* logo là mực đen nên cần đế sáng, nếu không sẽ chìm vào nền tối */
 
   /* Kính mờ (glass) cho hộp thoại của cả 5 bài kiểm tra */
-  --glass-bg: rgba(255, 255, 255, 0.82);        /* nền kính: đủ đục để chữ nâu đạt AA trên mọi vệt màu phía sau */
-  --glass-bg-inner: rgba(255, 255, 255, 0.72);  /* kính nhạt hơn cho khung con bên trong */
-  --glass-border: rgba(255, 255, 255, 0.55);    /* viền mảnh, sáng hơn nền */
-  --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.6); /* vệt sáng mép trên */
-  --glass-shadow: 0 24px 60px rgba(122, 92, 69, 0.22);       /* bóng ngoài mềm ngả nâu */
+  --glass-bg: rgba(38, 35, 31, 0.68);           /* nền kính: đủ đục để chữ kem đạt AAA trên mọi vệt màu phía sau */
+  --glass-bg-inner: rgba(255, 255, 255, 0.07);  /* kính nhạt hơn cho khung con bên trong */
+  --glass-border: rgba(255, 255, 255, 0.12);    /* viền mảnh, sáng hơn nền */
+  --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.14); /* vệt sáng mép trên */
+  --glass-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);             /* bóng ngoài mềm */
   --glass-blur: 24px;
   --glass-saturate: 180%;
-  --glass-scrim: rgba(60, 45, 35, 0.28);        /* lớp nền mờ phía sau hộp thoại */
+  --glass-scrim: rgba(0, 0, 0, 0.42);           /* lớp nền mờ phía sau hộp thoại */
 
   /* Vệt màu lớn, cố định, trên nền trang chủ — để lớp kính có thứ để làm mờ */
-  --blob-1: rgba(215, 186, 158, 0.5);   /* nâu nhạt */
-  --blob-2: rgba(240, 226, 202, 0.55);  /* be */
-  --blob-3: rgba(244, 196, 174, 0.42);  /* hồng đào */
+  --blob-1: rgba(255, 226, 184, 0.1);   /* quầng kem ấm */
+  --blob-2: rgba(255, 214, 170, 0.07);  /* hổ phách nhạt */
+  --blob-3: rgba(232, 170, 130, 0.09);  /* hồng đào trầm */
 
   --radius-card: 24px;
   --radius-control: 14px;
-  --shadow-card: 0 8px 30px rgba(122, 92, 69, 0.1);
-  --shadow-key: 0 1px 2px rgba(122, 92, 69, 0.08);
+  --shadow-card: 0 8px 30px rgba(0, 0, 0, 0.4);
+  --shadow-key: 0 1px 2px rgba(0, 0, 0, 0.4);
 
   --font: -apple-system, 'SF Pro Display', 'SF Pro Text', 'Inter', system-ui, 'Segoe UI', Roboto, sans-serif;
   --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
   --dur: 400ms;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-    --bg: #1d1b19;
-    --surface: #26231f;
-    --surface-alt: #2e2a26;
-    --text: #d9c3ae;
-    --text-soft: #a89480;
-    --line: rgba(217, 195, 174, 0.16);
-    --accent: #d9c3ae;
-    --accent-text: #1d1b19;
-    --key-done: #4a4130;
-    --key-done-line: #7d6b3d;
-    --scrim: rgba(0, 0, 0, 0.6);
-    --scrim-text: #ffffff;
-    --logo-plate: rgba(255, 255, 255, 0.92);  /* logo là mực đen nên cần đế sáng, nếu không sẽ chìm vào nền tối */
-    --shadow-card: 0 8px 30px rgba(0, 0, 0, 0.4);
-    --shadow-key: 0 1px 2px rgba(0, 0, 0, 0.4);
-
-    --glass-bg: rgba(38, 35, 31, 0.68);
-    --glass-bg-inner: rgba(255, 255, 255, 0.07);
-    --glass-border: rgba(255, 255, 255, 0.12);
-    --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.14);
-    --glass-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
-    --glass-blur: 24px;
-    --glass-saturate: 180%;
-    --glass-scrim: rgba(0, 0, 0, 0.42);
-    --blob-1: rgba(122, 92, 69, 0.3);
-    --blob-2: rgba(96, 76, 60, 0.34);
-    --blob-3: rgba(140, 96, 78, 0.24);
-  }
-}
-
-:root[data-theme='dark'] {
-  --bg: #1d1b19;
-  --surface: #26231f;
-  --surface-alt: #2e2a26;
-  --text: #d9c3ae;
-  --text-soft: #a89480;
-  --line: rgba(217, 195, 174, 0.16);
-  --accent: #d9c3ae;
-  --accent-text: #1d1b19;
-  --key-done: #4a4130;
-  --key-done-line: #7d6b3d;
-  --scrim: rgba(0, 0, 0, 0.6);
-  --scrim-text: #ffffff;
-  --logo-plate: rgba(255, 255, 255, 0.92);  /* logo là mực đen nên cần đế sáng, nếu không sẽ chìm vào nền tối */
-  --shadow-card: 0 8px 30px rgba(0, 0, 0, 0.4);
-  --shadow-key: 0 1px 2px rgba(0, 0, 0, 0.4);
-
-  --glass-bg: rgba(38, 35, 31, 0.68);
-  --glass-bg-inner: rgba(255, 255, 255, 0.07);
-  --glass-border: rgba(255, 255, 255, 0.12);
-  --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.14);
-  --glass-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
-  --glass-blur: 24px;
-  --glass-saturate: 180%;
-  --glass-scrim: rgba(0, 0, 0, 0.42);
-  --blob-1: rgba(122, 92, 69, 0.3);
-  --blob-2: rgba(96, 76, 60, 0.34);
-  --blob-3: rgba(140, 96, 78, 0.24);
 }
