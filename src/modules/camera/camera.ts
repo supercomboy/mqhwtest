@@ -100,8 +100,11 @@ export function mountCamera(container: HTMLElement): () => void {
 
   const resChip = el('span', 'cam__chip', 'Độ phân giải: —');
   const fpsChip = el('span', 'cam__chip', 'FPS: —');
+  /** Độ phân giải lớn nhất camera báo hỗ trợ — chỉ Chrome/Edge có getCapabilities. */
+  const capChip = el('span', 'cam__chip', 'Tối đa: —');
+  capChip.hidden = true;
   const chips = el('div', 'cam__chips');
-  chips.append(resChip, fpsChip);
+  chips.append(resChip, fpsChip, capChip);
 
   const frame = el('div', 'cam__frame');
   frame.append(video, chips);
@@ -208,8 +211,14 @@ export function mountCamera(container: HTMLElement): () => void {
     const wanted: MediaTrackConstraints = deviceId
       ? { deviceId: { exact: deviceId } }
       : { facingMode: 'user' };
+    // "ideal" là ràng buộc mềm: trình duyệt tự chọn khung hình lớn nhất mà camera hỗ trợ
+    // (720p, 1080p, 4K…), nên không bao giờ gây OverconstrainedError trên camera thật.
+    const native: MediaTrackConstraints = {
+      width: { ideal: 3840 },
+      height: { ideal: 2160 },
+    };
     try {
-      return await md.getUserMedia({ audio: false, video: wanted });
+      return await md.getUserMedia({ audio: false, video: { ...wanted, ...native } });
     } catch (err) {
       if (errorName(err) === 'OverconstrainedError') {
         // Ràng buộc không thỏa được: xin lại kiểu tối giản.
@@ -233,6 +242,22 @@ export function mountCamera(container: HTMLElement): () => void {
     deviceCell.textContent = label || 'Camera mặc định';
   };
 
+  /**
+   * Kích thước khung hình thật của phần tử video — chính xác hơn getSettings() ngay lúc mở luồng,
+   * và tự cập nhật khi camera đổi mode (ví dụ đổi camera hoặc đổi độ phân giải).
+   */
+  const syncResolution = (): void => {
+    const width = video.videoWidth;
+    const height = video.videoHeight;
+    if (!width || !height) return;
+    const size = `${width} × ${height} px`;
+    resChip.textContent = `Độ phân giải: ${size}`;
+    resCell.textContent = size;
+  };
+
+  video.addEventListener('loadedmetadata', syncResolution);
+  video.addEventListener('resize', syncResolution);
+
   const attach = (next: MediaStream, resetShot: boolean): void => {
     stopStream();
     stream = next;
@@ -254,6 +279,20 @@ export function mountCamera(container: HTMLElement): () => void {
       fpsChip.textContent =
         typeof settings.frameRate === 'number' ? `FPS: ${Math.round(settings.frameRate)}` : 'FPS: —';
       updateDeviceCell(track.label || '');
+
+      // Độ phân giải tối đa mà phần cứng khai báo (không phải mode đang chạy).
+      const caps = typeof track.getCapabilities === 'function' ? track.getCapabilities() : null;
+      const maxWidth = caps?.width?.max;
+      const maxHeight = caps?.height?.max;
+      if (typeof maxWidth === 'number' && typeof maxHeight === 'number') {
+        capChip.textContent = `Tối đa: ${maxWidth} × ${maxHeight}`;
+        capChip.hidden = false;
+      } else {
+        capChip.textContent = 'Tối đa: —';
+        capChip.hidden = true;
+      }
+
+      syncResolution();
     }
 
     if (resetShot) {
@@ -274,6 +313,8 @@ export function mountCamera(container: HTMLElement): () => void {
     deviceWrap.hidden = true;
     resChip.textContent = 'Độ phân giải: —';
     fpsChip.textContent = 'FPS: —';
+    capChip.textContent = 'Tối đa: —';
+    capChip.hidden = true;
     resCell.textContent = '—';
     deviceCell.textContent = '—';
   };
@@ -409,6 +450,8 @@ export function mountCamera(container: HTMLElement): () => void {
   // ---- Dọn dẹp khi rời bài kiểm tra ----
   return () => {
     window.removeEventListener('pagehide', onPageHide);
+    video.removeEventListener('loadedmetadata', syncResolution);
+    video.removeEventListener('resize', syncResolution);
     stopStream();
     shotImg.removeAttribute('src');
     deviceCleanup?.();

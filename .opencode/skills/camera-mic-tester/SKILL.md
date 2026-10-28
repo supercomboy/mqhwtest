@@ -18,7 +18,9 @@ Khi làm việc với `src/modules/camera/` và `src/modules/microphone/`. Cần
 
 ## Camera
 - `<video autoplay playsinline muted>` (bắt buộc `playsinline` cho iOS).
-- Hiện độ phân giải và số khung hình/giây thực tế từ `track.getSettings()` (`width`, `height`, `frameRate`).
+- Xin luồng ở độ phân giải cao nhất của phần cứng: `{ width: { ideal: 3840 }, height: { ideal: 2160 } }`. `ideal` là ràng buộc mềm nên trình duyệt tự chọn mode lớn nhất camera hỗ trợ (720p, 1080p, 4K…) và không gây `OverconstrainedError`; không dùng `exact` cho kích thước.
+- Hiện độ phân giải thật từ `video.videoWidth`/`video.videoHeight` (nghe `loadedmetadata` + `resize`), vì `track.getSettings()` lúc vừa mở luồng có thể chưa phản ánh đúng mode đang chạy. Số khung hình/giây lấy từ `settings.frameRate`.
+- Độ phân giải tối đa mà phần cứng khai báo: `track.getCapabilities()?.width.max` / `.height.max`; phải feature-detect vì Firefox và Safari cũ không có, khi thiếu thì ẩn chip "Tối đa".
 - Công tắc lật gương (CSS `transform: scaleX(-1)`, không đổi luồng gốc).
 - "Chụp thử": vẽ khung hình vào `<canvas>`, hiện ảnh; nút tải về tùy chọn.
 
