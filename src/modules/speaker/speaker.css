@@ -89,6 +89,18 @@
   font-size: 14px;
   line-height: 1.45;
 }
+/* Đoạn đang phát của file quét dải (trầm/bổng). */
+.spk-track__now {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+  padding: 4px 10px;
+  border-radius: var(--radius-control);
+  background: var(--surface-alt);
+  align-self: flex-start;
+}
 
 .spk-track__controls {
   display: flex;

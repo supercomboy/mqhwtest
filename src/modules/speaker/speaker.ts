@@ -1,4 +1,4 @@
-// Bài kiểm tra loa: phát 3 file mp3, kiểm tra kênh trái/phải và chọn thiết bị phát.
+// Bài kiểm tra loa: phát 1 file quét dải trầm/bổng và 2 bản nhạc mẫu, kiểm tra kênh trái/phải và chọn thiết bị phát.
 // Toàn bộ chạy trong trình duyệt; âm thanh không rời khỏi máy và không gửi đi đâu cả.
 import './speaker.css';
 import { AUDIO_BASE, tracks, type Track } from './tracks';
@@ -101,7 +101,7 @@ export function mountSpeaker(container: HTMLElement): () => void {
   const intro = el(
     'p',
     'spk__intro',
-    'Bấm “Phát” để nghe thử từng bản nhạc. Dùng nút kênh để chuyển âm sang loa trái, loa phải hoặc cả hai. Âm thanh chỉ phát trên máy của bạn.',
+    'Bấm “Phát” để nghe thử: thẻ đầu quét dải trầm rồi đến dải bổng, hai thẻ sau là bản nhạc mẫu. Dùng nút kênh để chuyển âm sang loa trái, loa phải hoặc cả hai. Âm thanh chỉ phát trên máy của bạn.',
   );
 
   // ---- Thiết lập đường âm thanh (tạo trong lần bấm đầu tiên) ----
@@ -142,6 +142,8 @@ export function mountSpeaker(container: HTMLElement): () => void {
     const card = el('article', 'spk-track');
     const title = el('h3', 'spk-track__title', track.title);
     const desc = el('p', 'spk-track__desc', track.description);
+    const segments = track.segments;
+    const nowEl = segments ? el('p', 'spk-track__now', segments[0].label) : null;
 
     const playBtn = el('button', 'btn btn--ghost spk-play', 'Phát');
     playBtn.type = 'button';
@@ -170,12 +172,25 @@ export function mountSpeaker(container: HTMLElement): () => void {
     const volumeLabel = el('label', 'spk-volume');
     volumeLabel.append(el('span', 'spk-volume__label', 'Âm lượng'), volume);
 
-    card.append(title, desc, controls, volumeLabel);
+    card.append(title, desc);
+    if (nowEl) card.append(nowEl);
+    card.append(controls, volumeLabel);
 
     let seeking = false;
 
+    /** Hiện tên đoạn đang phát (chỉ file có khai báo segments). */
+    const updateSegment = (): void => {
+      if (!nowEl || !segments) return;
+      let label = segments[0].label;
+      for (const seg of segments) {
+        if (audio.currentTime + 0.05 >= seg.at) label = seg.label;
+      }
+      if (nowEl.textContent !== label) nowEl.textContent = label;
+    };
+
     const updateTime = (): void => {
       timeEl.textContent = `${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`;
+      updateSegment();
     };
 
     playBtn.addEventListener('click', () => {

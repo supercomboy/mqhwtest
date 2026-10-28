@@ -1,6 +1,6 @@
 # Device Check — hướng dẫn cho agent
 
-Website tĩnh kiểm tra bàn phím (chuẩn US), loa (3 bản nhạc mẫu), camera, microphone, màn hình. Chạy hoàn toàn trong trình duyệt, đặt trên GitHub Pages. Giao diện tiếng Việt, kiểu Apple, chữ nâu nhạt.
+Website tĩnh kiểm tra bàn phím (chuẩn US), loa (1 file quét dải trầm/bổng + 2 bản nhạc mẫu), camera, microphone, màn hình. Chạy hoàn toàn trong trình duyệt, đặt trên GitHub Pages. Giao diện tiếng Việt, kiểu Apple, chữ nâu nhạt.
 
 ## Lệnh
 
@@ -27,7 +27,7 @@ Website tĩnh kiểm tra bàn phím (chuẩn US), loa (3 bản nhạc mẫu), ca
 
 - `apple-brown-design`: quy tắc giao diện
 - `keyboard-tester`: bàn phím US ANSI, PC và MacBook
-- `speaker-tester`: loa và 3 bản nhạc mẫu
+- `speaker-tester`: loa, file quét dải trầm/bổng và 2 bản nhạc mẫu
 - `camera-mic-tester`: camera và microphone
 - `display-tester`: màn hình
 - `github-pages-deploy`: phát hành lên GitHub Pages

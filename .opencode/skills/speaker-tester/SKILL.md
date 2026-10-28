@@ -9,7 +9,8 @@ description: Xây bài kiểm tra loa với các file mp3 có sẵn, cân bằng
 Khi làm việc với `src/modules/speaker/`. Các file mp3 nằm ở `public/audio/` (xem `public/audio/README.md`).
 
 ## Dữ liệu
-- `tracks.ts` khai báo `{ id, title, description, file }`; đường dẫn file dựng bằng `import.meta.env.BASE_URL + 'audio/' + file` (không dùng đường dẫn tuyệt đối `/audio/...`, vì site chạy trong thư mục con của GitHub Pages).
+- `tracks.ts` khai báo `{ id, title, description, file, segments? }`; đường dẫn file dựng bằng `import.meta.env.BASE_URL + 'audio/' + file` (không dùng đường dẫn tuyệt đối `/audio/...`, vì site chạy trong thư mục con của GitHub Pages).
+- Thẻ đầu tiên là file quét dải `speaker-sweep.mp3` (1 kHz → trầm 200→30 Hz → bổng 2 000→16 000 Hz → 40 Hz, 27,5 giây). Khai báo `segments: [{ at, label }]` để thẻ hiện đoạn đang phát; `speaker.ts` tự chọn mốc cuối cùng có `at <= currentTime`. Muốn tạo lại file: xem `public/audio/README.md` (Node + `@breezystack/lamejs`, không cần ffmpeg).
 - Nếu chưa biết nội dung từng file, hỏi người dùng (nhạc mẫu, giọng đọc, âm trái/phải, âm bass) trước khi đặt tên và mô tả.
 
 ## Trình phát

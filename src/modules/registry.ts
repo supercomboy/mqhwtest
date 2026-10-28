@@ -23,7 +23,7 @@ export const modules: TestModule[] = [
   {
     id: 'speaker',
     title: 'Loa',
-    description: 'Phát 3 bản nhạc mẫu và kiểm tra kênh trái, phải.',
+    description: 'Quét dải trầm, bổng và phát 2 bản nhạc mẫu, kiểm tra kênh trái, phải.',
     mount: mountSpeaker,
   },
   {
