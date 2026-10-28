@@ -84,15 +84,15 @@ p {
   border-radius: 10px;
 }
 
-/* File logo.png (trong suốt, 1254×1254) chỉ có nội dung ở x 172..1070, y 357..925.
-   Vùng cắt mở rộng thêm 24px mỗi phía (x 148..1094, y 333..949 = 946×616) để logo có lề thở,
+/* File logo.png (trong suốt, 1024×1024) chỉ có nội dung ở x 152..874, y 212..880.
+   Vùng cắt mở rộng thêm 20px mỗi phía (x 132..894, y 192..900 = 763×709) để logo có lề thở,
    nhờ vậy "đế" sáng ở dark mode không cắt vào dòng chữ nhỏ bên dưới. */
 .nav__logo {
   position: relative;
   flex: none;
   display: block;
   height: var(--logo-h);
-  width: calc(var(--logo-h) * 946 / 616);
+  width: calc(var(--logo-h) * 763 / 709);
   overflow: hidden;
   background: var(--logo-plate);
   border-radius: 10px;
@@ -100,10 +100,10 @@ p {
 
 .nav__logo-img {
   position: absolute;
-  left: calc(var(--logo-h) * -148 / 616);
-  top: calc(var(--logo-h) * -333 / 616);
-  width: calc(var(--logo-h) * 1254 / 616);
-  height: calc(var(--logo-h) * 1254 / 616);
+  left: calc(var(--logo-h) * -132 / 709);
+  top: calc(var(--logo-h) * -192 / 709);
+  width: calc(var(--logo-h) * 1024 / 709);
+  height: calc(var(--logo-h) * 1024 / 709);
   max-width: none;
 }
 
