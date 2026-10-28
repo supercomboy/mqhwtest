@@ -1,16 +1,16 @@
 ---
 name: speaker-tester
-description: Xây bài kiểm tra loa với 2 file mp3 có sẵn, cân bằng trái/phải, chọn thiết bị phát. Dùng khi tạo hoặc sửa module speaker, trình phát âm thanh, âm thử kênh trái phải.
+description: Xây bài kiểm tra loa với các file mp3 có sẵn, cân bằng trái/phải, chọn thiết bị phát. Dùng khi tạo hoặc sửa module speaker, trình phát âm thanh, âm thử kênh trái phải.
 ---
 
 # Bài kiểm tra loa
 
 ## Khi nào dùng
-Khi làm việc với `src/modules/speaker/`. Hai file mp3 nằm ở `public/audio/` (xem `public/audio/README.md`).
+Khi làm việc với `src/modules/speaker/`. Các file mp3 nằm ở `public/audio/` (xem `public/audio/README.md`).
 
 ## Dữ liệu
 - `tracks.ts` khai báo `{ id, title, description, file }`; đường dẫn file dựng bằng `import.meta.env.BASE_URL + 'audio/' + file` (không dùng đường dẫn tuyệt đối `/audio/...`, vì site chạy trong thư mục con của GitHub Pages).
-- Nếu chưa biết nội dung 2 file, hỏi người dùng (nhạc mẫu, giọng đọc, âm trái/phải, âm bass) trước khi đặt tên và mô tả.
+- Nếu chưa biết nội dung từng file, hỏi người dùng (nhạc mẫu, giọng đọc, âm trái/phải, âm bass) trước khi đặt tên và mô tả.
 
 ## Trình phát
 - Mỗi file một thẻ: Phát/Tạm dừng, thanh tiến trình, thanh âm lượng. Dùng `HTMLAudioElement` với `preload="none"`.

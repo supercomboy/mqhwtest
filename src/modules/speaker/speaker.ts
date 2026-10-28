@@ -1,4 +1,4 @@
-// Bài kiểm tra loa: phát 2 file mp3, kiểm tra kênh trái/phải và chọn thiết bị phát.
+// Bài kiểm tra loa: phát 3 file mp3, kiểm tra kênh trái/phải và chọn thiết bị phát.
 // Toàn bộ chạy trong trình duyệt; âm thanh không rời khỏi máy và không gửi đi đâu cả.
 import './speaker.css';
 import { AUDIO_BASE, tracks, type Track } from './tracks';

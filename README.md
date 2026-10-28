@@ -16,7 +16,7 @@ npm run dev
 2. Settings → Pages → Source: **GitHub Actions**.
 3. Mỗi lần đẩy lên `main`, workflow `.github/workflows/deploy.yml` tự build và đăng.
 
-## Đặt 2 file mp3
+## Đặt file mp3
 
 Chép vào `public/audio/` (xem `public/audio/README.md`).
 
@@ -35,6 +35,6 @@ src/main.ts              khởi động, dựng thẻ và menu
 src/modules/registry.ts  danh sách bài kiểm tra
 src/modules/<id>/        mã từng bài kiểm tra (làm dần)
 src/styles/tokens.css    màu, font, bo góc (chữ nâu nhạt)
-public/audio/            2 file mp3
+public/audio/            file mp3 kiểm tra loa
 .opencode/skills/        skill cho OpenCode
 ```

@@ -1,9 +1,13 @@
-# Thư mục chứa 2 file mp3 kiểm tra loa
+# Thư mục chứa file mp3 kiểm tra loa
 
-Đặt 2 file mp3 của bạn vào đây, ví dụ:
+Ba bản nhạc đang dùng, khai báo trong `src/modules/speaker/tracks.ts`:
 
-- `test-1.mp3`
-- `test-2.mp3`
+| File | Thẻ hiển thị | Dung lượng |
+| --- | --- | --- |
+| `speaker-test.mp3` | Bản nhạc 1 | ~0,4 MB |
+| `speaker-test-1.mp3` | Bản nhạc 2 | ~1,6 MB |
+| `speaker-test-2.mp3` | Bản nhạc 3 | ~3,8 MB |
 
-Sau đó khai báo tên hiển thị trong `src/modules/speaker/tracks.ts` (khi triển khai module loa).
-Nên giữ mỗi file dưới 2 MB để trang tải nhanh trên GitHub Pages (giới hạn của repo: mỗi file dưới 100 MB, khuyến nghị nhỏ hơn nhiều).
+Thêm bản mới: chép file vào đây rồi khai báo thêm một mục `{ id, title, description, file }` trong `tracks.ts`. Tên file chỉ dùng chữ thường, số và dấu gạch nối.
+
+Nên giữ mỗi file dưới 2 MB để trang tải nhanh trên GitHub Pages (file thứ ba hiện ~3,8 MB: vẫn dưới giới hạn 100 MB của GitHub, nhưng làm repo nặng hơn). Trình phát dùng `preload="none"` nên chỉ tải khi người dùng bấm “Phát”.
