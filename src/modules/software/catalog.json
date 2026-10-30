@@ -194,6 +194,15 @@
       "recommended": true
     },
     {
+      "id": "evkey",
+      "name": "EVKey",
+      "publisher": "lamquangminh",
+      "description": "Bộ gõ tiếng Việt miễn phí, hỗ trợ nhiều kiểu gõ và bảng mã.",
+      "category": "utility",
+      "wingetId": "lamquangminh.EVKey",
+      "homepage": "https://evkeyvn.com/"
+    },
+    {
       "id": "google-drive",
       "name": "Google Drive",
       "publisher": "Google",
