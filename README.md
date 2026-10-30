@@ -1,6 +1,8 @@
 # Device Check
 
-Website kiểm tra bàn phím (chuẩn US), loa, camera, microphone và màn hình, chạy hoàn toàn trên trình duyệt. Phát hành bằng GitHub Pages.
+Website kiểm tra bàn phím (chuẩn US), loa, camera, microphone, màn hình và CPU & GPU (kiểm tra tải + benchmark), chạy hoàn toàn trên trình duyệt. Phát hành bằng GitHub Pages.
+
+Bản live: https://supercomboy.github.io/mqhwtest/ · **Báo cáo đầy đủ toàn bộ thay đổi đã thực hiện: [BAO_CAO.md](./BAO_CAO.md)**
 
 ## Chạy cục bộ
 
@@ -37,4 +39,5 @@ src/modules/<id>/        mã từng bài kiểm tra (làm dần)
 src/styles/tokens.css    màu, font, bo góc (chữ nâu nhạt)
 public/audio/            file mp3 kiểm tra loa
 .opencode/skills/        skill cho OpenCode
+BAO_CAO.md               báo cáo toàn bộ thay đổi & kết quả kiểm thử
 ```

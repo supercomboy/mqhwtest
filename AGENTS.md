@@ -35,6 +35,10 @@ Website tĩnh kiểm tra bàn phím (chuẩn US), loa (1 file quét dải trầm
 
 Khi làm một bài kiểm tra, nạp skill tương ứng trước khi viết mã.
 
+## Báo cáo
+
+Mọi thay đổi và kết quả kiểm thử phải được cập nhật vào `BAO_CAO.md` ở thư mục gốc (bảng lịch sử commit, tính năng mới, công thức, kết quả test).
+
 ## Hoàn thành khi
 
 `npm run build` không lỗi, bài kiểm tra chạy được trên Chrome và ít nhất một trình duyệt khác, và đã xử lý trường hợp bị từ chối quyền hoặc không có thiết bị.
