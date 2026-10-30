@@ -8,6 +8,7 @@
     { "id": "utility", "label": "Tiện ích & lưu trữ" },
     { "id": "developer", "label": "Lập trình & runtime" },
     { "id": "security", "label": "Bảo mật & giải trí" },
+    { "id": "testing", "label": "Công cụ kiểm thử" },
     { "id": "remote", "label": "Hỗ trợ từ xa" }
   ],
   "apps": [
@@ -301,6 +302,34 @@
       "category": "remote",
       "wingetId": "DucFabulous.UltraViewer",
       "homepage": "https://www.ultraviewer.net/"
+    },
+    {
+      "id": "furmark",
+      "name": "FurMark",
+      "publisher": "Geeks3D",
+      "description": "Kiểm tra tải GPU bằng phép vẽ nặng, theo dõi nhiệt độ và độ ổn định.",
+      "category": "testing",
+      "wingetId": "Geeks3D.FurMark",
+      "homepage": "https://www.geeks3d.com/furmark/"
+    },
+    {
+      "id": "heaven",
+      "name": "Unigine Heaven Benchmark",
+      "publisher": "Unigine",
+      "description": "Benchmark GPU bằng cảnh 3D, đo FPS và điểm hiệu năng.",
+      "category": "testing",
+      "wingetId": "Unigine.HeavenBenchmark",
+      "homepage": "https://benchmark.unigine.com/heaven"
+    },
+    {
+      "id": "cinebench-r23",
+      "name": "Cinebench R23",
+      "publisher": "MAXON",
+      "description": "Đo hiệu năng CPU đơn luồng và đa luồng bằng phép dựng hình.",
+      "category": "testing",
+      "wingetId": "Maxon.CinebenchR23",
+      "homepage": "https://www.maxon.net/en/cinebench",
+      "note": "Bản winget có thể cần quyền admin; nếu không chạy, tải trực tiếp từ maxon.net."
     }
   ]
 }
