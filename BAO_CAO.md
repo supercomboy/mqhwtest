@@ -16,9 +16,9 @@
 |---|---|
 | Số bài kiểm tra | **6** — Bàn phím, Loa, Camera, Microphone, Màn hình, CPU & GPU |
 | Công cụ | **Cài phần mềm** — chọn app, tải script PowerShell dùng winget |
-| Danh mục phần mềm | **35 app / 9 nhóm**, 10 app “Cơ bản” trong `src/modules/software/catalog.json` |
+| Danh mục phần mềm | **35 app / 9 nhóm**, 6 app “Cơ bản” trong `src/modules/software/catalog.json` |
 | Tổng mã nguồn `src/` | 34 file, ~215 KB (chưa tính `node_modules`) |
-| Số commit | 15 (từ 2026-10-19 đến 2026-10-30) |
+| Số commit | 16 (từ 2026-10-19 đến 2026-10-30) |
 | Skill OpenCode | 8 skill trong `.opencode/skills/` |
 | Tài nguyên tĩnh | `public/logo.png`, 3 file MP3 trong `public/audio/` |
 
@@ -96,9 +96,10 @@ Xem mục 5.
 | 10 | `fc1c8ac` | 28-10 | Camera dùng **độ phân giải gốc của phần cứng** + chip "Tối đa" | `camera.ts` (+47) |
 | 11 | `a6cc287` | 30-10 | **Thêm module CPU & GPU** (kiểm tra tải + benchmark) | `src/modules/bench/*` (+937) |
 | 12 | `5496899` | 30-10 | Thêm báo cáo dự án tổng hợp | `BAO_CAO.md` |
-| 13 | (commit này) | 30-10 | **Thêm công cụ Cài phần mềm**: catalog 31 app + sinh script winget + validator | `src/modules/software/*`, `scripts/check-catalog.mjs` |
-| 14 | (commit này) | 30-10 | Thêm **FurMark, Heaven Benchmark, Cinebench R23** vào nhóm “Công cụ kiểm thử” | `src/modules/software/catalog.json` |
-| 15 | (commit này) | 30-10 | Thêm **EVKey** vào nhóm “Tiện ích & lưu trữ” | `src/modules/software/catalog.json` |
+| 13 | `e97236d` | 30-10 | **Thêm công cụ Cài phần mềm**: catalog 31 app + sinh script winget + validator | `src/modules/software/*`, `scripts/check-catalog.mjs` |
+| 14 | `52039dc` | 30-10 | Thêm **FurMark, Heaven Benchmark, Cinebench R23** vào nhóm “Công cụ kiểm thử” | `src/modules/software/catalog.json` |
+| 15 | `0f3a882` | 30-10 | Thêm **EVKey** vào nhóm “Tiện ích & lưu trữ” | `src/modules/software/catalog.json` |
+| 16 | (commit này) | 30-10 | Đổi **bộ cơ bản** còn 6 app: Chrome, 7-Zip, Zalo, Adobe Reader, EVKey, UltraViewer | `src/modules/software/catalog.json` |
 
 ## 5. Module CPU & GPU — chi tiết
 
@@ -182,7 +183,7 @@ Luồng: `catalog.json` → `catalog.ts` (kiểm tra) → `software.ts` (UI, `Se
 
 `src/modules/software/catalog.json` là nguồn dữ liệu duy nhất: 9 nhóm, 35 app. Mỗi app có `id`, `name`, `publisher`, `description`, `category`, `wingetId`, `homepage`, `recommended?`, `note?`. App chưa có trên winget có thể bỏ `wingetId` — UI chỉ hiện link tải thủ công.
 
-- **Bộ cơ bản (10 app):** Chrome, Cốc Cốc, Zalo, UniKey, 7-Zip, VLC, K-Lite, LibreOffice, Adobe Reader, Everything.
+- **Bộ cơ bản (6 app):** Chrome, 7-Zip, Zalo, Adobe Acrobat Reader, EVKey, UltraViewer. Các app từng nằm trong bộ cũ (Cốc Cốc, UniKey, VLC, K-Lite, LibreOffice, Everything) vẫn có trong danh mục nhưng không được chọn sẵn.
 - **Công cụ kiểm thử:** FurMark (tải GPU), Unigine Heaven Benchmark (benchmark GPU), Cinebench R23 (CPU đơn/đa luồng) — không nằm trong bộ cơ bản.
 - **Ghi chú bản quyền:** WinRAR bản dùng thử 40 ngày; TeamViewer miễn phí cho cá nhân; K-Lite dùng bản Standard.
 - **Kiểm tra tự động:** `scripts/check-catalog.mjs` (Node thuần) chạy trong `npm run build`, bắt id trùng, nhóm sai, homepage không https, `wingetId` sai định dạng/trùng, thiếu app “Cơ bản”.
@@ -206,9 +207,10 @@ Luồng: `catalog.json` → `catalog.ts` (kiểm tra) → `software.ts` (UI, `Se
 
 | Hạng mục | Kết quả |
 |---|---|
-| `node scripts/check-catalog.mjs` | PASS — `OK: 35 apps / 9 categories (10 recommended)` |
+| `node scripts/check-catalog.mjs` | PASS — `OK: 35 apps / 9 categories (6 recommended)` |
 | `tsc --noEmit` | PASS |
-| `vite build` | PASS — 34 module; `index.html` 2,03 kB; CSS 32,37 kB (gzip 5,87); JS 85,44 kB (gzip 29,84); `gpu-worker` 2,84 kB; `cpu-worker` 0,73 kB |
+| `vite build` | PASS — 34 module; `index.html` 2,03 kB; CSS 32,37 kB (gzip 5,87); JS 85,38 kB (gzip 29,84); `gpu-worker` 2,84 kB; `cpu-worker` 0,73 kB |
+| Bộ cơ bản sau khi sửa | Dữ liệu xác nhận đúng 6 app: `chrome`, `7zip`, `zalo`, `adobe-reader`, `evkey`, `ultraviewer` |
 | Script `.ps1` | `PARSE_OK` bằng `[scriptblock]::Create`; BOM `EF BB BF`; tên có `'` được escape đúng |
 | Chrome 156 headless (CDP) | 7 thẻ/7 menu; modal 31 app/8 nhóm (trước khi thêm 3 tool); preset 10; tìm “zalo” còn 1; tải `.ps1` BOM chỉ chứa app đã chọn; copy hiện fallback khi clipboard bị chặn; đóng modal dọn `.sw`; 0 lỗi console |
 | Edge 156 headless (CDP) | Lặp lại toàn bộ kiểm thử; viewport 360×640 không tràn ngang; ảnh chụp modal hiển thị đúng |
@@ -235,8 +237,8 @@ Luồng: `catalog.json` → `catalog.ts` (kiểm tra) → `software.ts` (UI, `Se
 | Đường dự phòng main-thread (`?mainthread=1`) | GPU bench chạy xong (22 phép tính/µs, thấp hơn vì tính cả khoảng rảnh rAF) · storm dừng được |
 | Stress CPU & GPU | start → "đang chạy" → "Dừng" OK trên cả Chrome lẫn Firefox |
 | `npm run build` | PASS — 28 module; JS 67,36 kB, CSS 28,57 kB, `gpu-worker` 2,84 kB, `cpu-worker` 0,73 kB |
-| `npm run check:catalog` (công cụ phần mềm) | PASS — `OK: 35 apps / 9 categories (10 recommended)` |
-| `vite build` sau khi thêm công cụ phần mềm | PASS — 34 module; CSS 32,37 kB (gzip 5,87); JS 85,44 kB (gzip 29,84) |
+| `npm run check:catalog` (công cụ phần mềm) | PASS — `OK: 35 apps / 9 categories (6 recommended)` |
+| `vite build` sau khi thêm công cụ phần mềm | PASS — 34 module; CSS 32,37 kB (gzip 5,87); JS 85,38 kB (gzip 29,84) |
 | Script `.ps1` sinh thử | `PARSE_OK`; BOM `EF BB BF`; escape `Bob''s Tool` đúng |
 | `wingetId` (35 app) | Đã tra cứu qua winstall/wingetly/winget.ragerworks; chưa chạy `winget show` vì sandbox chặn `winget.exe` |
 

@@ -38,8 +38,7 @@
       "description": "Trình duyệt tiếng Việt, hỗ trợ gõ dấu và tìm kiếm nhanh.",
       "category": "browser",
       "wingetId": "CocCoc.CocCoc",
-      "homepage": "https://coccoc.com/",
-      "recommended": true
+      "homepage": "https://coccoc.com/"
     },
     {
       "id": "zalo",
@@ -85,8 +84,7 @@
       "description": "Bộ văn phòng miễn phí: Writer, Calc, Impress.",
       "category": "office",
       "wingetId": "LibreOffice.LibreOffice",
-      "homepage": "https://www.libreoffice.org/",
-      "recommended": true
+      "homepage": "https://www.libreoffice.org/"
     },
     {
       "id": "adobe-reader",
@@ -114,8 +112,7 @@
       "description": "Trình phát video và âm thanh đa định dạng.",
       "category": "media",
       "wingetId": "VideoLAN.VLC",
-      "homepage": "https://www.videolan.org/vlc/",
-      "recommended": true
+      "homepage": "https://www.videolan.org/vlc/"
     },
     {
       "id": "spotify",
@@ -142,8 +139,7 @@
       "description": "Bộ codec kèm Media Player Classic để phát hầu hết định dạng video.",
       "category": "media",
       "wingetId": "CodecGuide.K-LiteCodecPack.Standard",
-      "homepage": "https://www.codecguide.com/",
-      "recommended": true
+      "homepage": "https://www.codecguide.com/"
     },
     {
       "id": "7zip",
@@ -162,8 +158,7 @@
       "description": "Tìm file tức thì theo tên trên ổ đĩa.",
       "category": "utility",
       "wingetId": "voidtools.Everything",
-      "homepage": "https://www.voidtools.com/",
-      "recommended": true
+      "homepage": "https://www.voidtools.com/"
     },
     {
       "id": "powertoys",
@@ -190,8 +185,7 @@
       "description": "Bộ gõ tiếng Việt quen thuộc.",
       "category": "utility",
       "wingetId": "UniKey.UniKey",
-      "homepage": "https://www.unikey.org/",
-      "recommended": true
+      "homepage": "https://www.unikey.org/"
     },
     {
       "id": "evkey",
@@ -200,7 +194,8 @@
       "description": "Bộ gõ tiếng Việt miễn phí, hỗ trợ nhiều kiểu gõ và bảng mã.",
       "category": "utility",
       "wingetId": "lamquangminh.EVKey",
-      "homepage": "https://evkeyvn.com/"
+      "homepage": "https://evkeyvn.com/",
+      "recommended": true
     },
     {
       "id": "google-drive",
@@ -310,7 +305,8 @@
       "description": "Hỗ trợ máy tính từ xa, phổ biến tại Việt Nam.",
       "category": "remote",
       "wingetId": "DucFabulous.UltraViewer",
-      "homepage": "https://www.ultraviewer.net/"
+      "homepage": "https://www.ultraviewer.net/",
+      "recommended": true
     },
     {
       "id": "furmark",
