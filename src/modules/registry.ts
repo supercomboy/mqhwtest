@@ -1,15 +1,18 @@
-// Danh sách bài kiểm tra. Thêm bài mới = thêm một mục ở đây + một thư mục trong src/modules/<id>/.
+// Danh sách bài kiểm tra và công cụ. Thêm mục mới = thêm một entry ở đây + một thư mục trong src/modules/<id>/.
 import { mountBench } from './bench';
 import { mountCamera } from './camera';
 import { mountDisplay } from './display';
 import { mountKeyboard } from './keyboard';
 import { mountMicrophone } from './microphone';
+import { mountSoftware } from './software';
 import { mountSpeaker } from './speaker';
 
 export interface TestModule {
-  id: 'keyboard' | 'speaker' | 'camera' | 'microphone' | 'display' | 'bench';
+  id: 'keyboard' | 'speaker' | 'camera' | 'microphone' | 'display' | 'bench' | 'software';
   title: string;
   description: string;
+  /** Nhãn nút mở; mặc định là "Mở bài kiểm tra". */
+  actionLabel?: string;
   /** Dựng bài kiểm tra vào `container`, trả về hàm dọn dẹp (gỡ listener, giải phóng tài nguyên). */
   mount?: (container: HTMLElement) => () => void;
 }
@@ -50,5 +53,12 @@ export const modules: TestModule[] = [
     title: 'CPU & GPU',
     description: 'Đo hiệu năng CPU, GPU bằng thuật toán song song: kiểm tra tải và benchmark.',
     mount: mountBench,
+  },
+  {
+    id: 'software',
+    title: 'Phần mềm',
+    description: 'Chọn phần mềm cần cài và tải một script PowerShell cài hàng loạt bằng winget.',
+    actionLabel: 'Mở công cụ',
+    mount: mountSoftware,
   },
 ];

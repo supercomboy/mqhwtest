@@ -15,9 +15,11 @@
 | Hạng mục | Nội dung |
 |---|---|
 | Số bài kiểm tra | **6** — Bàn phím, Loa, Camera, Microphone, Màn hình, CPU & GPU |
-| Tổng mã nguồn `src/` | 30 file, ~150 KB (chưa tính `node_modules`) |
-| Số commit | 11 (từ 2026-10-19 đến 2026-10-30) |
-| Skill OpenCode | 7 skill trong `.opencode/skills/` |
+| Công cụ | **Cài phần mềm** — chọn app, tải script PowerShell dùng winget |
+| Danh mục phần mềm | **31 app / 8 nhóm**, 10 app “Cơ bản” trong `src/modules/software/catalog.json` |
+| Tổng mã nguồn `src/` | 34 file, ~215 KB (chưa tính `node_modules`) |
+| Số commit | 13 (từ 2026-10-19 đến 2026-10-30) |
+| Skill OpenCode | 8 skill trong `.opencode/skills/` |
 | Tài nguyên tĩnh | `public/logo.png`, 3 file MP3 trong `public/audio/` |
 
 ## 2. Kiến trúc
@@ -27,8 +29,11 @@ index.html                 điểm vào, khối logo + menu thẻ
 src/main.ts                khởi động app, dựng menu và gọi mount() theo thẻ được chọn
 src/modules/registry.ts    danh sách bài kiểm tra (id, title, description, mount)
 src/modules/<id>/          mã từng bài kiểm tra (module độc lập, tự dọn dẹp khi rời)
+src/modules/bench/         mã bài CPU & GPU
+src/modules/software/      catalog phần mềm + sinh script winget
 src/styles/tokens.css      màu, font, bo góc, bóng, easing (nguồn duy nhất của màu)
 src/styles/main.css        layout chung, class .btn / .btn--ghost / .grid
+scripts/check-catalog.mjs  kiểm tra toàn vẹn catalog phần mềm
 public/                    logo, file âm thanh (đường dẫn tương đối qua import.meta.env.BASE_URL)
 .opencode/skills/          hướng dẫn agent cho từng bài kiểm tra
 .github/workflows/deploy.yml  tự build + deploy GitHub Pages khi push lên main
@@ -40,6 +45,7 @@ Nguyên tắc kiến trúc áp dụng cho **mọi** module:
 2. `mount(container)` trả về hàm dọn dẹp: gỡ listener, dừng timer, `worker.terminate()`, `track.stop()`, `root.remove()`.
 3. Màu/bo góc/bóng chỉ lấy từ `tokens.css` — không viết mã màu trực tiếp trong component.
 4. API không được hỗ trợ phải phát hiện tính năng và có phương án thay thế, không để trang lỗi.
+5. Danh mục phần mềm là dữ liệu tĩnh (`catalog.json`); script cài đặt chỉ chứa lệnh sinh từ catalog, không tải mã từ xa và phải xem trước được.
 
 ## 3. Các bài kiểm tra
 
@@ -69,6 +75,11 @@ Nguyên tắc kiến trúc áp dụng cho **mọi** module:
 ### 3.6 CPU & GPU (`bench`) — kiểm tra tải + benchmark *(mới)*
 Xem mục 5.
 
+### 3.7 Phần mềm (`software`) — chọn app, tải script cài hàng loạt *(mới)*
+- 31 app / 8 nhóm: Trình duyệt, Liên lạc, Văn phòng & PDF, Media & đồ họa, Tiện ích & lưu trữ, Lập trình & runtime, Bảo mật & giải trí, Hỗ trợ từ xa.
+- Tick chọn app → tải `device-check-apps.ps1` (UTF-8 BOM), chạy `winget install` cho từng app; có nút “Chọn bộ cơ bản”, tìm kiếm không dấu, xem trước script và sao chép lệnh.
+- Trang không tự cài, không gửi lựa chọn; mỗi app có link trang chủ để tải thủ công.
+
 ## 4. Lịch sử thay đổi (theo commit)
 
 | # | Commit | Ngày | Nội dung | File chính |
@@ -84,6 +95,8 @@ Xem mục 5.
 | 9 | `483fb2b` | 28-10 | Thay bản nhạc 1 bằng **file quét dải trầm/bổng** có nhãn đoạn | `speaker-sweep.mp3` |
 | 10 | `fc1c8ac` | 28-10 | Camera dùng **độ phân giải gốc của phần cứng** + chip "Tối đa" | `camera.ts` (+47) |
 | 11 | `a6cc287` | 30-10 | **Thêm module CPU & GPU** (kiểm tra tải + benchmark) | `src/modules/bench/*` (+937) |
+| 12 | `5496899` | 30-10 | Thêm báo cáo dự án tổng hợp | `BAO_CAO.md` |
+| 13 | (commit này) | 30-10 | **Thêm công cụ Cài phần mềm**: catalog 31 app + sinh script winget + validator | `src/modules/software/*`, `scripts/check-catalog.mjs` |
 
 ## 5. Module CPU & GPU — chi tiết
 
@@ -155,7 +168,58 @@ Hiển thị: `Math.floor(score).toLocaleString('vi-VN') + ' phép tính/µs'`.
 | `?quick` | GPU 200×200 / 64 vòng / 8 khung; CPU 2e6 vòng — chỉ dùng cho kiểm thử tự động, **không phải điểm số thật** |
 | `?mainthread=1` | Ép chạy GPU trên tab chính để kiểm tra đường dự phòng |
 
-## 6. Kết quả kiểm thử (thực hiện **trước khi** push)
+## 6. Công cụ cài phần mềm (`software`)
+
+### 6.1 Cơ chế
+
+Site tĩnh không thể tạo file `.exe` như Ninite, nên công cụ tạo **một script PowerShell** dùng `winget` — tương đương “chọn app → tải một file → chạy”. Trang **không tự cài** và **không gửi lựa chọn** đi đâu.
+
+Luồng: `catalog.json` → `catalog.ts` (kiểm tra) → `software.ts` (UI, `Set<id>`) → `install-script.ts` (sinh `.ps1` / one-liner) → Blob tải về hoặc clipboard.
+
+### 6.2 Catalog
+
+`src/modules/software/catalog.json` là nguồn dữ liệu duy nhất: 8 nhóm, 31 app. Mỗi app có `id`, `name`, `publisher`, `description`, `category`, `wingetId`, `homepage`, `recommended?`, `note?`. App chưa có trên winget có thể bỏ `wingetId` — UI chỉ hiện link tải thủ công.
+
+- **Bộ cơ bản (10 app):** Chrome, Cốc Cốc, Zalo, UniKey, 7-Zip, VLC, K-Lite, LibreOffice, Adobe Reader, Everything.
+- **Ghi chú bản quyền:** WinRAR bản dùng thử 40 ngày; TeamViewer miễn phí cho cá nhân; K-Lite dùng bản Standard.
+- **Kiểm tra tự động:** `scripts/check-catalog.mjs` (Node thuần) chạy trong `npm run build`, bắt id trùng, nhóm sai, homepage không https, `wingetId` sai định dạng/trùng, thiếu app “Cơ bản”.
+
+### 6.3 Script sinh ra
+
+- Tên file `device-check-apps.ps1`, UTF-8 **có BOM**, xuống dòng CRLF.
+- Header ghi ngày tạo, URL trang, lệnh chạy gợi ý; kiểm tra `Get-Command winget` trước khi cài.
+- Mỗi app: `winget install --id <id> --exact --silent --accept-package-agreements --accept-source-agreements`; mã lỗi chỉ `Write-Warning` và **tiếp tục**, cuối script tổng kết `$ok`/`$fail` rồi `Read-Host`.
+- Chỉ chứa ID từ catalog tĩnh; tên app escape nháy đơn (`'` → `''`); không tải mã từ xa.
+- Nút “Sao chép lệnh” sinh one-liner nối bằng `; `.
+
+### 6.4 Giao diện
+
+- Modal dùng chung: giới thiệu, cảnh báo Windows/winget, ô tìm kiếm (bỏ dấu tiếng Việt), “Chọn bộ cơ bản”, “Bỏ chọn tất cả”, dòng đếm `aria-live`.
+- Danh sách cuộn nội bộ (`max-height: min(52dvh, 560px)`) để thanh hành động luôn hiển thị; thẻ app có checkbox, nhà phát hành, mô tả, ghi chú và link “Trang chủ”.
+- Nút “Tải script (.ps1)”, “Sao chép lệnh” disabled khi chưa chọn; `<details>` xem trước script; ghi chú UAC/SmartScreen/quyền bản quyền.
+- Chỉ dùng token màu; 1 cột dưới 640px; copy có fallback `execCommand`.
+
+### 6.5 Kết quả kiểm thử
+
+| Hạng mục | Kết quả |
+|---|---|
+| `node scripts/check-catalog.mjs` | PASS — `OK: 31 apps / 8 categories (10 recommended)` |
+| `tsc --noEmit` | PASS |
+| `vite build` | PASS — 34 module; `index.html` 2,03 kB; CSS 32,37 kB (gzip 5,87); JS 84,31 kB (gzip 29,48); `gpu-worker` 2,84 kB; `cpu-worker` 0,73 kB |
+| Script `.ps1` | `PARSE_OK` bằng `[scriptblock]::Create`; BOM `EF BB BF`; tên có `'` được escape đúng |
+| Chrome 156 headless (CDP) | 7 thẻ/7 menu; modal 31 app/8 nhóm; preset 10; tìm “zalo” còn 1; tải `.ps1` BOM chỉ chứa app đã chọn; copy hiện fallback khi clipboard bị chặn; đóng modal dọn `.sw`; 0 lỗi console |
+| Edge 156 headless (CDP) | Lặp lại toàn bộ kiểm thử; viewport 360×640 không tràn ngang; ảnh chụp modal hiển thị đúng |
+| Firefox headless | Chưa hoàn tất: tiến trình treo trong môi trường sandbox, chưa có kết quả |
+| `wingetId` | Đã đối chiếu các ID mới (Cốc Cốc, K-Lite, WinRAR, TeamViewer, UltraViewer, Zalo, UniKey) qua winstall/wingetly; toàn bộ ID cần xác minh lại bằng `winget show` trên máy có winget (sandbox chặn `winget.exe`) |
+
+### 6.6 Giới hạn
+
+- Chỉ Windows 10 1809+/11 có winget (App Installer); không hỗ trợ macOS/Linux.
+- Không tạo `.exe`, không tự chạy; người dùng phải tự chạy file và có thể gặp UAC/SmartScreen.
+- WinRAR/TeamViewer có điều kiện bản quyền; K-Lite chỉ chọn bản Standard.
+- Danh mục là dữ liệu tĩnh, không tự cập nhật phiên bản; chạy lại script để cập nhật app.
+
+## 7. Kết quả kiểm thử (thực hiện **trước khi** push)
 
 | Hạng mục | Kết quả |
 |---|---|
@@ -166,15 +230,20 @@ Hiển thị: `Math.floor(score).toLocaleString('vi-VN') + ' phép tính/µs'`.
 | Đường dự phòng main-thread (`?mainthread=1`) | GPU bench chạy xong (22 phép tính/µs, thấp hơn vì tính cả khoảng rảnh rAF) · storm dừng được |
 | Stress CPU & GPU | start → "đang chạy" → "Dừng" OK trên cả Chrome lẫn Firefox |
 | `npm run build` | PASS — 28 module; JS 67,36 kB, CSS 28,57 kB, `gpu-worker` 2,84 kB, `cpu-worker` 0,73 kB |
+| `npm run check:catalog` (công cụ phần mềm) | PASS — `OK: 31 apps / 8 categories (10 recommended)` |
+| `vite build` sau khi thêm công cụ phần mềm | PASS — 34 module; CSS 32,37 kB (gzip 5,87); JS 84,31 kB (gzip 29,48) |
+| Script `.ps1` sinh thử | `PARSE_OK`; BOM `EF BB BF`; escape `Bob''s Tool` đúng |
+| `wingetId` (31 app) | Đã tra cứu qua winstall/wingetly/winget.ragerworks; chưa chạy `winget show` vì sandbox chặn `winget.exe` |
 
 Công cụ kiểm thử: Chrome headless qua CDP (`Input.dispatchMouseEvent` thật, `Runtime.evaluate` đọc trạng thái) và Firefox qua WebDriver BiDi (Firefox chỉ có `ws://127.0.0.1:<port>/session`, không có route `/json/version`).
 
-## 7. Quy trình build & phát hành
+## 8. Quy trình build & phát hành
 
 ```bash
 npm install        # cài thư viện
 npm run dev        # chạy thử (localhost là secure context → camera/mic hoạt động)
-npm run build      # kiểm tra kiểu + build ra dist/  (bắt buộc trước khi báo xong)
+npm run check:catalog # kiểm tra catalog phần mềm
+npm run build      # kiểm tra kiểu + catalog + build ra dist/  (bắt buộc trước khi báo xong)
 npm run preview    # xem bản build
 ```
 
@@ -182,7 +251,7 @@ npm run preview    # xem bản build
 - Run đã thành công: **41004260845** — *Deploy to GitHub Pages* (commit `a6cc287`).
 - Kiểm tra bản live: bundle chứa `uLoop / 5466587 / 5e7 / mainthread`, hai worker chunk trả HTTP 200 tại `/mqhwtest/assets/…`, chạy CDP quick trên URL thật → CPU 90 · GPU 37 (SwiftShader headless) · stress start/stop OK · không lỗi.
 
-## 8. Quy tắc bắt buộc (rút gọn từ `AGENTS.md`)
+## 9. Quy tắc bắt buộc (rút gọn từ `AGENTS.md`)
 
 1. Không backend, không API ngoài, không analytics, không cookie theo dõi; ảnh camera và âm thanh micro không bao giờ rời khỏi máy.
 2. Chỉ TypeScript + CSS thuần; thêm thư viện phải có lý do rõ ràng, ưu tiên API trình duyệt.
@@ -194,9 +263,10 @@ npm run preview    # xem bản build
 8. Giao diện tiếng Việt; tên biến/hàm/commit tiếng Anh.
 9. Luôn `track.stop()` mọi MediaStream khi rời bài kiểm tra hoặc đóng trang.
 10. API không hỗ trợ phải phát hiện và có phương án thay thế.
-11. Hoàn thành khi `npm run build` không lỗi, chạy được trên Chrome và ít nhất một trình duyệt khác, và đã xử lý trường hợp bị từ chối quyền / không có thiết bị.
+11. Hoàn thành khi `npm run build` không lỗi, bài kiểm tra/công cụ chạy được trên Chrome và ít nhất một trình duyệt khác, và đã xử lý trường hợp bị từ chối quyền / không có thiết bị.
+12. Danh mục phần mềm chỉ dùng app miễn phí/freemium với `wingetId` đã xác minh; script xem trước được, chỉ chứa lệnh tĩnh, không tải mã từ xa.
 
-## 9. Skill OpenCode (`.opencode/skills/`)
+## 10. Skill OpenCode (`.opencode/skills/`)
 
 | Skill | Phạm vi |
 |---|---|
@@ -206,9 +276,10 @@ npm run preview    # xem bản build
 | `camera-mic-tester` | Camera và microphone |
 | `display-tester` | Màn hình toàn màn hình: màu thuần, điểm chết, dải xám, chuyển động |
 | `bench-tester` | CPU & GPU: kiểm tra tải + benchmark, công thức điểm, knob kiểm thử |
+| `software-installer` | Danh mục phần mềm, script winget, quy tắc an toàn và kiểm thử |
 | `github-pages-deploy` | Phát hành lên GitHub Pages |
 
-## 10. Giới hạn đã biết
+## 11. Giới hạn đã biết
 
 - **Tải benchmark là synthetic**: chỉ là một dải toán song song, không đại diện cho ứng dụng thật.
 - **Điểm phụ thuộc trình duyệt**: Chrome/Edge/Firefox cho khác điểm trên cùng một phần cứng.
@@ -216,11 +287,14 @@ npm run preview    # xem bản build
 - **Dừng stress GPU** có thể phải đóng cửa sổ trình duyệt nếu không hỗ trợ OffscreenCanvas (đã có đường dự phòng chạy trên tab chính).
 - **Điểm CPU không so sánh được** với bảng tham khảu của mprep (số vòng lặp khác).
 - **Không đọc được nhiệt độ / điện áp / công suất** phần cứng trong trình duyệt (khác với phần mềm native như HWMonitor/FurMark).
+- **Công cụ phần mềm chỉ chạy trên Windows** có winget; không tạo được `.exe` như Ninite, người dùng phải tự chạy file `.ps1` và có thể gặp UAC/SmartScreen.
+- **Danh mục là dữ liệu tĩnh**: không tự cập nhật phiên bản; WinRAR là bản dùng thử, TeamViewer miễn phí cho cá nhân.
 
-## 11. Ghi công & tham khảo
+## 12. Ghi công & tham khảo
 
 - Module CPU & GPU lấy cảm hứng về **kỹ thuật** từ trang **https://mprep.info/gpu/** (Stress My GPU) — trang dùng thư viện **gpu.js v2.11.3** (bản sửa, đổi tên `GPU` → `GPUX`) để biên dịch kernel JS thành fragment shader WebGL, kèm 5 worker nhỏ. Toàn bộ shader, worker và công thức trong dự án này **được viết lại từ đầu**, không nhúng hay sao chép mã của họ, và **không** gọi bảng điểm `.tsv` của mprep (vi phạm quy tắc "không gọi API ngoài").
 - Mã nguồn gpu.js: https://github.com/gpujs/gpu.js (MIT).
+- Công cụ Cài phần mềm lấy cảm hứng UX từ **https://ninite.com/** (chọn app → tải một file) và tham khảo cách tổ chức catalog của **https://winstall.app/**; mã nguồn trong dự án này được viết độc lập, không sao chép.
 
 ---
 
@@ -233,8 +307,11 @@ src/modules/camera/       camera.ts · camera.css
 src/modules/microphone/   microphone.ts · microphone.css
 src/modules/display/      display.ts · display.css
 src/modules/bench/        bench.ts · gpu-gl.ts · gpu-worker.ts · cpu-worker.ts · bench.css
+src/modules/software/     catalog.json · catalog.ts · install-script.ts · software.ts · software.css · index.ts
+scripts/                  check-catalog.mjs
 public/audio/             speaker-sweep.mp3 · speaker-test-1.mp3 · speaker-test-2.mp3
 public/                   logo.png
+.opencode/skills/         ... + software-installer/SKILL.md
 ```
 
 > Ghi chú: thư mục `.opencode/opencode-loop/` là artefact cục bộ của phiên làm việc, **không** được commit.

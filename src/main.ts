@@ -10,7 +10,7 @@ for (const m of modules) {
     const card = document.createElement('article');
     card.className = 'card reveal';
     card.id = m.id;
-    card.innerHTML = `<h2>${m.title}</h2><p>${m.description}</p><button class="btn btn--ghost" type="button" data-module="${m.id}">Mở bài kiểm tra</button>`;
+    card.innerHTML = `<h2>${m.title}</h2><p>${m.description}</p><button class="btn btn--ghost" type="button" data-module="${m.id}">${m.actionLabel ?? 'Mở bài kiểm tra'}</button>`;
     grid.appendChild(card);
   }
   if (navLinks) {

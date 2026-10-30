@@ -1,0 +1,306 @@
+{
+  "version": 1,
+  "categories": [
+    { "id": "browser", "label": "Trình duyệt" },
+    { "id": "communication", "label": "Liên lạc" },
+    { "id": "office", "label": "Văn phòng & PDF" },
+    { "id": "media", "label": "Media & đồ họa" },
+    { "id": "utility", "label": "Tiện ích & lưu trữ" },
+    { "id": "developer", "label": "Lập trình & runtime" },
+    { "id": "security", "label": "Bảo mật & giải trí" },
+    { "id": "remote", "label": "Hỗ trợ từ xa" }
+  ],
+  "apps": [
+    {
+      "id": "chrome",
+      "name": "Google Chrome",
+      "publisher": "Google",
+      "description": "Trình duyệt phổ biến, đồng bộ tài khoản Google.",
+      "category": "browser",
+      "wingetId": "Google.Chrome",
+      "homepage": "https://www.google.com/chrome/",
+      "recommended": true
+    },
+    {
+      "id": "firefox",
+      "name": "Mozilla Firefox",
+      "publisher": "Mozilla",
+      "description": "Trình duyệt mã nguồn mở, tập trung vào quyền riêng tư.",
+      "category": "browser",
+      "wingetId": "Mozilla.Firefox",
+      "homepage": "https://www.mozilla.org/firefox/"
+    },
+    {
+      "id": "coccoc",
+      "name": "Cốc Cốc",
+      "publisher": "Cốc Cốc",
+      "description": "Trình duyệt tiếng Việt, hỗ trợ gõ dấu và tìm kiếm nhanh.",
+      "category": "browser",
+      "wingetId": "CocCoc.CocCoc",
+      "homepage": "https://coccoc.com/",
+      "recommended": true
+    },
+    {
+      "id": "zalo",
+      "name": "Zalo",
+      "publisher": "VNG",
+      "description": "Nhắn tin, gọi điện miễn phí phổ biến tại Việt Nam.",
+      "category": "communication",
+      "wingetId": "VNGCorp.Zalo",
+      "homepage": "https://zalo.me/",
+      "recommended": true
+    },
+    {
+      "id": "zoom",
+      "name": "Zoom Workplace",
+      "publisher": "Zoom",
+      "description": "Họp và học trực tuyến.",
+      "category": "communication",
+      "wingetId": "Zoom.Zoom",
+      "homepage": "https://zoom.us/"
+    },
+    {
+      "id": "discord",
+      "name": "Discord",
+      "publisher": "Discord",
+      "description": "Trò chuyện thoại và văn bản cho cộng đồng, nhóm và game.",
+      "category": "communication",
+      "wingetId": "Discord.Discord",
+      "homepage": "https://discord.com/"
+    },
+    {
+      "id": "telegram",
+      "name": "Telegram Desktop",
+      "publisher": "Telegram",
+      "description": "Nhắn tin nhanh, đồng bộ trên nhiều thiết bị.",
+      "category": "communication",
+      "wingetId": "Telegram.TelegramDesktop",
+      "homepage": "https://telegram.org/"
+    },
+    {
+      "id": "libreoffice",
+      "name": "LibreOffice",
+      "publisher": "The Document Foundation",
+      "description": "Bộ văn phòng miễn phí: Writer, Calc, Impress.",
+      "category": "office",
+      "wingetId": "LibreOffice.LibreOffice",
+      "homepage": "https://www.libreoffice.org/",
+      "recommended": true
+    },
+    {
+      "id": "adobe-reader",
+      "name": "Adobe Acrobat Reader",
+      "publisher": "Adobe",
+      "description": "Đọc, in và chú thích file PDF.",
+      "category": "office",
+      "wingetId": "Adobe.Acrobat.Reader.64-bit",
+      "homepage": "https://get.adobe.com/reader/",
+      "recommended": true
+    },
+    {
+      "id": "sumatrapdf",
+      "name": "SumatraPDF",
+      "publisher": "Krzysztof Kowalczyk",
+      "description": "Trình đọc PDF siêu nhẹ, mở nhanh.",
+      "category": "office",
+      "wingetId": "SumatraPDF.SumatraPDF",
+      "homepage": "https://www.sumatrapdfreader.org/"
+    },
+    {
+      "id": "vlc",
+      "name": "VLC media player",
+      "publisher": "VideoLAN",
+      "description": "Trình phát video và âm thanh đa định dạng.",
+      "category": "media",
+      "wingetId": "VideoLAN.VLC",
+      "homepage": "https://www.videolan.org/vlc/",
+      "recommended": true
+    },
+    {
+      "id": "spotify",
+      "name": "Spotify",
+      "publisher": "Spotify",
+      "description": "Nghe nhạc và podcast trực tuyến.",
+      "category": "media",
+      "wingetId": "Spotify.Spotify",
+      "homepage": "https://www.spotify.com/"
+    },
+    {
+      "id": "gimp",
+      "name": "GIMP",
+      "publisher": "GIMP Team",
+      "description": "Chỉnh sửa ảnh mã nguồn mở.",
+      "category": "media",
+      "wingetId": "GIMP.GIMP",
+      "homepage": "https://www.gimp.org/"
+    },
+    {
+      "id": "k-lite",
+      "name": "K-Lite Codec Pack Standard",
+      "publisher": "Codec Guide",
+      "description": "Bộ codec kèm Media Player Classic để phát hầu hết định dạng video.",
+      "category": "media",
+      "wingetId": "CodecGuide.K-LiteCodecPack.Standard",
+      "homepage": "https://www.codecguide.com/",
+      "recommended": true
+    },
+    {
+      "id": "7zip",
+      "name": "7-Zip",
+      "publisher": "Igor Pavlov",
+      "description": "Nén và giải nén miễn phí, hỗ trợ nhiều định dạng.",
+      "category": "utility",
+      "wingetId": "7zip.7zip",
+      "homepage": "https://www.7-zip.org/",
+      "recommended": true
+    },
+    {
+      "id": "everything",
+      "name": "Everything",
+      "publisher": "voidtools",
+      "description": "Tìm file tức thì theo tên trên ổ đĩa.",
+      "category": "utility",
+      "wingetId": "voidtools.Everything",
+      "homepage": "https://www.voidtools.com/",
+      "recommended": true
+    },
+    {
+      "id": "powertoys",
+      "name": "Microsoft PowerToys",
+      "publisher": "Microsoft",
+      "description": "Bộ tiện ích nâng cao cho Windows.",
+      "category": "utility",
+      "wingetId": "Microsoft.PowerToys",
+      "homepage": "https://learn.microsoft.com/windows/powertoys/"
+    },
+    {
+      "id": "rufus",
+      "name": "Rufus",
+      "publisher": "Rufus",
+      "description": "Tạo USB khởi động để cài Windows hoặc Linux.",
+      "category": "utility",
+      "wingetId": "Rufus.Rufus",
+      "homepage": "https://rufus.ie/"
+    },
+    {
+      "id": "unikey",
+      "name": "UniKey",
+      "publisher": "UniKey",
+      "description": "Bộ gõ tiếng Việt quen thuộc.",
+      "category": "utility",
+      "wingetId": "UniKey.UniKey",
+      "homepage": "https://www.unikey.org/",
+      "recommended": true
+    },
+    {
+      "id": "google-drive",
+      "name": "Google Drive",
+      "publisher": "Google",
+      "description": "Đồng bộ và sao lưu file lên Google Drive.",
+      "category": "utility",
+      "wingetId": "Google.Drive",
+      "homepage": "https://www.google.com/drive/"
+    },
+    {
+      "id": "winrar",
+      "name": "WinRAR",
+      "publisher": "win.rar GmbH",
+      "description": "Nén và giải nén quen thuộc, hỗ trợ RAR.",
+      "category": "utility",
+      "wingetId": "RARLab.WinRAR",
+      "homepage": "https://www.win-rar.com/",
+      "note": "Bản dùng thử 40 ngày — cần mua bản quyền để dùng tiếp."
+    },
+    {
+      "id": "vscode",
+      "name": "Visual Studio Code",
+      "publisher": "Microsoft",
+      "description": "Trình soạn thảo mã miễn phí, nhiều tiện ích mở rộng.",
+      "category": "developer",
+      "wingetId": "Microsoft.VisualStudioCode",
+      "homepage": "https://code.visualstudio.com/"
+    },
+    {
+      "id": "git",
+      "name": "Git",
+      "publisher": "Git",
+      "description": "Hệ thống quản lý phiên bản phân tán.",
+      "category": "developer",
+      "wingetId": "Git.Git",
+      "homepage": "https://git-scm.com/"
+    },
+    {
+      "id": "nodejs",
+      "name": "Node.js LTS",
+      "publisher": "OpenJS Foundation",
+      "description": "Môi trường chạy JavaScript phía máy chủ.",
+      "category": "developer",
+      "wingetId": "OpenJS.NodeJS.LTS",
+      "homepage": "https://nodejs.org/"
+    },
+    {
+      "id": "python",
+      "name": "Python 3.13",
+      "publisher": "Python Software Foundation",
+      "description": "Ngôn ngữ lập trình phổ biến cho học tập và tự động hoá.",
+      "category": "developer",
+      "wingetId": "Python.Python.3.13",
+      "homepage": "https://www.python.org/"
+    },
+    {
+      "id": "dotnet8",
+      "name": ".NET Desktop Runtime 8",
+      "publisher": "Microsoft",
+      "description": "Runtime cần cho ứng dụng .NET 8 trên Windows.",
+      "category": "developer",
+      "wingetId": "Microsoft.DotNet.DesktopRuntime.8",
+      "homepage": "https://dotnet.microsoft.com/download/dotnet/8.0"
+    },
+    {
+      "id": "vcredist",
+      "name": "Visual C++ Redistributable 2015+ (x64)",
+      "publisher": "Microsoft",
+      "description": "Thư viện runtime C++ dùng chung cho nhiều ứng dụng.",
+      "category": "developer",
+      "wingetId": "Microsoft.VCRedist.2015+.x64",
+      "homepage": "https://learn.microsoft.com/cpp/windows/latest-supported-vc-redist"
+    },
+    {
+      "id": "keepassxc",
+      "name": "KeePassXC",
+      "publisher": "KeePassXC Team",
+      "description": "Quản lý mật khẩu mã nguồn mở, lưu cục bộ.",
+      "category": "security",
+      "wingetId": "KeePassXCTeam.KeePassXC",
+      "homepage": "https://keepassxc.org/"
+    },
+    {
+      "id": "steam",
+      "name": "Steam",
+      "publisher": "Valve",
+      "description": "Cửa hàng và trình chạy game PC.",
+      "category": "security",
+      "wingetId": "Valve.Steam",
+      "homepage": "https://store.steampowered.com/"
+    },
+    {
+      "id": "teamviewer",
+      "name": "TeamViewer",
+      "publisher": "TeamViewer",
+      "description": "Điều khiển máy tính từ xa.",
+      "category": "remote",
+      "wingetId": "TeamViewer.TeamViewer",
+      "homepage": "https://www.teamviewer.com/",
+      "note": "Miễn phí cho mục đích cá nhân; dùng thương mại cần bản quyền."
+    },
+    {
+      "id": "ultraviewer",
+      "name": "UltraViewer",
+      "publisher": "DucFabulous",
+      "description": "Hỗ trợ máy tính từ xa, phổ biến tại Việt Nam.",
+      "category": "remote",
+      "wingetId": "DucFabulous.UltraViewer",
+      "homepage": "https://www.ultraviewer.net/"
+    }
+  ]
+}

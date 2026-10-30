@@ -3,11 +3,12 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Website kiểm tra bàn phím, loa, camera, microphone, màn hình chạy hoàn toàn trên trình duyệt",
+  "description": "Website kiểm tra thiết bị và cài phần mềm hàng loạt, chạy hoàn toàn trên trình duyệt",
   "scripts": {
     "dev": "vite",
     "typecheck": "tsc --noEmit",
-    "build": "tsc --noEmit && vite build",
+    "check:catalog": "node scripts/check-catalog.mjs",
+    "build": "tsc --noEmit && node scripts/check-catalog.mjs && vite build",
     "preview": "vite preview"
   },
   "devDependencies": {
