@@ -1,0 +1,121 @@
+/* Giao diện bài kiểm tra CPU & GPU. Mọi màu/bo góc lấy từ src/styles/tokens.css. */
+.bench {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.bench__intro {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.bench__notice {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--glass-bg-inner);
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.bench__notice:empty {
+  display: none;
+}
+
+.bench__section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--glass-bg-inner);
+}
+
+.bench__title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.bench__desc {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.bench__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.bench__actions .btn {
+  min-height: 44px;
+}
+
+.bench__status {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.bench__bar {
+  height: 10px;
+  overflow: hidden;
+  border-radius: 980px;
+  background: var(--surface-alt);
+}
+
+.bench__bar-fill {
+  width: 0;
+  height: 100%;
+  border-radius: 980px;
+  background: var(--accent);
+  transition: width var(--dur) var(--ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bench__bar-fill {
+    transition: none;
+  }
+}
+
+.bench__results {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bench__row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 16px;
+  padding: 10px 14px;
+  border-radius: var(--radius-control);
+  background: var(--surface-alt);
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+.bench__row-label {
+  color: var(--text-soft);
+}
+
+.bench__row-value {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.bench__hint {
+  margin: 0;
+  color: var(--text-soft);
+  font-size: 18px;
+  line-height: 1.5;
+}

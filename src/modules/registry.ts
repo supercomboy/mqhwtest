@@ -1,4 +1,5 @@
 // Danh sách bài kiểm tra. Thêm bài mới = thêm một mục ở đây + một thư mục trong src/modules/<id>/.
+import { mountBench } from './bench';
 import { mountCamera } from './camera';
 import { mountDisplay } from './display';
 import { mountKeyboard } from './keyboard';
@@ -6,7 +7,7 @@ import { mountMicrophone } from './microphone';
 import { mountSpeaker } from './speaker';
 
 export interface TestModule {
-  id: 'keyboard' | 'speaker' | 'camera' | 'microphone' | 'display';
+  id: 'keyboard' | 'speaker' | 'camera' | 'microphone' | 'display' | 'bench';
   title: string;
   description: string;
   /** Dựng bài kiểm tra vào `container`, trả về hàm dọn dẹp (gỡ listener, giải phóng tài nguyên). */
@@ -43,5 +44,11 @@ export const modules: TestModule[] = [
     title: 'Màn hình',
     description: 'Điểm chết, loang sáng, dải xám và độ giật hình.',
     mount: mountDisplay,
+  },
+  {
+    id: 'bench',
+    title: 'CPU & GPU',
+    description: 'Đo hiệu năng CPU, GPU bằng thuật toán song song: kiểm tra tải và benchmark.',
+    mount: mountBench,
   },
 ];
