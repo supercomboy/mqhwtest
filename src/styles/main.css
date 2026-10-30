@@ -84,26 +84,23 @@ p {
   border-radius: 10px;
 }
 
-/* File logo.png (trong suốt, 1024×1024) chỉ có nội dung ở x 152..874, y 212..880.
-   Vùng cắt mở rộng thêm 20px mỗi phía (x 132..894, y 192..900 = 763×709) để logo có lề thở,
-   nhờ vậy "đế" sáng ở dark mode không cắt vào dòng chữ nhỏ bên dưới. */
+/* public/logo.png đã được cắt sát nội dung từ logo1.png: 805×216, nền trong suốt,
+   chừa 20px lề mỗi phía. Nhờ vậy CSS chỉ cần đặt đúng tỷ lệ, không phải cắt bằng offset. */
 .nav__logo {
   position: relative;
   flex: none;
   display: block;
   height: var(--logo-h);
-  width: calc(var(--logo-h) * 763 / 709);
+  width: calc(var(--logo-h) * 805 / 216);
   overflow: hidden;
   background: var(--logo-plate);
   border-radius: 10px;
 }
 
 .nav__logo-img {
-  position: absolute;
-  left: calc(var(--logo-h) * -132 / 709);
-  top: calc(var(--logo-h) * -192 / 709);
-  width: calc(var(--logo-h) * 1024 / 709);
-  height: calc(var(--logo-h) * 1024 / 709);
+  display: block;
+  width: 100%;
+  height: 100%;
   max-width: none;
 }
 
@@ -126,10 +123,18 @@ p {
   }
 }
 
+@media (max-width: 480px) {
+  /* Logo ngang rộng hơn logo cũ; ẩn chữ để menu còn chỗ cuộn trên máy hẹp. */
+  .nav__brand-text {
+    display: none;
+  }
+}
+
 .nav__links {
   display: flex;
   gap: 20px;
   overflow-x: auto;
+  min-width: 0;
   font-size: 14px;
 }
 
