@@ -383,5 +383,6 @@ Mỗi trang test 700–1.000 từ tiếng Việt, không template trống, có H
 - Bing Webmaster Tools import từ GSC: ✅ đã hoàn thành.
 - Google Business Profile Conic: không làm (theo yêu cầu).
 - Link "Sửa máy tính Conic" trên 5 trang (index + 4 landing) đã chuyển sang điều hướng cùng tab (bỏ `target="_blank"` + `rel="noopener noreferrer"`), href `https://coniccomputer.com/` (commit `211adbc`). Footer "Conic" giữ nguyên `target="_blank"`.
+- Nút "Mở bài kiểm tra" trên 4 thẻ trang chủ đã căn đều thẳng hàng: `.card p { flex: 1; }` đẩy phần mô tả giãn giữa, nút đậu đáy card (commit mục UI). Không thay đổi màu/font, chỉ dùng các biến từ tokens.css.
 - Không analytics/cookie, không quảng cáo trả phí, không doorway page, không schema giả.
 - Khuyến nghị: tên miền riêng thay `*.onrender.com` (chỉ sửa `SITE_URL`).
