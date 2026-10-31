@@ -1,7 +1,7 @@
 # Báo cáo dự án Device Check
 
 > Website kiểm tra thiết bị & hiệu năng, chạy hoàn toàn trong trình duyệt, phát hành bằng GitHub Pages.
-> Báo cáo này ghi lại **toàn bộ thay đổi và công việc đã thực hiện** cho dự án (cập nhật lần cuối: 2026-10-30).
+> Báo cáo này ghi lại **toàn bộ thay đổi và công việc đã thực hiện** cho dự án (cập nhật lần cuối: 2026-10-31).
 
 - **Repo:** `github.com/supercomboy/mqhwtest` (nhánh `main`)
 - **Bản live:** https://supercomboy.github.io/mqhwtest/
@@ -18,15 +18,15 @@
 | Công cụ | **Cài phần mềm** — chọn app, tải script PowerShell dùng winget |
 | Danh mục phần mềm | **35 app / 9 nhóm**, 6 app “Cơ bản” trong `src/modules/software/catalog.json` |
 | Tổng mã nguồn `src/` | 34 file, ~215 KB (chưa tính `node_modules`) |
-| Số commit | 17 (từ 2026-10-19 đến 2026-10-30) |
+| Số commit | 18 (từ 2026-10-19 đến 2026-10-31) |
 | Skill OpenCode | 8 skill trong `.opencode/skills/` |
 | Tài nguyên tĩnh | `public/logo.png` (805×216, 19 567 B), 3 file MP3 trong `public/audio/` |
 
 ## 2. Kiến trúc
 
 ```
-index.html                 điểm vào, khối logo + menu thẻ
-src/main.ts                khởi động app, dựng menu và gọi mount() theo thẻ được chọn
+index.html                 điểm vào, khối logo + liên kết ngoài
+src/main.ts                khởi động app, dựng thẻ bài kiểm tra và mở modal
 src/modules/registry.ts    danh sách bài kiểm tra (id, title, description, mount)
 src/modules/<id>/          mã từng bài kiểm tra (module độc lập, tự dọn dẹp khi rời)
 src/modules/bench/         mã bài CPU & GPU
@@ -100,7 +100,8 @@ Xem mục 5.
 | 14 | `52039dc` | 30-10 | Thêm **FurMark, Heaven Benchmark, Cinebench R23** vào nhóm “Công cụ kiểm thử” | `src/modules/software/catalog.json` |
 | 15 | `0f3a882` | 30-10 | Thêm **EVKey** vào nhóm “Tiện ích & lưu trữ” | `src/modules/software/catalog.json` |
 | 16 | `cee9414` | 30-10 | Đổi **bộ cơ bản** còn 6 app: Chrome, 7-Zip, Zalo, Adobe Reader, EVKey, UltraViewer | `src/modules/software/catalog.json` |
-| 17 | (commit này) | 30-10 | Thay **logo ngang MQ Tech** (cắt từ `logo1.png`), cập nhật CSS nav và ẩn chữ brand trên màn hình ≤480px | `public/logo.png`, `index.html`, `src/styles/main.css` |
+| 17 | `ae6af26` | 30-10 | Thay **logo ngang MQ Tech** (cắt từ `logo1.png`), cập nhật CSS nav và ẩn chữ brand trên màn hình ≤480px | `public/logo.png`, `index.html`, `src/styles/main.css` |
+| 18 | (commit này) | 31-10 | Bỏ các link bài kiểm tra trên menu, thay bằng liên kết **“Sửa máy tính Conic”** → coniccomputer.com | `src/main.ts`, `index.html` |
 
 ## 5. Module CPU & GPU — chi tiết
 
@@ -210,9 +211,10 @@ Luồng: `catalog.json` → `catalog.ts` (kiểm tra) → `software.ts` (UI, `Se
 |---|---|
 | `node scripts/check-catalog.mjs` | PASS — `OK: 35 apps / 9 categories (6 recommended)` |
 | `tsc --noEmit` | PASS |
-| `vite build` | PASS — 34 module; `index.html` 2,03 kB; CSS 32,30 kB (gzip 5,85); JS 85,38 kB (gzip 29,84); `gpu-worker` 2,84 kB; `cpu-worker` 0,73 kB |
+| `vite build` | PASS — 34 module; `index.html` 2,19 kB; CSS 32,30 kB (gzip 5,85); JS 85,23 kB (gzip 29,80); `gpu-worker` 2,84 kB; `cpu-worker` 0,73 kB |
 | Bộ cơ bản sau khi sửa | Dữ liệu xác nhận đúng 6 app: `chrome`, `7zip`, `zalo`, `adobe-reader`, `evkey`, `ultraviewer` |
 | Logo mới (screenshot CDP) | Desktop 1280×900 và mobile 360×800: logo 805×216 hiển thị đúng tỷ lệ; mobile ẩn chữ “Device Check”, nav không tràn (docScroll = 360) |
+| Menu điều hướng | Chỉ còn “Sửa máy tính Conic” → `https://coniccomputer.com` (`target="_blank"`); ảnh chụp navbar 1280×400 hiển thị đúng |
 | Script `.ps1` | `PARSE_OK` bằng `[scriptblock]::Create`; BOM `EF BB BF`; tên có `'` được escape đúng |
 | Chrome 156 headless (CDP) | 7 thẻ/7 menu; modal 31 app/8 nhóm (trước khi thêm 3 tool); preset 10; tìm “zalo” còn 1; tải `.ps1` BOM chỉ chứa app đã chọn; copy hiện fallback khi clipboard bị chặn; đóng modal dọn `.sw`; 0 lỗi console |
 | Edge 156 headless (CDP) | Lặp lại toàn bộ kiểm thử; viewport 360×640 không tràn ngang; ảnh chụp modal hiển thị đúng |
@@ -240,7 +242,7 @@ Luồng: `catalog.json` → `catalog.ts` (kiểm tra) → `software.ts` (UI, `Se
 | Stress CPU & GPU | start → "đang chạy" → "Dừng" OK trên cả Chrome lẫn Firefox |
 | `npm run build` | PASS — 28 module; JS 67,36 kB, CSS 28,57 kB, `gpu-worker` 2,84 kB, `cpu-worker` 0,73 kB |
 | `npm run check:catalog` (công cụ phần mềm) | PASS — `OK: 35 apps / 9 categories (6 recommended)` |
-| `vite build` sau khi thêm công cụ phần mềm | PASS — 34 module; CSS 32,30 kB (gzip 5,85); JS 85,38 kB (gzip 29,84) |
+| `vite build` sau khi thêm công cụ phần mềm | PASS — 34 module; CSS 32,30 kB (gzip 5,85); JS 85,23 kB (gzip 29,80) |
 | Script `.ps1` sinh thử | `PARSE_OK`; BOM `EF BB BF`; escape `Bob''s Tool` đúng |
 | `wingetId` (35 app) | Đã tra cứu qua winstall/wingetly/winget.ragerworks; chưa chạy `winget show` vì sandbox chặn `winget.exe` |
 

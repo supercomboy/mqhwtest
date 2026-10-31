@@ -3,7 +3,6 @@ import './styles/main.css';
 import { modules, type TestModule } from './modules/registry';
 
 const grid = document.getElementById('tests');
-const navLinks = document.getElementById('nav-links');
 
 for (const m of modules) {
   if (grid) {
@@ -12,12 +11,6 @@ for (const m of modules) {
     card.id = m.id;
     card.innerHTML = `<h2>${m.title}</h2><p>${m.description}</p><button class="btn btn--ghost" type="button" data-module="${m.id}">${m.actionLabel ?? 'Mở bài kiểm tra'}</button>`;
     grid.appendChild(card);
-  }
-  if (navLinks) {
-    const a = document.createElement('a');
-    a.href = `#${m.id}`;
-    a.textContent = m.title;
-    navLinks.appendChild(a);
   }
 }
 
