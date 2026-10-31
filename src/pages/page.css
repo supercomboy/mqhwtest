@@ -85,6 +85,11 @@
   margin-bottom: 12px;
 }
 
+/* Giữ không gian cho #tool trước khi module mount, tránh layout shift (CLS). */
+#tool {
+  min-height: 200px;
+}
+
 .faq {
   margin: 56px 0 32px;
 }
