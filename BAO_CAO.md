@@ -382,5 +382,6 @@ Mỗi trang test 700–1.000 từ tiếng Việt, không template trống, có H
 - GSC URL Inspection + request indexing: ✅ đã thực hiện cho 4 trang landing (ban-phim, loa, micro, camera).
 - Bing Webmaster Tools import từ GSC: ✅ đã hoàn thành.
 - Google Business Profile Conic: không làm (theo yêu cầu).
+- Link "Sửa máy tính Conic" trên 5 trang (index + 4 landing) đã chuyển sang điều hướng cùng tab (bỏ `target="_blank"` + `rel="noopener noreferrer"`), href `https://coniccomputer.com/` (commit `211adbc`). Footer "Conic" giữ nguyên `target="_blank"`.
 - Không analytics/cookie, không quảng cáo trả phí, không doorway page, không schema giả.
 - Khuyến nghị: tên miền riêng thay `*.onrender.com` (chỉ sửa `SITE_URL`).
