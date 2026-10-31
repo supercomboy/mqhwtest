@@ -19,7 +19,7 @@
 | Trang landing SEO | **4** — test-ban-phim, test-loa, test-micro, test-camera (MPA, SSR-ready HTML) |
 | Danh mục phần mềm | **35 app / 9 nhóm**, 6 app “Cơ bản” trong `src/modules/software/catalog.json` |
 | Tổng mã nguồn `src/` | 40 file, ~230 KB (chưa tính `node_modules`) |
-| Số commit | 19 (từ 2026-10-19 đến 2026-10-31) |
+| Số commit | 20 (từ 2026-10-19 đến 2026-10-31) |
 | Skill OpenCode | 8 skill trong `.opencode/skills/` |
 | Tài nguyên tĩnh | `public/logo.png` (805×216, 19 567 B), 3 file MP3 trong `public/audio/` |
 
@@ -104,6 +104,7 @@ Xem mục 5.
 | 17 | `ae6af26` | 30-10 | Thay **logo ngang MQ Tech** (cắt từ `logo1.png`), cập nhật CSS nav và ẩn chữ brand trên màn hình ≤480px | `public/logo.png`, `index.html`, `src/styles/main.css` |
 | 18 | (commit này) | 31-10 | Bỏ các link bài kiểm tra trên menu, thay bằng liên kết **“Sửa máy tính Conic”** → coniccomputer.com | `src/main.ts`, `index.html` |
 | 19 | (commit này) | 31-10 | **SEO MPA**: 4 trang landing test, metadata/canonical/OG, JSON-LD, sitemap/robots, check-seo, noindex GitHub Pages | `vite.config.ts`, `index.html`, `test-*/index.html`, `src/pages/*`, `src/main.ts`, `src/modules/registry.ts`, `src/styles/main.css`, `scripts/check-seo.mjs`, `package.json`, `.github/workflows/deploy.yml`, `public/og-image.png`, `BAO_CAO.md` |
+| 20 | `1d4d078` | 31-10 | Sửa CLS trang `/test-micro/`: thêm `#tool { min-height: 200px }` vào `src/pages/page.css` để reserve space trước khi module microphone mount, tránh layout shift của `<p class='intro'>` | `src/pages/page.css` |
 
 ## 5. Module CPU & GPU — chi tiết
 
@@ -359,12 +360,16 @@ Mỗi trang test 700–1.000 từ tiếng Việt, không template trống, có H
 - Local preview: 5 trang trả 200, title/H1/canonical đúng, JSON-LD có sẵn trong HTML gốc (không cần JS).
 - Test bàn phím: nút "Bắt đầu test bàn phím" xuất hiện, module chỉ mount sau khi bấm (không chặn phím khi đọc).
 - Loa/micro/camera: mount ngay, xin quyền khi bấm nút trong module.
-- Chrome + Edge: không lỗi console.
+- Chrome + Edge: không lỗi console (trừ favicon.ico 404 trên trang micro — minor).
 - 360px: không tràn ngang (CSS `@media (max-width: 640px)`).
+- CLS fix: commit `1d4d078` thêm `#tool { min-height: 200px }` vào `src/pages/page.css`, reserve space cho tool container trước khi module microphone mount, tránh layout shift `<p class='intro'>` (CLS trước fix = 0.616 trên trang micro). Không thể chạy lại Lighthouse để verify CLS do API rate limit (429) — cần verify thủ công khi có thể.
 
 ### 13.5 Triển khai production (Render)
 - Push nhánh `main` → Render tự build và deploy tại `https://mqtech.onrender.com/`.
-- Sau deploy: kiểm tra 5 trang trả 200, `robots.txt`/`sitemap.xml` trả 200, title/H1/canonical đúng, Rich Results Test (WebApplication, FAQPage, BreadcrumbList), Lighthouse mobile (SEO 100, A11y ≥ 95, Perf ≥ 90).
+- Commit `24a37a2` (SEO MPA) và `1d4d078` (fix CLS micro) đã được push, Render auto-deploy.
+- Sau deploy: kiểm tra 5 trang trả 200, `robots.txt`/`sitemap.xml` trả 200, title/H1/canonical đúng, trang micro load OK với module mount, Conic link giữ nguyên.
+- Rich Results Test (WebApplication, FAQPage, BreadcrumbList): chưa chạy do yêu cầu đăng nhập Google + reCAPTCHA.
+- Lighthouse mobile: SEO 100, A11y ≥95, Perf ≥90 pass trên 4 trang; trang micro Perf = 77 trước fix CLS (CLS 0.616) — chưa thể chạy lại do API rate limit (429).
 - GitHub Pages (`https://supercomboy.github.io/mqhwtest/`): canonical trỏ Render + `robots` noindex,nofollow → không được index.
 
 ### 13.6 KPI & off-page (chờ token Google của bạn)
