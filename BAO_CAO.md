@@ -377,5 +377,5 @@ Mỗi trang test 700–1.000 từ tiếng Việt, không template trống, có H
 - 30 ngày: có impression cả 4 nhóm, vị trí trung bình < 30.
 - 90 ngày: top 10 cho ít nhất 2/4 từ khóa chính.
 - 180 ngày: top 5 cho ít nhất 2/4 từ khóa chính.
-- Cần: xác minh GSC property Render, submit sitemap, Bing import, Google Business Profile Conic, backlink tự nhiên. Không analytics/cookie, không quảng cáo trả phí, không doorway page, không schema giả.
+- GSC property `https://mqtech.onrender.com/` đã xác minh qua file HTML `googlef870261ccd961404.html` (commit `0396574`). Tiếp theo: submit sitemap + request indexing 4 landing, Bing import, Google Business Profile Conic, backlink tự nhiên. Không analytics/cookie, không quảng cáo trả phí, không doorway page, không schema giả.
 - Khuyến nghị: tên miền riêng thay `*.onrender.com` (chỉ sửa `SITE_URL`).
