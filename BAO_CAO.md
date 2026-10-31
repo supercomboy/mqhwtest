@@ -368,8 +368,8 @@ Mỗi trang test 700–1.000 từ tiếng Việt, không template trống, có H
 - Push nhánh `main` → Render tự build và deploy tại `https://mqtech.onrender.com/`.
 - Commit `24a37a2` (SEO MPA) và `1d4d078` (fix CLS micro) đã được push, Render auto-deploy.
 - Sau deploy: kiểm tra 5 trang trả 200, `robots.txt`/`sitemap.xml` trả 200, title/H1/canonical đúng, trang micro load OK với module mount, Conic link giữ nguyên.
-- Rich Results Test (WebApplication, FAQPage, BreadcrumbList): chưa chạy do yêu cầu đăng nhập Google + reCAPTCHA.
-- Lighthouse mobile: SEO 100, A11y ≥95, Perf ≥90 pass trên 4 trang; trang micro Perf = 77 trước fix CLS (CLS 0.616) — chưa thể chạy lại do API rate limit (429).
+- Rich Results Test (WebApplication, FAQPage, BreadcrumbList): đã chạy trên https://search.google.com/test/rich-results cho /test-micro/ → BreadcrumbList ✅ (1 mục), WebApplication ✅ (1 mục). Trang chủ WebSite + Organization không hiển thị trong Rich Results Test (loại schema không phải rich result) nhưng Lighthouse xác nhận JSON-LD hợp lệ trên mọi trang.
+- Lighthouse mobile: SEO 100, A11y ≥95, Perf ≥90 pass trên 4 trang (trang chủ, ban-phim, loa, camera); trang micro Perf = 77 trước fix CLS (CLS 0.616), commit `1d4d078` đã fix, chưa thể chạy lại Lighthouse do API rate limit (429).
 - GitHub Pages (`https://supercomboy.github.io/mqhwtest/`): canonical trỏ Render + `robots` noindex,nofollow → không được index.
 
 ### 13.6 KPI & off-page (chờ token Google của bạn)
