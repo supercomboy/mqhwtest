@@ -16,9 +16,10 @@
 |---|---|
 | Số bài kiểm tra | **6** — Bàn phím, Loa, Camera, Microphone, Màn hình, CPU & GPU |
 | Công cụ | **Cài phần mềm** — chọn app, tải script PowerShell dùng winget |
+| Trang landing SEO | **4** — test-ban-phim, test-loa, test-micro, test-camera (MPA, SSR-ready HTML) |
 | Danh mục phần mềm | **35 app / 9 nhóm**, 6 app “Cơ bản” trong `src/modules/software/catalog.json` |
-| Tổng mã nguồn `src/` | 34 file, ~215 KB (chưa tính `node_modules`) |
-| Số commit | 18 (từ 2026-10-19 đến 2026-10-31) |
+| Tổng mã nguồn `src/` | 40 file, ~230 KB (chưa tính `node_modules`) |
+| Số commit | 19 (từ 2026-10-19 đến 2026-10-31) |
 | Skill OpenCode | 8 skill trong `.opencode/skills/` |
 | Tài nguyên tĩnh | `public/logo.png` (805×216, 19 567 B), 3 file MP3 trong `public/audio/` |
 
@@ -102,6 +103,7 @@ Xem mục 5.
 | 16 | `cee9414` | 30-10 | Đổi **bộ cơ bản** còn 6 app: Chrome, 7-Zip, Zalo, Adobe Reader, EVKey, UltraViewer | `src/modules/software/catalog.json` |
 | 17 | `ae6af26` | 30-10 | Thay **logo ngang MQ Tech** (cắt từ `logo1.png`), cập nhật CSS nav và ẩn chữ brand trên màn hình ≤480px | `public/logo.png`, `index.html`, `src/styles/main.css` |
 | 18 | (commit này) | 31-10 | Bỏ các link bài kiểm tra trên menu, thay bằng liên kết **“Sửa máy tính Conic”** → coniccomputer.com | `src/main.ts`, `index.html` |
+| 19 | (commit này) | 31-10 | **SEO MPA**: 4 trang landing test, metadata/canonical/OG, JSON-LD, sitemap/robots, check-seo, noindex GitHub Pages | `vite.config.ts`, `index.html`, `test-*/index.html`, `src/pages/*`, `src/main.ts`, `src/modules/registry.ts`, `src/styles/main.css`, `scripts/check-seo.mjs`, `package.json`, `.github/workflows/deploy.yml`, `public/og-image.png`, `BAO_CAO.md` |
 
 ## 5. Module CPU & GPU — chi tiết
 
@@ -326,3 +328,49 @@ public/                   logo.png
 ```
 
 > Ghi chú: thư mục `.opencode/opencode-loop/` là artefact cục bộ của phiên làm việc, **không** được commit.
+
+## 13. SEO MPA (trang đích test thiết bị)
+
+### 13.1 Cấu trúc URL
+| URL | Từ khóa chính | Vai trò |
+|---|---|---|
+| `/` | kiểm tra thiết bị online | Hub, liên kết 4 bài test |
+| `/test-ban-phim/` | test bàn phím online | Landing + công cụ |
+| `/test-loa/` | test loa online | Landing + công cụ |
+| `/test-micro/` | test micro online | Landing + công cụ |
+| `/test-camera/` | test camera online | Landing + công cụ |
+
+### 13.2 Thay đổi kỹ thuật
+- `vite.config.ts`: 5 `rollupOptions.input` (index + 4 trang test), `SITE_URL` (mặc định `https://mqtech.onrender.com`, override bằng env), plugin thay `%SITE_URL%`/`%PAGE_PATH%` trong HTML, meta robots build-time (`VITE_NOINDEX=1` → noindex,nofollow cho GitHub Pages), sinh `dist/sitemap.xml` + `dist/robots.txt` (Sitemap line, priority 1.0 trang chủ / 0.9 trang test, lastmod ngày build).
+- `index.html`: title ≤ 60 ký tự, meta description, canonical, OG + Twitter cards, JSON-LD WebSite + Organization (MQ Tech Computer Service), section tĩnh 300–500 từ + danh sách 4 bài test dạng anchor, footer chung (Trang chủ · 4 bài test · Conic).
+- 4 file `test-*/index.html`: title/H1/meta/canonical/OG/JSON-LD (WebApplication + BreadcrumbList + FAQPage 4–5 câu), nội dung tĩnh 700–1.000 từ tiếng Việt, cross-link qua lại 3 trang còn lại + trang chủ, giữ liên kết "Sửa máy tính Conic".
+- `src/pages/`: `page.css`, `mount-on-start.ts` (bàn phím chỉ mount sau nút "Bắt đầu test bàn phím"), 4 entry TS (loa/micro/camera mount ngay, quyền xin khi bấm nút trong module). Không đổi chữ ký `mount(container)`.
+- `registry.ts`: thêm `path?: string`; `main.ts` render tiêu đề thẻ thành link khi có `path`, giữ nút mở modal.
+- `public/og-image.png`: 1200×630, nền nâu `#1D1B19`, chữ kem `#FFE2B8`.
+- `scripts/check-seo.mjs`: kiểm tra title/meta/canonical/H1/JSON-LD/og:image/robots/sitemap trong HTML đã build, build fail nếu thiếu.
+- `package.json`: `build` chạy `check-seo.mjs` sau `vite build`.
+- `.github/workflows/deploy.yml`: build GitHub Pages với `VITE_NOINDEX=1` để tránh trùng nội dung với Render.
+
+### 13.3 Nội dung
+Mỗi trang test 700–1.000 từ tiếng Việt, không template trống, có H2 theo kế hoạch (Cách test · Kết quả/dải âm/Lỗi thường gặp · FAQ · Bài test khác). JSON-LD không dùng rating/địa chỉ giả.
+
+### 13.4 Kết quả kiểm thử (trước khi push)
+- `npm run build` (typecheck + check-catalog + vite build + check-seo): PASS — 5 trang, sitemap + robots hợp lệ.
+- Local preview: 5 trang trả 200, title/H1/canonical đúng, JSON-LD có sẵn trong HTML gốc (không cần JS).
+- Test bàn phím: nút "Bắt đầu test bàn phím" xuất hiện, module chỉ mount sau khi bấm (không chặn phím khi đọc).
+- Loa/micro/camera: mount ngay, xin quyền khi bấm nút trong module.
+- Chrome + Edge: không lỗi console.
+- 360px: không tràn ngang (CSS `@media (max-width: 640px)`).
+
+### 13.5 Triển khai production (Render)
+- Push nhánh `main` → Render tự build và deploy tại `https://mqtech.onrender.com/`.
+- Sau deploy: kiểm tra 5 trang trả 200, `robots.txt`/`sitemap.xml` trả 200, title/H1/canonical đúng, Rich Results Test (WebApplication, FAQPage, BreadcrumbList), Lighthouse mobile (SEO 100, A11y ≥ 95, Perf ≥ 90).
+- GitHub Pages (`https://supercomboy.github.io/mqhwtest/`): canonical trỏ Render + `robots` noindex,nofollow → không được index.
+
+### 13.6 KPI & off-page (chờ token Google của bạn)
+- 7 ngày: 4/4 landing được index, sitemap không lỗi.
+- 30 ngày: có impression cả 4 nhóm, vị trí trung bình < 30.
+- 90 ngày: top 10 cho ít nhất 2/4 từ khóa chính.
+- 180 ngày: top 5 cho ít nhất 2/4 từ khóa chính.
+- Cần: xác minh GSC property Render, submit sitemap, Bing import, Google Business Profile Conic, backlink tự nhiên. Không analytics/cookie, không quảng cáo trả phí, không doorway page, không schema giả.
+- Khuyến nghị: tên miền riêng thay `*.onrender.com` (chỉ sửa `SITE_URL`).

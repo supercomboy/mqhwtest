@@ -8,7 +8,7 @@
     "dev": "vite",
     "typecheck": "tsc --noEmit",
     "check:catalog": "node scripts/check-catalog.mjs",
-    "build": "tsc --noEmit && node scripts/check-catalog.mjs && vite build",
+    "build": "tsc --noEmit && node scripts/check-catalog.mjs && vite build && node scripts/check-seo.mjs",
     "preview": "vite preview"
   },
   "devDependencies": {

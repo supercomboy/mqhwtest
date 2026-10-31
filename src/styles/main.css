@@ -201,6 +201,23 @@ main {
   background: var(--surface);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card__title-link {
+  font: inherit;
+  font-weight: 600;
+  font-size: clamp(20px, 3vw, 24px);
+  color: var(--text);
+  text-decoration: none;
+  margin: 0;
+}
+
+.card__title-link:hover {
+  color: var(--text-soft);
+  text-decoration: underline;
 }
 
 .card p {

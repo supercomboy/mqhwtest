@@ -9,7 +9,27 @@ for (const m of modules) {
     const card = document.createElement('article');
     card.className = 'card reveal';
     card.id = m.id;
-    card.innerHTML = `<h2>${m.title}</h2><p>${m.description}</p><button class="btn btn--ghost" type="button" data-module="${m.id}">${m.actionLabel ?? 'Mở bài kiểm tra'}</button>`;
+    let titleEl: HTMLElement;
+    if (m.path) {
+      const a = document.createElement('a');
+      a.href = m.path;
+      a.className = 'card__title-link';
+      a.textContent = m.title;
+      titleEl = a;
+    } else {
+      titleEl = document.createElement('h2');
+      titleEl.textContent = m.title;
+    }
+    card.innerHTML = ``;
+    card.append(titleEl, document.createElement('p'));
+    const desc = card.querySelector('p')!;
+    desc.textContent = m.description;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'btn btn--ghost';
+    btn.dataset.module = m.id;
+    btn.textContent = m.actionLabel ?? 'Mở bài kiểm tra';
+    card.appendChild(btn);
     grid.appendChild(card);
   }
 }

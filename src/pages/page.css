@@ -1,0 +1,180 @@
+/* Trang test landing: bố cục tĩnh, mọi màu/font lấy từ tokens.css. */
+.page {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 16px 80px;
+}
+
+.page header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0 40px;
+  border-bottom: 1px solid var(--line);
+}
+
+.page header a {
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.page header a:hover {
+  color: var(--text-soft);
+}
+
+.page h1 {
+  font-size: clamp(32px, 6vw, 48px);
+  margin: 0 0 16px;
+}
+
+.page h2 {
+  font-size: clamp(22px, 3.5vw, 28px);
+  margin: 40px 0 14px;
+}
+
+.page h3 {
+  font-size: clamp(18px, 2.5vw, 22px);
+  margin: 28px 0 10px;
+  font-weight: 600;
+}
+
+.page p,
+.page li {
+  font-size: 17px;
+  line-height: 1.6;
+  margin: 0 0 16px;
+  color: var(--text);
+}
+
+.page p.muted,
+.page .muted {
+  color: var(--text-soft);
+  font-size: 18px;
+}
+
+.page ul {
+  margin: 0 0 20px;
+  padding-left: 22px;
+}
+
+.page ul li {
+  margin: 0 0 8px;
+}
+
+.page .intro {
+  font-size: 20px;
+  max-width: 720px;
+  margin: 0 0 32px;
+  color: var(--text-soft);
+}
+
+.tool-wrap {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  padding: 26px;
+  margin: 32px 0;
+  box-shadow: var(--shadow-card);
+}
+
+.tool-wrap .start-note {
+  color: var(--text-soft);
+  font-size: 17px;
+  margin-bottom: 12px;
+}
+
+.faq {
+  margin: 56px 0 32px;
+}
+
+.faq details {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px 18px;
+  margin: 0 0 12px;
+  background: var(--surface-alt);
+}
+
+.faq summary {
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+  outline: none;
+}
+
+.faq summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq p {
+  margin: 12px 0 0;
+  color: var(--text);
+}
+
+.cross-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 32px 0 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+}
+
+.cross-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border: 1px solid var(--line);
+  border-radius: 980px;
+  background: var(--surface);
+  color: var(--text);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.cross-links a:hover {
+  background: var(--surface-alt);
+  border-color: var(--text-soft);
+}
+
+footer {
+  border-top: 1px solid var(--line);
+  padding: 32px 0 20px;
+  margin-top: 56px;
+  text-align: center;
+  color: var(--text-soft);
+  font-size: 15px;
+}
+
+footer a {
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+  margin: 0 10px;
+}
+
+footer a:hover {
+  color: var(--text-soft);
+}
+
+footer .sep {
+  color: var(--text-soft);
+  margin: 0 6px;
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: 0 12px 64px;
+  }
+  .tool-wrap {
+    padding: 18px;
+  }
+  .cross-links a {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+}

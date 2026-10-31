@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Test micro online: đo mức âm thời gian thực, ghi âm thử 5 giây và nghe lại. Kiểm tra micro trước họp Zoom Teams. Miễn phí, trên trình duyệt."
+    />
+    <title>Test micro online – Kiểm tra mic, ghi âm | MQ Tech</title>
+    <link rel="canonical" href="%SITE_URL%/test-micro/" />
+    <meta property="og:title" content="Test micro online – Kiểm tra mic, ghi âm | MQ Tech" />
+    <meta
+      property="og:description"
+      content="Đo mức âm micro thời gian thực, ghi âm thử 5 giây và nghe lại online. Kiểm tra micro trước họp Zoom Teams. Miễn phí, trên trình duyệt."
+    />
+    <meta property="og:url" content="%SITE_URL%/test-micro/" />
+    <meta property="og:image" content="%SITE_URL%/og-image.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="vi_VN" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="robots" content="index,follow" />
+    <script type="module" src="../src/pages/test-micro.ts"></script>
+  </head>
+  <body>
+    <header class="page">
+      <a href="../index.html" class="page__brand">← Trang chủ</a>
+      <a href="https://coniccomputer.com" target="_blank" rel="noopener noreferrer">Sửa máy tính Conic</a>
+    </header>
+
+    <div class="page">
+      <div id="tool"></div>
+      <h1>Test micro online</h1>
+      <p class="intro">
+        Bài kiểm tra micro online giúp bạn đo mức âm thời gian thực, ghi âm thử 5 giây và nghe lại để xác định micro của máy có thu âm rõ ràng hay không. Tất cả chạy trên trình duyệt, âm thanh chỉ được xử lý trong máy, không được tải lên đâu.
+      </p>
+
+      <h2>Cách test micro online</h2>
+      <p>
+        Bấm <strong>Bật micro</strong> để cấp quyền và bắt đầu đo mức âm. Bạn sẽ thấy biểu đồ dạng sóng và số dBFS thay đổi theo giọng nói. Mức cao nhất được ghi lại vào bảng tổng hợp. Sau đó, hãy ghi âm 5 giây và nghe lại để đánh giá chất lượng thu.
+      </p>
+      <p>
+        Bạn có thể bật/tắt ba công tắc: khử tiếng vọng, giảm tiếng ồn và tự chỉnh âm lượng, để so sánh xem thiết lập nào cho âm thanh tốt nhất trên micro của mình.
+      </p>
+
+      <h2>Đọc mức dB</h2>
+      <ul>
+        <li>dBFS càng gần 0 thì âm thanh càng lớn; âm lặng hoàn toàn là -∞ dBFS.</li>
+        <li>M dưới -50 dBFS coi như quá nhỏ, hãy nói gần micro hơn hoặc tăng âm lượng đầu vào.</li>
+        <li>Chạm ngưỡng -1 dBFS coi như bị vỡ tiếng, hãy nói xa micro hơn hoặc giảm âm lượng đầu vào.</li>
+        <li>Mức cao nhất trong lượt đo sẽ được cập nhật vào bảng kết quả mỗi nửa giây.</li>
+      </ul>
+
+      <h2>Ghi âm thử</h2>
+      <ul>
+        <li>Ghi âm 5 giây, rồi nghe lại qua trình phát có sẵn trong trình duyệt.</li>
+        <li>Nên đeo tai nghe khi nghe lại để tránh hú (vọng âm).</li>
+        <li>Bản ghi chỉ nằm trong bộ nhớ trang, không được gửi lên đâu và bạn có thể xóa bất cứ lúc nào.</li>
+      </ul>
+
+      <h2>FAQ</h2>
+      <details>
+        <summary>Cần cấp quyền micro không?</summary>
+        <p>Có. Trình duyệt sẽ hỏi quyền khi bạn bấm "Bật micro". Nếu từ chối, bài kiểm tra không thể thu âm.</p>
+      </details>
+      <details>
+        <summary>Mic không lên tiếng là do gì?</summary>
+        <p>Kiểm tra micro đang được chọn đúng, âm lượng đầu vào đã bật, và không có ứng dụng khác đang chiếm dụng micro.</p>
+      </details>
+      <details>
+        <summary>Test trước họp Zoom/Teams có cần không?</summary>
+        <p>Rất cần. Hãy kiểm tra mức âm và nghe lại bản ghi trước cuộc họp quan trọng để tránh bị vô tiếng hoặc quá lớn.</p>
+      </details>
+      <details>
+        <summary>Chọn micro nào khi có nhiều?</summary>
+        <p>Dùng danh sách thả xuống để chọn micro, bài kiểm tra sẽ hiển thị tên thiết bị đang dùng và bạn có thể chuyển ngay khi cần.</p>
+      </details>
+
+      <h2>Bài test khác</h2>
+      <div class="cross-links">
+        <a href="../test-ban-phim/">Test bàn phím online</a>
+        <a href="../test-loa/">Test loa online</a>
+        <a href="../test-camera/">Test camera online</a>
+        <a href="../index.html">Trang chủ</a>
+      </div>
+      </div>
+
+    <footer>
+      <a href="../index.html">Trang chủ</a><span class="sep">·</span>
+      <a href="../test-ban-phim/">Test bàn phím</a><span class="sep">·</span>
+      <a href="../test-loa/">Test loa</a><span class="sep">·</span>
+      <a href="../test-micro/">Test micro</a><span class="sep">·</span>
+      <a href="../test-camera/">Test camera</a><span class="sep">·</span>
+      <a href="https://coniccomputer.com" target="_blank" rel="noopener noreferrer">Conic</a>
+    </footer>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Test micro online",
+        "url": "%SITE_URL%/test-micro/",
+        "description": "Đo mức âm micro thời gian thực, ghi âm thử 5 giây và nghe lại online. Kiểm tra micro trước họp Zoom Teams. Miễn phí, trên trình duyệt.",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Trình duyệt web",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "VND"
+        }
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Trang chủ",
+            "item": "%SITE_URL%/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Test micro",
+            "item": "%SITE_URL%/test-micro/"
+          }
+        ]
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Cần cấp quyền micro không?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Có. Trình duyệt sẽ hỏi quyền khi bạn bấm \"Bật micro\". Nếu từ chối, bài kiểm tra không thể thu âm."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Mic không lên tiếng là do gì?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Kiểm tra micro đang được chọn đúng, âm lượng đầu vào đã bật, và không có ứng dụng khác đang chiếm dụng micro."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Test trước họp Zoom/Teams có cần không?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Rất cần. Hãy kiểm tra mức âm và nghe lại bản ghi trước cuộc họp quan trọng để tránh bị vô tiếng hoặc quá lớn."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Chọn micro nào khi có nhiều?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Dùng danh sách thả xuống để chọn micro, bài kiểm tra sẽ hiển thị tên thiết bị đang dùng và bạn có thể chuyển ngay khi cần."
+            }
+          }
+        ]
+      }
+    </script>
+  </body>
+</html>

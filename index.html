@@ -3,10 +3,24 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Kiểm tra bàn phím, loa, camera, microphone, màn hình, hiệu năng và cài phần mềm ngay trên trình duyệt. Dữ liệu không rời khỏi máy của bạn." />
-    <title>Device Check</title>
-    <link rel="icon" type="image/png" href="/logo.png" />
-    <link rel="apple-touch-icon" href="/logo.png" />
+    <meta
+      name="description"
+      content="Test bàn phím, loa, mic, camera online miễn phí. Kiểm tra thiết bị ngay trên trình duyệt, dữ liệu không rời máy. Bàn phím US ANSI, loa trái phải, micro ghi âm, camera webcam."
+    />
+    <title>Test bàn phím, loa, mic, camera online | MQ Tech</title>
+    <link rel="canonical" href="%SITE_URL%/" />
+    <meta property="og:title" content="Test bàn phím, loa, mic, camera online | MQ Tech" />
+    <meta
+      property="og:description"
+      content="Kiểm tra thiết bị online miễn phí: bàn phím, loa, micro, camera webcam. Chạy trên trình duyệt, dữ liệu không rời máy."
+    />
+    <meta property="og:url" content="%SITE_URL%/" />
+    <meta property="og:image" content="%SITE_URL%/og-image.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="vi_VN" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="robots" content="index,follow" />
+    <script type="module" src="/src/main.ts"></script>
   </head>
   <body>
     <header class="nav" id="nav">
@@ -17,18 +31,41 @@
         <span class="nav__brand-text">Device Check</span>
       </a>
       <nav class="nav__links" id="nav-links" aria-label="Liên kết">
+        <a href="#test-ban-phim">Test bàn phím</a>
+        <a href="#test-loa">Test loa</a>
+        <a href="#test-micro">Test micro</a>
+        <a href="#test-camera">Test camera</a>
         <a href="https://coniccomputer.com" target="_blank" rel="noopener noreferrer" title="Mở trang Sửa máy tính Conic trong tab mới">Sửa máy tính Conic</a>
       </nav>
     </header>
 
     <main id="top">
       <section class="hero reveal">
-        <h1>Kiểm tra thiết bị của bạn.<br />Nhanh. Riêng tư.</h1>
+        <h1>Kiểm tra thiết bị online: bàn phím, loa, mic, camera.</h1>
         <p class="hero__sub">Bàn phím, loa, camera, microphone, màn hình, CPU &amp; GPU — và cài phần mềm hàng loạt, ngay trên trình duyệt. Không cài đặt, không tải dữ liệu lên máy chủ.</p>
         <a class="btn" href="#tests">Bắt đầu kiểm tra</a>
       </section>
 
       <section id="tests" class="grid" aria-label="Danh sách bài kiểm tra và công cụ"></section>
+
+      <section class="seo reveal" aria-label="Giới thiệu các bài kiểm tra thiết bị">
+        <h2>Kiểm tra thiết bị online miễn phí</h2>
+        <p>
+          Device Check của MQ Tech giúp bạn kiểm tra các thiết bị nhập xuất và truyền hình âm thanh trực tiếp trên trình duyệt, không cần cài đặt phần mềm và không gửi dữ liệu nào về máy chủ. Hình ảnh từ camera và âm thanh từ micro chỉ được xử lý trong máy của bạn, giúp bảo vệ quyền riêng tư trong mọi bài kiểm tra.
+        </p>
+        <p>
+          Dưới đây là các bài kiểm tra bạn có thể sử dụng ngay. Mỗi bài có công cụ chạy riêng, hướng dẫn và câu hỏi thường gặp, giúp bạn xác định nhanh thiết bị nào đang gặp sự cố trước khi đến cửa hàng sửa chữa.
+        </p>
+        <ul class="seo__list">
+          <li><a href="/test-ban-phim/">Test bàn phím online</a> — kiểm tra từng phím US ANSI, phát hiện kẹt phím, xem layout và số phím nhấn cùng lúc.</li>
+          <li><a href="/test-loa/">Test loa online</a> — kiểm tra loa trái, phải và cả hai kênh, quét dải âm trầm đến bổng, phát bản nhạc mẫu.</li>
+          <li><a href="/test-micro/">Test micro online</a> — đo mức âm thời gian thực, ghi âm thử 5 giây và nghe lại, kiểm tra micro trước họp Zoom hoặc Teams.</li>
+          <li><a href="/test-camera/">Test camera online</a> — xem trước webcam, kiểm tra độ phân giải thực tế, FPS và chụp thử ảnh.</li>
+        </ul>
+        <p>
+          Ngoài các bài kiểm tra thiết bị, trang còn hỗ trợ kiểm tra màn hình (điểm chết, loang sáng, dải xám), đo hiệu năng CPU &amp; GPU, và công cụ chọn phần mềm để tải script cài hàng loạt bằng winget. Tất cả miễn phí và chạy hoàn toàn trên trình duyệt của bạn.
+        </p>
+      </section>
 
       <section class="privacy reveal">
         <h2>Dữ liệu không rời khỏi máy bạn</h2>
@@ -36,6 +73,38 @@
       </section>
     </main>
 
-    <script type="module" src="/src/main.ts"></script>
+    <footer class="site-footer">
+      <a href="#top">Trang chủ</a><span class="sep">·</span>
+      <a href="/test-ban-phim/">Test bàn phím</a><span class="sep">·</span>
+      <a href="/test-loa/">Test loa</a><span class="sep">·</span>
+      <a href="/test-micro/">Test micro</a><span class="sep">·</span>
+      <a href="/test-camera/">Test camera</a><span class="sep">·</span>
+      <a href="https://coniccomputer.com" target="_blank" rel="noopener noreferrer">Conic</a>
+    </footer>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "MQ Tech Computer Service",
+        "url": "%SITE_URL%/",
+        "description": "Kiểm tra thiết bị online miễn phí: bàn phím, loa, microphone, camera webcam. Chạy trên trình duyệt, dữ liệu không rời máy.",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "%SITE_URL%/",
+          "query-input": "required"
+        }
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "MQ Tech Computer Service",
+        "url": "%SITE_URL%/",
+        "logo": "%SITE_URL%/logo.png",
+        "sameAs": ["https://coniccomputer.com"]
+      }
+    </script>
   </body>
 </html>

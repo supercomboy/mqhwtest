@@ -11,6 +11,8 @@ export interface TestModule {
   id: 'keyboard' | 'speaker' | 'camera' | 'microphone' | 'display' | 'bench' | 'software';
   title: string;
   description: string;
+  /** Đường dẫn landing page của bài kiểm tra, nếu có (dùng làm liên kết tiêu đề thẻ trên trang chủ). */
+  path?: string;
   /** Nhãn nút mở; mặc định là "Mở bài kiểm tra". */
   actionLabel?: string;
   /** Dựng bài kiểm tra vào `container`, trả về hàm dọn dẹp (gỡ listener, giải phóng tài nguyên). */
@@ -22,24 +24,28 @@ export const modules: TestModule[] = [
     id: 'keyboard',
     title: 'Bàn phím',
     description: 'Bố cục US ANSI cho PC và MacBook. Mỗi phím nhấn sẽ sáng lên.',
+    path: '/test-ban-phim/',
     mount: mountKeyboard,
   },
   {
     id: 'speaker',
     title: 'Loa',
     description: 'Quét dải trầm, bổng và phát 2 bản nhạc mẫu, kiểm tra kênh trái, phải.',
+    path: '/test-loa/',
     mount: mountSpeaker,
   },
   {
     id: 'camera',
     title: 'Camera',
     description: 'Xem trước hình ảnh, độ phân giải và chụp thử.',
+    path: '/test-camera/',
     mount: mountCamera,
   },
   {
     id: 'microphone',
     title: 'Microphone',
     description: 'Đo mức âm theo thời gian thực, ghi âm 5 giây và nghe lại.',
+    path: '/test-micro/',
     mount: mountMicrophone,
   },
   {

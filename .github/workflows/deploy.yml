@@ -25,7 +25,7 @@ jobs:
           cache: npm
       # Dùng npm ci khi đã có package-lock.json (khuyến nghị), chưa có thì npm install
       - run: if [ -f package-lock.json ]; then npm ci; else npm install; fi
-      - run: npm run build
+      - run: VITE_NOINDEX=1 npm run build
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
