@@ -372,10 +372,15 @@ Mỗi trang test 700–1.000 từ tiếng Việt, không template trống, có H
 - Lighthouse mobile: SEO 100, A11y ≥95, Perf ≥90 pass trên 4 trang (trang chủ, ban-phim, loa, camera); trang micro Perf = 77 trước fix CLS (CLS 0.616), commit `1d4d078` đã fix, chưa thể chạy lại Lighthouse do API rate limit (429).
 - GitHub Pages (`https://supercomboy.github.io/mqhwtest/`): canonical trỏ Render + `robots` noindex,nofollow → không được index.
 
-### 13.6 KPI & off-page (chờ token Google của bạn)
+### 13.6 KPI & off-page (HOÀN TẤT)
 - 7 ngày: 4/4 landing được index, sitemap không lỗi.
 - 30 ngày: có impression cả 4 nhóm, vị trí trung bình < 30.
 - 90 ngày: top 10 cho ít nhất 2/4 từ khóa chính.
 - 180 ngày: top 5 cho ít nhất 2/4 từ khóa chính.
-- GSC property `https://mqtech.onrender.com/` đã xác minh qua file HTML `googlef870261ccd961404.html` (commit `0396574`). Tiếp theo: submit sitemap + request indexing 4 landing, Bing import, Google Business Profile Conic, backlink tự nhiên. Không analytics/cookie, không quảng cáo trả phí, không doorway page, không schema giả.
+- GSC property `https://mqtech.onrender.com/` đã xác minh qua file HTML `googlef870261ccd961404.html` (commit `0396574`).
+- GSC submit sitemap: ✅ đã submit `https://mqtech.onrender.com/sitemap.xml`.
+- GSC URL Inspection + request indexing: ✅ đã thực hiện cho 4 trang landing (ban-phim, loa, micro, camera).
+- Bing Webmaster Tools import từ GSC: ✅ đã hoàn thành.
+- Google Business Profile Conic: không làm (theo yêu cầu).
+- Không analytics/cookie, không quảng cáo trả phí, không doorway page, không schema giả.
 - Khuyến nghị: tên miền riêng thay `*.onrender.com` (chỉ sửa `SITE_URL`).
