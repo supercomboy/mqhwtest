@@ -87,6 +87,16 @@
       "homepage": "https://www.libreoffice.org/"
     },
     {
+      "id": "wps-office",
+      "name": "WPS Office",
+      "publisher": "Kingsoft",
+      "description": "Bộ văn phòng nhẹ: Writer, Spreadsheet, Presentation và đọc PDF.",
+      "category": "office",
+      "wingetId": "Kingsoft.WPSOffice",
+      "homepage": "https://www.wps.com/office/windows/",
+      "note": "Miễn phí bản cơ bản (có quảng cáo); tính năng nâng cao cần WPS Premium."
+    },
+    {
       "id": "adobe-reader",
       "name": "Adobe Acrobat Reader",
       "publisher": "Adobe",

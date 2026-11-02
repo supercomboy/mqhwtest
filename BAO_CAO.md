@@ -17,7 +17,7 @@
 | Số bài kiểm tra | **6** — Bàn phím, Loa, Camera, Microphone, Màn hình, CPU & GPU |
 | Công cụ | **Cài phần mềm** — chọn app, tải script PowerShell dùng winget |
 | Trang landing SEO | **4** — test-ban-phim, test-loa, test-micro, test-camera (MPA, SSR-ready HTML) |
-| Danh mục phần mềm | **35 app / 9 nhóm**, 6 app “Cơ bản” trong `src/modules/software/catalog.json` |
+| Danh mục phần mềm | **36 app / 9 nhóm**, 6 app “Cơ bản” trong `src/modules/software/catalog.json` |
 | Tổng mã nguồn `src/` | 40 file, ~230 KB (chưa tính `node_modules`) |
 | Số commit | 20 (từ 2026-10-19 đến 2026-10-31) |
 | Skill OpenCode | 8 skill trong `.opencode/skills/` |
@@ -77,7 +77,7 @@ Nguyên tắc kiến trúc áp dụng cho **mọi** module:
 Xem mục 5.
 
 ### 3.7 Phần mềm (`software`) — chọn app, tải script cài hàng loạt *(mới)*
-- 35 app / 9 nhóm: Trình duyệt, Liên lạc, Văn phòng & PDF, Media & đồ họa, Tiện ích & lưu trữ, Lập trình & runtime, Bảo mật & giải trí, Công cụ kiểm thử, Hỗ trợ từ xa.
+- 36 app / 9 nhóm: Trình duyệt, Liên lạc, Văn phòng & PDF, Media & đồ họa, Tiện ích & lưu trữ, Lập trình & runtime, Bảo mật & giải trí, Công cụ kiểm thử, Hỗ trợ từ xa.
 - Tick chọn app → tải `device-check-apps.ps1` (UTF-8 BOM), chạy `winget install` cho từng app; có nút “Chọn bộ cơ bản”, tìm kiếm không dấu, xem trước script và sao chép lệnh.
 - Trang không tự cài, không gửi lựa chọn; mỗi app có link trang chủ để tải thủ công.
 
@@ -107,7 +107,8 @@ Xem mục 5.
 | 20 | `1d4d078` | 31-10 | Sửa CLS trang `/test-micro/`: thêm `#tool { min-height: 200px }` vào `src/pages/page.css` để reserve space trước khi module microphone mount, tránh layout shift của `<p class='intro'>` | `src/pages/page.css` |
 | 21 | `211adbc` | 01-11 | Link **“Sửa máy tính Conic”** mở cùng tab (`https://coniccomputer.com/`), bỏ `target="_blank"`; link “Conic” ở footer giữ nguyên | `index.html`, `test-*/index.html` |
 | 22 | `4eb6409` | 02-11 | Căn đều nút **“Mở bài kiểm tra”** trên các thẻ trang chủ: `.card p { flex: 1; }` | `src/styles/main.css` |
-| 23 | (commit này) | 02-11 | **Rà soát toàn bộ `wingetId`** bằng `winget show`: 35/35 app cài được; sửa 3 ID cũ (LibreOffice, Google Drive, FurMark) | `src/modules/software/catalog.json` |
+| 23 | `7fbfdcd` | 02-11 | **Rà soát toàn bộ `wingetId`** bằng `winget show`: 35/35 app cài được; sửa 3 ID cũ (LibreOffice, Google Drive, FurMark) | `src/modules/software/catalog.json` |
+| 24 | (commit này) | 02-11 | Thêm **WPS Office** (`Kingsoft.WPSOffice` 12.2.0.23196, nhóm Văn phòng & PDF, ghi chú bản miễn phí có quảng cáo) — danh mục thành 36 app | `src/modules/software/catalog.json`, `BAO_CAO.md` |
 
 ## 5. Module CPU & GPU — chi tiết
 
@@ -189,17 +190,18 @@ Luồng: `catalog.json` → `catalog.ts` (kiểm tra) → `software.ts` (UI, `Se
 
 ### 6.2 Catalog
 
-`src/modules/software/catalog.json` là nguồn dữ liệu duy nhất: 9 nhóm, 35 app. Mỗi app có `id`, `name`, `publisher`, `description`, `category`, `wingetId`, `homepage`, `recommended?`, `note?`. App chưa có trên winget có thể bỏ `wingetId` — UI chỉ hiện link tải thủ công.
+`src/modules/software/catalog.json` là nguồn dữ liệu duy nhất: 9 nhóm, 36 app. Mỗi app có `id`, `name`, `publisher`, `description`, `category`, `wingetId`, `homepage`, `recommended?`, `note?`. App chưa có trên winget có thể bỏ `wingetId` — UI chỉ hiện link tải thủ công.
 
 - **Bộ cơ bản (6 app):** Chrome, 7-Zip, Zalo, Adobe Acrobat Reader, EVKey, UltraViewer. Các app từng nằm trong bộ cũ (Cốc Cốc, UniKey, VLC, K-Lite, LibreOffice, Everything) vẫn có trong danh mục nhưng không được chọn sẵn.
 - **Công cụ kiểm thử:** FurMark (tải GPU), Unigine Heaven Benchmark (benchmark GPU), Cinebench R23 (CPU đơn/đa luồng) — không nằm trong bộ cơ bản.
 - **Ghi chú bản quyền:** WinRAR bản dùng thử 40 ngày; TeamViewer miễn phí cho cá nhân; K-Lite dùng bản Standard.
 - **Kiểm tra tự động:** `scripts/check-catalog.mjs` (Node thuần) chạy trong `npm run build`, bắt id trùng, nhóm sai, homepage không https, `wingetId` sai định dạng/trùng, thiếu app “Cơ bản”.
-- **Rà soát `wingetId` ngày 02/11/2026** (máy Windows có winget, lệnh `winget show --id <id> --exact --disable-interactivity`, exit code 0 = hợp lệ): **35/35 app cài được bằng winget**, không app nào phải bỏ `wingetId`. Ba ID cũ tra không ra đã sửa lại:
+- **Rà soát `wingetId` ngày 02/11/2026** (máy Windows có winget, lệnh `winget show --id <id> --exact --disable-interactivity`, exit code 0 = hợp lệ): **36/36 app cài được bằng winget**, không app nào phải bỏ `wingetId`. Ba ID cũ tra không ra đã sửa lại:
   - LibreOffice: `LibreOffice.LibreOffice` → **`TheDocumentFoundation.LibreOffice`** (26.8.2.2)
   - Google Drive: `Google.Drive` → **`Google.GoogleDrive`** (133.0.2.0)
   - FurMark: `Geeks3D.FurMark` → **`Geeks3D.FurMark.2`** (2.10.2.0; `Geeks3D.FurMark.1` là bản cũ)
   - 32 ID còn lại đã xác minh OK (Chrome, Firefox, Cốc Cốc, Zalo, Zoom, Discord, Telegram, Adobe Reader, SumatraPDF, VLC, Spotify, GIMP, K-Lite Standard, 7-Zip, Everything, PowerToys, Rufus, UniKey, EVKey, WinRAR, VS Code, Git, Node LTS, Python 3.13, .NET Desktop Runtime 8, VC++ 2015+ x64, KeePassXC, Steam, TeamViewer, UltraViewer, Heaven Benchmark, Cinebench R23).
+- **WPS Office** thêm 02/11/2026: `Kingsoft.WPSOffice` 12.2.0.23196 (bản quốc tế, không dùng `Kingsoft.WPSOffice.CN` là bản Trung Quốc), homepage `https://www.wps.com/office/windows/`, ghi chú “Miễn phí bản cơ bản (có quảng cáo); tính năng nâng cao cần WPS Premium”.
 
 ### 6.3 Script sinh ra
 
@@ -220,7 +222,7 @@ Luồng: `catalog.json` → `catalog.ts` (kiểm tra) → `software.ts` (UI, `Se
 
 | Hạng mục | Kết quả |
 |---|---|
-| `node scripts/check-catalog.mjs` | PASS — `OK: 35 apps / 9 categories (6 recommended)` |
+| `node scripts/check-catalog.mjs` | PASS — `OK: 36 apps / 9 categories (6 recommended)` |
 | `tsc --noEmit` | PASS |
 | `vite build` | PASS — 34 module; `index.html` 2,19 kB; CSS 32,30 kB (gzip 5,85); JS 85,23 kB (gzip 29,80); `gpu-worker` 2,84 kB; `cpu-worker` 0,73 kB |
 | Bộ cơ bản sau khi sửa | Dữ liệu xác nhận đúng 6 app: `chrome`, `7zip`, `zalo`, `adobe-reader`, `evkey`, `ultraviewer` |
@@ -252,10 +254,11 @@ Luồng: `catalog.json` → `catalog.ts` (kiểm tra) → `software.ts` (UI, `Se
 | Đường dự phòng main-thread (`?mainthread=1`) | GPU bench chạy xong (22 phép tính/µs, thấp hơn vì tính cả khoảng rảnh rAF) · storm dừng được |
 | Stress CPU & GPU | start → "đang chạy" → "Dừng" OK trên cả Chrome lẫn Firefox |
 | `npm run build` | PASS — 28 module; JS 67,36 kB, CSS 28,57 kB, `gpu-worker` 2,84 kB, `cpu-worker` 0,73 kB |
-| `npm run check:catalog` (công cụ phần mềm) | PASS — `OK: 35 apps / 9 categories (6 recommended)` |
+| `npm run check:catalog` (công cụ phần mềm) | PASS — `OK: 36 apps / 9 categories (6 recommended)` |
 | `vite build` sau khi thêm công cụ phần mềm | PASS — 34 module; CSS 32,30 kB (gzip 5,85); JS 85,23 kB (gzip 29,80) |
 | Script `.ps1` sinh thử | `PARSE_OK`; BOM `EF BB BF`; escape `Bob''s Tool` đúng |
 | `wingetId` (35 app) | **02/11/2026 — xác minh bằng `winget show --id <id> -e`: 35/35 hợp lệ**; 3 ID cũ đã sửa (LibreOffice, Google Drive, FurMark); `check:catalog` + `npm run build` PASS |
+| WPS Office (36 app) | 02/11/2026 — `Kingsoft.WPSOffice` 12.2.0.23196 xác minh bằng `winget show --id Kingsoft.WPSOffice -e`; `check:catalog` PASS `OK: 36 apps / 9 categories (6 recommended)`; preview trên Render hiển thị `winget install --id Kingsoft.WPSOffice` |
 
 Công cụ kiểm thử: Chrome headless qua CDP (`Input.dispatchMouseEvent` thật, `Runtime.evaluate` đọc trạng thái) và Firefox qua WebDriver BiDi (Firefox chỉ có `ws://127.0.0.1:<port>/session`, không có route `/json/version`).
 
