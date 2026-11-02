@@ -23,7 +23,7 @@ Website tĩnh kiểm tra bàn phím (chuẩn US), loa (1 file quét dải trầm
 - Nội dung giao diện bằng tiếng Việt; tên biến, hàm, commit bằng tiếng Anh.
 - Luôn gọi `track.stop()` cho mọi MediaStream khi rời bài kiểm tra hoặc đóng trang.
 - Thiết bị hoặc API không hỗ trợ (ví dụ Safari thiếu `getLayoutMap`, `setSinkId`) phải phát hiện tính năng và ẩn hoặc có phương án thay thế, không để trang lỗi.
-- Danh mục phần mềm chỉ dùng app miễn phí/freemium với `wingetId` chính thức đã xác minh; không app trả phí/crack. Script sinh ra phải xem trước được, chỉ chứa lệnh tĩnh, không tải mã từ xa.
+- Danh mục phần mềm chỉ dùng app miễn phí/freemium với `wingetId` chính thức đã xác minh; không app trả phí/crack. File cài sinh ra là **một file `.bat` duy nhất**, xem trước được, chỉ chứa lệnh tĩnh và không tải mã từ xa — ngoại lệ duy nhất là 3 gói chính thức của Microsoft để cài winget (VCLibs 14.00 x64, Windows App Runtime 1.8, App Installer ghim phiên bản + kiểm tra SHA-256), chỉ tải sau khi người dùng bấm đồng ý ngay trong cửa sổ lệnh.
 
 ## Skill có sẵn (trong `.opencode/skills/`)
 

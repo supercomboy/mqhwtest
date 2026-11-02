@@ -2,7 +2,7 @@
 // Không tự cài, không gọi mạng, không lưu lựa chọn — mọi thứ diễn ra trong tab này.
 import './software.css';
 import { apps, categories, validateCatalog, type SoftwareApp } from './catalog';
-import { buildPowerShell, buildWingetOneLiner, SCRIPT_FILENAME } from './install-script';
+import { buildBatch, buildWingetOneLiner, SCRIPT_FILENAME } from './install-script';
 
 function el<K extends keyof HTMLElementTagNameMap>(
   tag: K,
@@ -61,7 +61,7 @@ export function mountSoftware(container: HTMLElement): () => void {
   const intro = el(
     'p',
     'sw__intro',
-    'Chọn phần mềm bạn muốn cài. Trang sẽ tạo một file PowerShell dùng winget để cài tự động trên Windows — không cần cài thêm phần mềm nào và không có dữ liệu nào được gửi đi.',
+    'Chọn phần mềm bạn muốn cài. Trang sẽ tạo một file .bat duy nhất: nháy đúp là cài xong, không cần mở PowerShell hay gõ lệnh. Không có dữ liệu nào được gửi đi.',
   );
 
   // ---- Thanh công cụ ----
@@ -155,7 +155,7 @@ export function mountSoftware(container: HTMLElement): () => void {
   list.append(emptyEl);
 
   // ---- Hành động ----
-  const downloadBtn = el('button', 'btn sw__download', 'Tải script (.ps1)');
+  const downloadBtn = el('button', 'btn sw__download', 'Tải file cài (.bat)');
   downloadBtn.type = 'button';
   downloadBtn.disabled = true;
   const copyBtn = el('button', 'btn btn--ghost sw__copy', 'Sao chép lệnh');
@@ -168,7 +168,7 @@ export function mountSoftware(container: HTMLElement): () => void {
   const actionHint = el(
     'p',
     'sw__hint',
-    'File .ps1 chỉ chứa lệnh cài đặt từ danh mục. Bạn có thể mở “Xem trước script” để đọc trước khi chạy.',
+    'Một file .bat duy nhất: nháy đúp để chạy, Windows hỏi quyền quản trị một lần. Mở “Xem trước script” để đọc toàn bộ nội dung trước khi chạy.',
   );
 
   // ---- Xem trước ----
@@ -179,11 +179,12 @@ export function mountSoftware(container: HTMLElement): () => void {
   // ---- Ghi chú ----
   const notes = el('div', 'sw__notes');
   const noteLines = [
-    'Script chỉ chạy trên Windows 10 1809+ hoặc Windows 11 có winget (App Installer).',
+    'File chạy trên Windows 10 1809+ hoặc Windows 11. Nếu máy chưa có winget, file sẽ hỏi trước khi tải 3 gói chính thức của Microsoft (khoảng 220 MB).',
     'Trang không tự cài gì. Bạn tải file, xem trước nội dung, rồi tự chạy.',
-    'Một số app sẽ hỏi quyền quản trị (UAC). Nếu Windows cảnh báo file .ps1 mới tải, mở Properties → Unblock hoặc chạy lệnh kèm -ExecutionPolicy Bypass.',
+    'Windows sẽ hỏi quyền quản trị (UAC) một lần; file tự mở lại cửa sổ mới với quyền Administrator.',
+    'App Installer được ghim phiên bản 1.29.380 và kiểm tra SHA-256 trước khi cài. VCLibs và Windows App Runtime 1.8 lấy từ liên kết chính thức aka.ms của Microsoft.',
     'Chỉ cài bản miễn phí từ kho winget chính thức. WinRAR là bản dùng thử; TeamViewer miễn phí cho mục đích cá nhân.',
-    'Chạy lại script để cập nhật: winget tự bỏ qua app đã ở bản mới nhất.',
+    'Chạy lại file để cập nhật: winget tự bỏ qua app đã ở bản mới nhất.',
   ];
   for (const line of noteLines) notes.append(el('p', 'sw__note', line));
 
@@ -200,7 +201,7 @@ export function mountSoftware(container: HTMLElement): () => void {
     const chosen = chosenApps();
     previewCode.textContent =
       chosen.length > 0
-        ? buildPowerShell(chosen, { siteUrl })
+        ? buildBatch(chosen, { siteUrl })
         : 'Chọn ít nhất một phần mềm để xem script.';
   };
 
@@ -305,9 +306,9 @@ export function mountSoftware(container: HTMLElement): () => void {
     if (chosen.length === 0) return;
 
     try {
-      const script = buildPowerShell(chosen, { siteUrl });
-      const blob = new Blob(['\uFEFF', script], {
-        type: 'text/plain;charset=utf-8',
+      const script = buildBatch(chosen, { siteUrl });
+      const blob = new Blob([script], {
+        type: 'application/octet-stream',
       });
       if (objectUrl) URL.revokeObjectURL(objectUrl);
       objectUrl = URL.createObjectURL(blob);

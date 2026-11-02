@@ -11,8 +11,8 @@ Khi làm việc với `src/modules/software/`, `scripts/check-catalog.mjs`, ho�
 ## Kiến trúc
 - `catalog.json` — nguồn dữ liệu duy nhất: `categories` (id, label) và `apps` (id, name, publisher, description, category, wingetId?, homepage, recommended?, note?).
 - `catalog.ts` — export `categories`, `apps`, type, và `validateCatalog()` (kiểm tra id trùng, nhóm hợp lệ, homepage https, wingetId regex + trùng, có ít nhất một app "Cơ bản").
-- `install-script.ts` — hàm thuần `buildPowerShell(apps, { siteUrl, generatedAt? })` và `buildWingetOneLiner(apps)`; `SCRIPT_FILENAME`.
-- `software.ts` — UI: tìm kiếm, chọn bộ cơ bản, chọn/bỏ chọn, đếm, tải `.ps1`, sao chép lệnh, xem trước.
+- `install-script.ts` — hàm thuần `buildBatch(apps, { siteUrl, generatedAt? })` (file `.bat` một chạm), `buildPowerShell(apps, …)` (bản `.ps1` dự phòng) và `buildWingetOneLiner(apps)`; hằng `SCRIPT_FILENAME = 'device-check-apps.bat'`, `PS_MARKER = '#:PS'`, cùng các URL + SHA-256 của gói App Installer đã ghim.
+- `software.ts` — UI: tìm kiếm, chọn bộ cơ bản, chọn/bỏ chọn, đếm, tải `.bat`, sao chép lệnh, xem trước.
 - `scripts/check-catalog.mjs` — kiểm tra JSON bằng Node thuần; chạy trong `npm run build`.
 
 ## Quy tắc dữ liệu
@@ -26,11 +26,14 @@ Khi làm việc với `src/modules/software/`, `scripts/check-catalog.mjs`, ho�
 ## Quy tắc script
 - Không chèn dữ liệu người dùng nhập; chỉ ID từ catalog đã qua regex.
 - Escape nháy đơn PowerShell bằng cách nhân đôi (`'` → `''`).
-- File UTF-8 **có BOM** (thêm `\uFEFF` khi tạo Blob) và dùng CRLF để Notepad/PowerShell 5.1 đọc đúng tiếng Việt.
-- Kiểm tra `Get-Command winget` trước; thiếu thì hướng dẫn cài App Installer rồi thoát.
+- Sản phẩm tải về là **một file `.bat` duy nhất**: phần batch (`@echo off`, `chcp 65001`, `set "DC_SELF=%~f0"`, gọi `powershell -Command` đọc lại chính file bằng UTF-8) kết thúc bằng `exit /b`, sau dấu `#:PS` là payload PowerShell. cmd không bao giờ đọc tới phần payload.
+- File ghi **UTF-8 không BOM**, xuống dòng CRLF (BOM sẽ làm hỏng dòng `@echo off` đầu tiên). Byte đầu phải là `40 65 63` (`@ec`).
+- Payload bật `[Console]::OutputEncoding = [Text.Encoding]::UTF8` để tiếng Việt hiển thị đúng trong cửa sổ cmd.
+- Tự nâng quyền đúng một lần: kiểm tra `WindowsPrincipal.IsInRole(Administrator)`, nếu chưa thì `Start-Process -FilePath $env:ComSpec -ArgumentList '/c',('"'+$env:DC_SELF+'"') -Verb RunAs` rồi thoát.
+- Kiểm tra winget **trước** bằng `Get-Command winget`; nếu thiếu: chặn khi build < 17763; nếu không, hỏi `Read-Host` (mặc định N). Chỉ khi người dùng đồng ý mới tải 3 gói chính thức của Microsoft theo thứ tự VCLibs 14.00 x64 → Windows App Runtime 1.8 (`--quiet`) → App Installer **ghim phiên bản** (verify `Get-FileHash` SHA-256 trước khi `Add-AppxPackage`). Đây là ngoại lệ duy nhất của luật "không tải mã từ xa".
 - Mỗi app chạy `winget install --id <id> --exact --silent --accept-package-agreements --accept-source-agreements`; mã lỗi chỉ cảnh báo, **không dừng** các app sau.
 - Có tổng kết `$ok`/`$fail` và `Read-Host` để cửa sổ không đóng ngay.
-- Không tải mã từ xa, không gọi API, không analytics.
+- Không gọi API, không analytics, không tải gì khác ngoài 3 gói Microsoft nói trên.
 
 ## Giao diện
 - Modal dùng chung; intro + cảnh báo Windows/winget; toolbar tìm kiếm (bỏ dấu tiếng Việt) + "Chọn bộ cơ bản" + "Bỏ chọn tất cả".
@@ -41,8 +44,9 @@ Khi làm việc với `src/modules/software/`, `scripts/check-catalog.mjs`, ho�
 
 ## Kiểm tra trước khi xong
 1. `npm run check:catalog` và `npm run build` pass.
-2. File `.ps1` parse được: `[void][scriptblock]::Create((Get-Content -Raw <file>))`; 3 byte đầu `EF BB BF`.
-3. Script chỉ chứa app đã chọn; tên có dấu `'` được escape đúng.
-4. Mọi `wingetId` đã xác minh; ghi kết quả vào `BAO_CAO.md`.
-5. Chrome + Firefox: chọn/bỏ chọn, tìm kiếm, tải file, copy (kể cả khi chặn clipboard), preview khớp file.
-6. Không có request mạng ngoài tài nguyên trang; đóng modal không lỗi console.
+2. File `.bat`: 3 byte đầu `40 65 63` (không BOM), toàn bộ CRLF, không có LF lẻ; payload sau `#:PS` parse được bằng `[void][scriptblock]::Create(($lines[($i+1)..($lines.Length-1)] -join [char]10))`.
+3. Chạy thử bằng file nháp (payload chỉ `Write-Host`) để chắc phần batch gọi đúng payload và tiếng Việt hiển thị đúng; thử nhánh thiếu winget: từ chối → thoát mã 1, không tải gì; build < 17763 → báo lỗi và thoát.
+4. Script chỉ chứa app đã chọn; tên có dấu `'` được escape đúng.
+5. Mọi `wingetId` đã xác minh; ghi kết quả vào `BAO_CAO.md`.
+6. Chrome + Firefox: chọn/bỏ chọn, tìm kiếm, tải file, copy (kể cả khi chặn clipboard), preview khớp file.
+7. Không có request mạng ngoài tài nguyên trang; đóng modal không lỗi console.

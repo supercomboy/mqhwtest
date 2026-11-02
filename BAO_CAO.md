@@ -15,7 +15,7 @@
 | Hạng mục | Nội dung |
 |---|---|
 | Số bài kiểm tra | **6** — Bàn phím, Loa, Camera, Microphone, Màn hình, CPU & GPU |
-| Công cụ | **Cài phần mềm** — chọn app, tải script PowerShell dùng winget |
+| Công cụ | **Cài phần mềm** — chọn app, tải một file `.bat` dùng winget |
 | Trang landing SEO | **4** — test-ban-phim, test-loa, test-micro, test-camera (MPA, SSR-ready HTML) |
 | Danh mục phần mềm | **36 app / 9 nhóm**, 6 app “Cơ bản” trong `src/modules/software/catalog.json` |
 | Tổng mã nguồn `src/` | 40 file, ~230 KB (chưa tính `node_modules`) |
@@ -46,7 +46,7 @@ Nguyên tắc kiến trúc áp dụng cho **mọi** module:
 2. `mount(container)` trả về hàm dọn dẹp: gỡ listener, dừng timer, `worker.terminate()`, `track.stop()`, `root.remove()`.
 3. Màu/bo góc/bóng chỉ lấy từ `tokens.css` — không viết mã màu trực tiếp trong component.
 4. API không được hỗ trợ phải phát hiện tính năng và có phương án thay thế, không để trang lỗi.
-5. Danh mục phần mềm là dữ liệu tĩnh (`catalog.json`); script cài đặt chỉ chứa lệnh sinh từ catalog, không tải mã từ xa và phải xem trước được.
+5. Danh mục phần mềm là dữ liệu tĩnh (`catalog.json`); file cài đặt sinh ra là một `.bat` duy nhất, chỉ chứa lệnh sinh từ catalog và phải xem trước được. Ngoại lệ duy nhất được tải về là 3 gói chính thức của Microsoft để cài winget, và chỉ sau khi người dùng đồng ý trong cửa sổ lệnh.
 
 ## 3. Các bài kiểm tra
 
@@ -78,7 +78,7 @@ Xem mục 5.
 
 ### 3.7 Phần mềm (`software`) — chọn app, tải script cài hàng loạt *(mới)*
 - 36 app / 9 nhóm: Trình duyệt, Liên lạc, Văn phòng & PDF, Media & đồ họa, Tiện ích & lưu trữ, Lập trình & runtime, Bảo mật & giải trí, Công cụ kiểm thử, Hỗ trợ từ xa.
-- Tick chọn app → tải `device-check-apps.ps1` (UTF-8 BOM), chạy `winget install` cho từng app; có nút “Chọn bộ cơ bản”, tìm kiếm không dấu, xem trước script và sao chép lệnh.
+- Tick chọn app → tải `device-check-apps.bat` (một file, nháy đúp là chạy), tự xin quyền Administrator một lần rồi chạy `winget install` cho từng app; có nút “Chọn bộ cơ bản”, tìm kiếm không dấu, xem trước script và sao chép lệnh.
 - Trang không tự cài, không gửi lựa chọn; mỗi app có link trang chủ để tải thủ công.
 
 ## 4. Lịch sử thay đổi (theo commit)
@@ -108,7 +108,8 @@ Xem mục 5.
 | 21 | `211adbc` | 01-11 | Link **“Sửa máy tính Conic”** mở cùng tab (`https://coniccomputer.com/`), bỏ `target="_blank"`; link “Conic” ở footer giữ nguyên | `index.html`, `test-*/index.html` |
 | 22 | `4eb6409` | 02-11 | Căn đều nút **“Mở bài kiểm tra”** trên các thẻ trang chủ: `.card p { flex: 1; }` | `src/styles/main.css` |
 | 23 | `7fbfdcd` | 02-11 | **Rà soát toàn bộ `wingetId`** bằng `winget show`: 35/35 app cài được; sửa 3 ID cũ (LibreOffice, Google Drive, FurMark) | `src/modules/software/catalog.json` |
-| 24 | (commit này) | 02-11 | Thêm **WPS Office** (`Kingsoft.WPSOffice` 12.2.0.23196, nhóm Văn phòng & PDF, ghi chú bản miễn phí có quảng cáo) — danh mục thành 36 app | `src/modules/software/catalog.json`, `BAO_CAO.md` |
+| 24 | `a7e1a68` | 02-11 | Thêm **WPS Office** (`Kingsoft.WPSOffice` 12.2.0.23196, nhóm Văn phòng & PDF, ghi chú bản miễn phí có quảng cáo) — danh mục thành 36 app | `src/modules/software/catalog.json`, `BAO_CAO.md` |
+| 25 | (commit này) | 02-11 | **File cài một chạm**: thay script `.ps1` bằng một file `.bat` duy nhất (polyglot batch/PowerShell), tự nâng quyền một lần, kiểm tra winget trước và chỉ tải 3 gói chính thức của Microsoft khi người dùng đồng ý (App Installer ghim 1.29.380 + SHA-256) | `src/modules/software/install-script.ts`, `src/modules/software/software.ts`, `AGENTS.md`, `.opencode/skills/software-installer/SKILL.md`, `BAO_CAO.md` |
 
 ## 5. Module CPU & GPU — chi tiết
 
@@ -184,9 +185,9 @@ Hiển thị: `Math.floor(score).toLocaleString('vi-VN') + ' phép tính/µs'`.
 
 ### 6.1 Cơ chế
 
-Site tĩnh không thể tạo file `.exe` như Ninite, nên công cụ tạo **một script PowerShell** dùng `winget` — tương đương “chọn app → tải một file → chạy”. Trang **không tự cài** và **không gửi lựa chọn** đi đâu.
+Site tĩnh không thể tạo file `.exe` như Ninite, nên công cụ tạo **một file `.bat` duy nhất** dùng `winget` — người dùng chỉ cần nháy đúp, không phải mở PowerShell hay gõ lệnh. Trang **không tự cài** và **không gửi lựa chọn** đi đâu.
 
-Luồng: `catalog.json` → `catalog.ts` (kiểm tra) → `software.ts` (UI, `Set<id>`) → `install-script.ts` (sinh `.ps1` / one-liner) → Blob tải về hoặc clipboard.
+Luồng: `catalog.json` → `catalog.ts` (kiểm tra) → `software.ts` (UI, `Set<id>`) → `install-script.ts` (sinh `.bat` / one-liner) → Blob tải về hoặc clipboard.
 
 ### 6.2 Catalog
 
@@ -203,19 +204,26 @@ Luồng: `catalog.json` → `catalog.ts` (kiểm tra) → `software.ts` (UI, `Se
   - 32 ID còn lại đã xác minh OK (Chrome, Firefox, Cốc Cốc, Zalo, Zoom, Discord, Telegram, Adobe Reader, SumatraPDF, VLC, Spotify, GIMP, K-Lite Standard, 7-Zip, Everything, PowerToys, Rufus, UniKey, EVKey, WinRAR, VS Code, Git, Node LTS, Python 3.13, .NET Desktop Runtime 8, VC++ 2015+ x64, KeePassXC, Steam, TeamViewer, UltraViewer, Heaven Benchmark, Cinebench R23).
 - **WPS Office** thêm 02/11/2026: `Kingsoft.WPSOffice` 12.2.0.23196 (bản quốc tế, không dùng `Kingsoft.WPSOffice.CN` là bản Trung Quốc), homepage `https://www.wps.com/office/windows/`, ghi chú “Miễn phí bản cơ bản (có quảng cáo); tính năng nâng cao cần WPS Premium”.
 
-### 6.3 Script sinh ra
+### 6.3 File cài sinh ra (`.bat` một chạm)
 
-- Tên file `device-check-apps.ps1`, UTF-8 **có BOM**, xuống dòng CRLF.
-- Header ghi ngày tạo, URL trang, lệnh chạy gợi ý; kiểm tra `Get-Command winget` trước khi cài.
-- Mỗi app: `winget install --id <id> --exact --silent --accept-package-agreements --accept-source-agreements`; mã lỗi chỉ `Write-Warning` và **tiếp tục**, cuối script tổng kết `$ok`/`$fail` rồi `Read-Host`.
-- Chỉ chứa ID từ catalog tĩnh; tên app escape nháy đơn (`'` → `''`); không tải mã từ xa.
+- Tên file `device-check-apps.bat`, **một file duy nhất**, UTF-8 **không BOM**, xuống dòng CRLF (byte đầu `40 65 63` = `@ec`; BOM sẽ làm hỏng dòng `@echo off`).
+- Cấu trúc polyglot: 7 dòng batch (`@echo off`, `chcp 65001`, `setlocal`, `set "DC_SELF=%~f0"`, gọi `powershell -NoProfile -ExecutionPolicy Bypass -Command` đọc lại chính file bằng UTF-8, `exit /b`) → dấu `#:PS` → payload PowerShell. cmd dừng ở `exit /b` nên không bao giờ đọc phần payload.
+- Payload bật `[Console]::OutputEncoding = [Text.Encoding]::UTF8` để tiếng Việt hiển thị đúng trong cửa sổ cmd.
+- Tự nâng quyền **một lần**: nếu chưa là Administrator thì `Start-Process -FilePath $env:ComSpec -ArgumentList '/c',('"'+$env:DC_SELF+'"') -Verb RunAs` rồi thoát; người dùng chỉ thấy một hộp thoại UAC.
+- Kiểm tra winget **trước khi cài**: `Get-Command winget`. Nếu thiếu:
+  - build < 17763 → báo Windows quá cũ và thoát.
+  - ngược lại → giải thích sẽ tải 3 gói chính thức của Microsoft (~220 MB) và hỏi `Read-Host` (mặc định **N**). Chỉ khi đồng ý mới tải, theo thứ tự: VCLibs 14.00 x64 (`https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx`) → Windows App Runtime 1.8 (`https://aka.ms/windowsappsdk/1.8/latest/windowsappruntimeinstall-x64.exe`, chạy `--quiet`) → App Installer **ghim phiên bản 1.29.380** (`https://github.com/microsoft/winget-cli/releases/download/v1.29.380/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle`), kiểm tra `Get-FileHash -Algorithm SHA256` khớp `65DEA9C01CE08EE7B763366B27C0E651F97DB857C11CA9B9C301826C10092F2E` rồi mới `Add-AppxPackage`.
+  - Từ chối, tải lỗi, hash sai hoặc cài lỗi → in hướng dẫn cài “App Installer” từ Microsoft Store / link GitHub releases rồi thoát mã 1.
+- Mỗi app: `winget install --id <id> --exact --silent --accept-package-agreements --accept-source-agreements`; mã lỗi chỉ `Write-Warning` và **tiếp tục**, cuối file tổng kết `$ok`/`$fail` rồi `Read-Host`.
+- Chỉ chứa ID từ catalog tĩnh; tên app escape nháy đơn (`'` → `''`); không tải gì khác ngoài 3 gói Microsoft nói trên.
+- `buildPowerShell()` vẫn giữ để xuất bản `.ps1` dự phòng, nhưng nút tải trên trang chỉ phát `.bat`.
 - Nút “Sao chép lệnh” sinh one-liner nối bằng `; `.
 
 ### 6.4 Giao diện
 
 - Modal dùng chung: giới thiệu, cảnh báo Windows/winget, ô tìm kiếm (bỏ dấu tiếng Việt), “Chọn bộ cơ bản”, “Bỏ chọn tất cả”, dòng đếm `aria-live`.
 - Danh sách cuộn nội bộ (`max-height: min(46dvh, 500px)`), thanh hành động nằm ngay trên danh sách để luôn nhìn thấy; thẻ app có checkbox, nhà phát hành, mô tả, ghi chú và link “Trang chủ”.
-- Nút “Tải script (.ps1)”, “Sao chép lệnh” disabled khi chưa chọn; `<details>` xem trước script; ghi chú UAC/SmartScreen/quyền bản quyền.
+- Nút “Tải file cài (.bat)”, “Sao chép lệnh” disabled khi chưa chọn; `<details>` xem trước đúng nội dung file sẽ tải; ghi chú UAC/App Installer/quyền bản quyền.
 - Chỉ dùng token màu; 1 cột dưới 640px; copy có fallback `execCommand`.
 
 ### 6.5 Kết quả kiểm thử
@@ -228,7 +236,11 @@ Luồng: `catalog.json` → `catalog.ts` (kiểm tra) → `software.ts` (UI, `Se
 | Bộ cơ bản sau khi sửa | Dữ liệu xác nhận đúng 6 app: `chrome`, `7zip`, `zalo`, `adobe-reader`, `evkey`, `ultraviewer` |
 | Logo mới (screenshot CDP) | Desktop 1280×900 và mobile 360×800: logo 805×216 hiển thị đúng tỷ lệ; mobile ẩn chữ “Device Check”, nav không tràn (docScroll = 360) |
 | Menu điều hướng | Chỉ còn “Sửa máy tính Conic” → `https://coniccomputer.com` (`target="_blank"`); ảnh chụp navbar 1280×400 hiển thị đúng |
-| Script `.ps1` | `PARSE_OK` bằng `[scriptblock]::Create`; BOM `EF BB BF`; tên có `'` được escape đúng |
+| File `.bat` sinh thử | 3 byte đầu `40 65 63` (không BOM), 120 CRLF, 0 LF lẻ; payload sau `#:PS` `PARSE_OK` bằng `[scriptblock]::Create`; tên có `'` được escape đúng |
+| Chạy thử polyglot (file nháp) | cmd gọi đúng payload, `DC_SELF` đúng đường dẫn, tiếng Việt có dấu hiển thị đúng trong cửa sổ cmd |
+| Nhánh thiếu winget — từ chối | In 3 gói sẽ tải + `Read-Host`; trả lời `n` → in hướng dẫn Microsoft Store/GitHub, thoát mã 1, **không tải gì** |
+| Nhánh Windows quá cũ | build giả 10000 → báo “winget cần Windows 10 1809 (build 17763) trở lên”, thoát mã 1 |
+| URL + hash gói App Installer | 3 URL trả 200 (`application/octet-stream`); tải thật msixbundle 217.276.577 byte, SHA-256 `65DEA9C0…92F2E` khớp hằng số trong script |
 | Chrome 156 headless (CDP) | 7 thẻ/7 menu; modal 31 app/8 nhóm (trước khi thêm 3 tool); preset 10; tìm “zalo” còn 1; tải `.ps1` BOM chỉ chứa app đã chọn; copy hiện fallback khi clipboard bị chặn; đóng modal dọn `.sw`; 0 lỗi console |
 | Edge 156 headless (CDP) | Lặp lại toàn bộ kiểm thử; viewport 360×640 không tràn ngang; ảnh chụp modal hiển thị đúng |
 | Chrome + Edge sau khi thêm 3 tool | 34 app/9 nhóm; có nhóm “Công cụ kiểm thử”; tìm “furmark” còn đúng 1 app; 0 lỗi console |
@@ -256,7 +268,7 @@ Luồng: `catalog.json` → `catalog.ts` (kiểm tra) → `software.ts` (UI, `Se
 | `npm run build` | PASS — 28 module; JS 67,36 kB, CSS 28,57 kB, `gpu-worker` 2,84 kB, `cpu-worker` 0,73 kB |
 | `npm run check:catalog` (công cụ phần mềm) | PASS — `OK: 36 apps / 9 categories (6 recommended)` |
 | `vite build` sau khi thêm công cụ phần mềm | PASS — 34 module; CSS 32,30 kB (gzip 5,85); JS 85,23 kB (gzip 29,80) |
-| Script `.ps1` sinh thử | `PARSE_OK`; BOM `EF BB BF`; escape `Bob''s Tool` đúng |
+| File `.bat` sinh thử | `PARSE_OK`; 3 byte đầu `40 65 63`; escape `Bob''s Tool` đúng |
 | `wingetId` (35 app) | **02/11/2026 — xác minh bằng `winget show --id <id> -e`: 35/35 hợp lệ**; 3 ID cũ đã sửa (LibreOffice, Google Drive, FurMark); `check:catalog` + `npm run build` PASS |
 | WPS Office (36 app) | 02/11/2026 — `Kingsoft.WPSOffice` 12.2.0.23196 xác minh bằng `winget show --id Kingsoft.WPSOffice -e`; `check:catalog` PASS `OK: 36 apps / 9 categories (6 recommended)`; preview trên Render hiển thị `winget install --id Kingsoft.WPSOffice` |
 
@@ -289,7 +301,7 @@ npm run preview    # xem bản build
 9. Luôn `track.stop()` mọi MediaStream khi rời bài kiểm tra hoặc đóng trang.
 10. API không hỗ trợ phải phát hiện và có phương án thay thế.
 11. Hoàn thành khi `npm run build` không lỗi, bài kiểm tra/công cụ chạy được trên Chrome và ít nhất một trình duyệt khác, và đã xử lý trường hợp bị từ chối quyền / không có thiết bị.
-12. Danh mục phần mềm chỉ dùng app miễn phí/freemium với `wingetId` đã xác minh; script xem trước được, chỉ chứa lệnh tĩnh, không tải mã từ xa.
+12. Danh mục phần mềm chỉ dùng app miễn phí/freemium với `wingetId` đã xác minh; file cài là một `.bat` xem trước được, chỉ chứa lệnh tĩnh; ngoại lệ duy nhất là 3 gói chính thức của Microsoft để cài winget, tải sau khi người dùng đồng ý.
 
 ## 10. Skill OpenCode (`.opencode/skills/`)
 
@@ -312,7 +324,7 @@ npm run preview    # xem bản build
 - **Dừng stress GPU** có thể phải đóng cửa sổ trình duyệt nếu không hỗ trợ OffscreenCanvas (đã có đường dự phòng chạy trên tab chính).
 - **Điểm CPU không so sánh được** với bảng tham khảu của mprep (số vòng lặp khác).
 - **Không đọc được nhiệt độ / điện áp / công suất** phần cứng trong trình duyệt (khác với phần mềm native như HWMonitor/FurMark).
-- **Công cụ phần mềm chỉ chạy trên Windows** có winget; không tạo được `.exe` như Ninite, người dùng phải tự chạy file `.ps1` và có thể gặp UAC/SmartScreen.
+- **Công cụ phần mềm chỉ chạy trên Windows** (10 1809+ hoặc 11); không tạo được `.exe` như Ninite, người dùng phải tự chạy file `.bat` và có thể gặp UAC/SmartScreen. Nếu máy chưa có winget, file hỏi trước rồi mới tải ~220 MB gói chính thức của Microsoft.
 - **Danh mục là dữ liệu tĩnh**: không tự cập nhật phiên bản; WinRAR là bản dùng thử, TeamViewer miễn phí cho cá nhân.
 
 ## 12. Ghi công & tham khảo
