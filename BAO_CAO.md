@@ -105,6 +105,9 @@ Xem mục 5.
 | 18 | (commit này) | 31-10 | Bỏ các link bài kiểm tra trên menu, thay bằng liên kết **“Sửa máy tính Conic”** → coniccomputer.com | `src/main.ts`, `index.html` |
 | 19 | (commit này) | 31-10 | **SEO MPA**: 4 trang landing test, metadata/canonical/OG, JSON-LD, sitemap/robots, check-seo, noindex GitHub Pages | `vite.config.ts`, `index.html`, `test-*/index.html`, `src/pages/*`, `src/main.ts`, `src/modules/registry.ts`, `src/styles/main.css`, `scripts/check-seo.mjs`, `package.json`, `.github/workflows/deploy.yml`, `public/og-image.png`, `BAO_CAO.md` |
 | 20 | `1d4d078` | 31-10 | Sửa CLS trang `/test-micro/`: thêm `#tool { min-height: 200px }` vào `src/pages/page.css` để reserve space trước khi module microphone mount, tránh layout shift của `<p class='intro'>` | `src/pages/page.css` |
+| 21 | `211adbc` | 01-11 | Link **“Sửa máy tính Conic”** mở cùng tab (`https://coniccomputer.com/`), bỏ `target="_blank"`; link “Conic” ở footer giữ nguyên | `index.html`, `test-*/index.html` |
+| 22 | `4eb6409` | 02-11 | Căn đều nút **“Mở bài kiểm tra”** trên các thẻ trang chủ: `.card p { flex: 1; }` | `src/styles/main.css` |
+| 23 | (commit này) | 02-11 | **Rà soát toàn bộ `wingetId`** bằng `winget show`: 35/35 app cài được; sửa 3 ID cũ (LibreOffice, Google Drive, FurMark) | `src/modules/software/catalog.json` |
 
 ## 5. Module CPU & GPU — chi tiết
 
@@ -192,6 +195,11 @@ Luồng: `catalog.json` → `catalog.ts` (kiểm tra) → `software.ts` (UI, `Se
 - **Công cụ kiểm thử:** FurMark (tải GPU), Unigine Heaven Benchmark (benchmark GPU), Cinebench R23 (CPU đơn/đa luồng) — không nằm trong bộ cơ bản.
 - **Ghi chú bản quyền:** WinRAR bản dùng thử 40 ngày; TeamViewer miễn phí cho cá nhân; K-Lite dùng bản Standard.
 - **Kiểm tra tự động:** `scripts/check-catalog.mjs` (Node thuần) chạy trong `npm run build`, bắt id trùng, nhóm sai, homepage không https, `wingetId` sai định dạng/trùng, thiếu app “Cơ bản”.
+- **Rà soát `wingetId` ngày 02/11/2026** (máy Windows có winget, lệnh `winget show --id <id> --exact --disable-interactivity`, exit code 0 = hợp lệ): **35/35 app cài được bằng winget**, không app nào phải bỏ `wingetId`. Ba ID cũ tra không ra đã sửa lại:
+  - LibreOffice: `LibreOffice.LibreOffice` → **`TheDocumentFoundation.LibreOffice`** (26.8.2.2)
+  - Google Drive: `Google.Drive` → **`Google.GoogleDrive`** (133.0.2.0)
+  - FurMark: `Geeks3D.FurMark` → **`Geeks3D.FurMark.2`** (2.10.2.0; `Geeks3D.FurMark.1` là bản cũ)
+  - 32 ID còn lại đã xác minh OK (Chrome, Firefox, Cốc Cốc, Zalo, Zoom, Discord, Telegram, Adobe Reader, SumatraPDF, VLC, Spotify, GIMP, K-Lite Standard, 7-Zip, Everything, PowerToys, Rufus, UniKey, EVKey, WinRAR, VS Code, Git, Node LTS, Python 3.13, .NET Desktop Runtime 8, VC++ 2015+ x64, KeePassXC, Steam, TeamViewer, UltraViewer, Heaven Benchmark, Cinebench R23).
 
 ### 6.3 Script sinh ra
 
@@ -224,7 +232,7 @@ Luồng: `catalog.json` → `catalog.ts` (kiểm tra) → `software.ts` (UI, `Se
 | Chrome + Edge sau khi thêm 3 tool | 34 app/9 nhóm; có nhóm “Công cụ kiểm thử”; tìm “furmark” còn đúng 1 app; 0 lỗi console |
 | Chrome + Edge sau khi thêm EVKey | 35 app/9 nhóm; tìm “evkey” đúng 1 app; preview chứa `lamquangminh.EVKey`; 0 lỗi console |
 | Firefox headless | Chưa hoàn tất: tiến trình treo trong môi trường sandbox, chưa có kết quả |
-| `wingetId` | Đã đối chiếu các ID mới (Cốc Cốc, K-Lite, WinRAR, TeamViewer, UltraViewer, Zalo, UniKey, EVKey, FurMark, Heaven, Cinebench R23) qua winstall/wingetly; toàn bộ ID cần xác minh lại bằng `winget show` trên máy có winget (sandbox chặn `winget.exe`) |
+| `wingetId` | **02/11/2026 — đã xác minh 35/35 app bằng `winget show --id <id> -e`** (exit code 0); 3 ID cũ sai đã sửa: LibreOffice → `TheDocumentFoundation.LibreOffice`, Google Drive → `Google.GoogleDrive`, FurMark → `Geeks3D.FurMark.2` |
 
 ### 6.6 Giới hạn
 
@@ -247,7 +255,7 @@ Luồng: `catalog.json` → `catalog.ts` (kiểm tra) → `software.ts` (UI, `Se
 | `npm run check:catalog` (công cụ phần mềm) | PASS — `OK: 35 apps / 9 categories (6 recommended)` |
 | `vite build` sau khi thêm công cụ phần mềm | PASS — 34 module; CSS 32,30 kB (gzip 5,85); JS 85,23 kB (gzip 29,80) |
 | Script `.ps1` sinh thử | `PARSE_OK`; BOM `EF BB BF`; escape `Bob''s Tool` đúng |
-| `wingetId` (35 app) | Đã tra cứu qua winstall/wingetly/winget.ragerworks; chưa chạy `winget show` vì sandbox chặn `winget.exe` |
+| `wingetId` (35 app) | **02/11/2026 — xác minh bằng `winget show --id <id> -e`: 35/35 hợp lệ**; 3 ID cũ đã sửa (LibreOffice, Google Drive, FurMark); `check:catalog` + `npm run build` PASS |
 
 Công cụ kiểm thử: Chrome headless qua CDP (`Input.dispatchMouseEvent` thật, `Runtime.evaluate` đọc trạng thái) và Firefox qua WebDriver BiDi (Firefox chỉ có `ws://127.0.0.1:<port>/session`, không có route `/json/version`).
 

@@ -83,7 +83,7 @@
       "publisher": "The Document Foundation",
       "description": "Bộ văn phòng miễn phí: Writer, Calc, Impress.",
       "category": "office",
-      "wingetId": "LibreOffice.LibreOffice",
+      "wingetId": "TheDocumentFoundation.LibreOffice",
       "homepage": "https://www.libreoffice.org/"
     },
     {
@@ -203,7 +203,7 @@
       "publisher": "Google",
       "description": "Đồng bộ và sao lưu file lên Google Drive.",
       "category": "utility",
-      "wingetId": "Google.Drive",
+      "wingetId": "Google.GoogleDrive",
       "homepage": "https://www.google.com/drive/"
     },
     {
@@ -314,7 +314,7 @@
       "publisher": "Geeks3D",
       "description": "Kiểm tra tải GPU bằng phép vẽ nặng, theo dõi nhiệt độ và độ ổn định.",
       "category": "testing",
-      "wingetId": "Geeks3D.FurMark",
+      "wingetId": "Geeks3D.FurMark.2",
       "homepage": "https://www.geeks3d.com/furmark/"
     },
     {
