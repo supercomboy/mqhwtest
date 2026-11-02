@@ -110,7 +110,8 @@ Xem mục 5.
 | 23 | `7fbfdcd` | 02-11 | **Rà soát toàn bộ `wingetId`** bằng `winget show`: 35/35 app cài được; sửa 3 ID cũ (LibreOffice, Google Drive, FurMark) | `src/modules/software/catalog.json` |
 | 24 | `a7e1a68` | 02-11 | Thêm **WPS Office** (`Kingsoft.WPSOffice` 12.2.0.23196, nhóm Văn phòng & PDF, ghi chú bản miễn phí có quảng cáo) — danh mục thành 36 app | `src/modules/software/catalog.json`, `BAO_CAO.md` |
 | 25 | `ef187af` | 02-11 | **File cài một chạm**: thay script `.ps1` bằng một file `.bat` duy nhất (polyglot batch/PowerShell), tự nâng quyền một lần, kiểm tra winget trước và chỉ tải 3 gói chính thức của Microsoft khi người dùng đồng ý (App Installer ghim 1.29.380 + SHA-256) | `src/modules/software/install-script.ts`, `src/modules/software/software.ts`, `AGENTS.md`, `.opencode/skills/software-installer/SKILL.md`, `BAO_CAO.md` |
-| 26 | (commit này) | 02-11 | **Sửa cảnh báo sai khi app đã cài sẵn**: tách mã `0x8A15002B` (`UPDATE_NOT_APPLICABLE`) và kiểm chứng bằng `winget list` thành `$skip`, chỉ báo lỗi thật kèm mã hex; tổng kết `cài đặt / đã có sẵn / lỗi` | `src/modules/software/install-script.ts`, `BAO_CAO.md`, `.opencode/skills/software-installer/SKILL.md` |
+| 26 | `32bff7d` | 02-11 | **Sửa cảnh báo sai khi app đã cài sẵn**: tách mã `0x8A15002B` (`UPDATE_NOT_APPLICABLE`) và kiểm chứng bằng `winget list` thành `$skip`, chỉ báo lỗi thật kèm mã hex; tổng kết `cài đặt / đã có sẵn / lỗi` | `src/modules/software/install-script.ts`, `BAO_CAO.md`, `.opencode/skills/software-installer/SKILL.md` |
+| 27 | (commit này) | 02-11 | **Thử lại bằng trình cài đặt của hãng**: khi cài im lặng lỗi (ví dụ Zalo `0xC0000005`) thì mở lại không `--silent`, kiểm tra bằng `winget list` rồi mới tính lỗi; thêm dòng mẹo và ghi chú trong giao diện | `src/modules/software/install-script.ts`, `src/modules/software/software.ts`, `BAO_CAO.md`, `.opencode/skills/software-installer/SKILL.md` |
 
 ## 5. Module CPU & GPU — chi tiết
 
@@ -218,8 +219,8 @@ Luồng: `catalog.json` → `catalog.ts` (kiểm tra) → `software.ts` (UI, `Se
 - Mỗi app: `winget install --id <id> --exact --silent --accept-package-agreements --accept-source-agreements`, rồi phân loại theo `$LASTEXITCODE`:
   - `0` → `$ok++` (cài mới hoặc nâng cấp).
   - `-1978335189` (`0x8A15002B`, `UPDATE_NOT_APPLICABLE`: app đã ở bản mới nhất) → `$skip++`, in “Đã ở bản mới nhất, bỏ qua.” — **không** tính là lỗi.
-  - mã khác → chạy `winget list --id <id> --exact` để kiểm chứng: máy đã có app → `$skip++` (“Phần mềm đã có trên máy, không có bản nâng cấp.”); chưa có → `$fail++`, thêm tên vào `$failed` và `Write-Warning` kèm mã hex `0x{0:X8}`.
-  - Lỗi không dừng các app sau. Cuối file tổng kết `Xong: $ok cài đặt, $skip đã có sẵn, $fail lỗi.`, in danh sách `$failed` nếu có, rồi `Read-Host`.
+  - mã khác → chạy `winget list --id <id> --exact` để kiểm chứng: máy đã có app → `$skip++` (“Phần mềm đã có trên máy, không có bản nâng cấp.”); chưa có → **thử lại một lần bằng trình cài đặt của hãng** (`winget install --id <id> --exact …`, bỏ `--silent` để hiện giao diện), rồi kiểm tra lại bằng `winget list`: đã có → `$ok++` (“Đã cài bằng trình cài đặt của hãng.”); vẫn chưa → `$fail++`, thêm tên vào `$failed` và `Write-Warning` kèm mã hex `0x{0:X8}`.
+  - Lỗi không dừng các app sau. Cuối file tổng kết `Xong: $ok cài đặt, $skip đã có sẵn, $fail lỗi.`, in danh sách `$failed` nếu có, in mẹo “đóng ứng dụng đang chạy, tạm tắt trình diệt virus rồi chạy lại”, rồi `Read-Host`.
 - Chỉ chứa ID từ catalog tĩnh; tên app escape nháy đơn (`'` → `''`); không tải gì khác ngoài 3 gói Microsoft nói trên.
 - `buildPowerShell()` vẫn giữ để xuất bản `.ps1` dự phòng, nhưng nút tải trên trang chỉ phát `.bat`.
 - Nút “Sao chép lệnh” sinh one-liner nối bằng `; `.
@@ -247,7 +248,8 @@ Luồng: `catalog.json` → `catalog.ts` (kiểm tra) → `software.ts` (UI, `Se
 | Nhánh Windows quá cũ | build giả 10000 → báo “winget cần Windows 10 1809 (build 17763) trở lên”, thoát mã 1 |
 | URL + hash gói App Installer | 3 URL trả 200 (`application/octet-stream`); tải thật msixbundle 217.276.577 byte, SHA-256 `65DEA9C0…92F2E` khớp hằng số trong script |
 | App đã cài sẵn (Zalo + VLC, winget 1.29.380) | `winget install` trả `0x8A15002B` (`-1978335189`) → in “Đã ở bản mới nhất, bỏ qua.”, tổng kết `Xong: 0 cài đặt, 2 đã có sẵn, 0 lỗi.` — **không còn cảnh báo sai** |
-| App không tồn tại (`Contoso.NotARealApp`) | `winget list` cũng không thấy → `Write-Warning … (mã 0x8A150014)`, tổng kết `0 cài đặt, 0 đã có sẵn, 1 lỗi` + dòng “Không cài được: …” |
+| App không tồn tại (`Contoso.NotARealApp`) | `winget list` cũng không thấy → in “Cài im lặng không được (mã 0x8A150014). Đang mở trình cài đặt của hãng…” → thử lại lần hai vẫn lỗi → `Write-Warning … (mã 0x8A150014)`, tổng kết `0 cài đặt, 0 đã có sẵn, 1 lỗi` + dòng “Không cài được: …” + dòng mẹo |
+| Nhánh thử lại bằng trình cài đặt hãng | Chạy payload thật với app không tồn tại: thấy đúng thứ tự thông báo (im lặng → mở trình cài đặt hãng → kiểm tra lại → cảnh báo), `$failed` gom đúng tên, `PARSE_OK`, 170 CRLF / 0 LF lẻ |
 | Chrome 156 headless (CDP) | 7 thẻ/7 menu; modal 31 app/8 nhóm (trước khi thêm 3 tool); preset 10; tìm “zalo” còn 1; tải `.ps1` BOM chỉ chứa app đã chọn; copy hiện fallback khi clipboard bị chặn; đóng modal dọn `.sw`; 0 lỗi console |
 | Edge 156 headless (CDP) | Lặp lại toàn bộ kiểm thử; viewport 360×640 không tràn ngang; ảnh chụp modal hiển thị đúng |
 | Chrome + Edge sau khi thêm 3 tool | 34 app/9 nhóm; có nhóm “Công cụ kiểm thử”; tìm “furmark” còn đúng 1 app; 0 lỗi console |

@@ -185,6 +185,7 @@ export function mountSoftware(container: HTMLElement): () => void {
     'App Installer được ghim phiên bản 1.29.380 và kiểm tra SHA-256 trước khi cài. VCLibs và Windows App Runtime 1.8 lấy từ liên kết chính thức aka.ms của Microsoft.',
     'Chỉ cài bản miễn phí từ kho winget chính thức. WinRAR là bản dùng thử; TeamViewer miễn phí cho mục đích cá nhân.',
     'Chạy lại file để cập nhật: winget tự bỏ qua app đã ở bản mới nhất.',
+    'App nào cài im lặng không được sẽ tự mở trình cài đặt của hãng để bạn bấm tiếp; xong rồi file tự kiểm tra lại.',
   ];
   for (const line of noteLines) notes.append(el('p', 'sw__note', line));
 

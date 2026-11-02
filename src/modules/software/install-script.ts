@@ -63,11 +63,21 @@ function appInstallBlock(app: WingetApp): string[] {
     '    $skip++',
     `    Write-Host ${quote('   Phần mềm đã có trên máy, không có bản nâng cấp.')} -ForegroundColor DarkGray`,
     '  } else {',
-    '    $fail++',
-    `    $failed += ${quote(app.name)}`,
-    `    Write-Warning (${quote(
+    `    Write-Host (${quote(
+      '   Cài im lặng không được (mã 0x{0:X8}). Đang mở trình cài đặt của hãng để bạn tự hoàn tất...',
+    )} -f $code) -ForegroundColor Yellow`,
+    `    winget install --id ${app.wingetId} --exact --accept-package-agreements --accept-source-agreements`,
+    `    winget list --id ${app.wingetId} --exact --accept-source-agreements | Out-Null`,
+    '    if ($LASTEXITCODE -eq 0) {',
+    '      $ok++',
+    `      Write-Host ${quote('   Đã cài bằng trình cài đặt của hãng.')} -ForegroundColor Green`,
+    '    } else {',
+    '      $fail++',
+    `      $failed += ${quote(app.name)}`,
+    `      Write-Warning (${quote(
       `Không cài được ${app.name} (mã 0x{0:X8}). Xem thông báo phía trên.`,
     )} -f $code)`,
+    '    }',
     '  }',
     '}',
   ];
@@ -237,6 +247,7 @@ export function buildBatch(apps: SoftwareApp[], opts: ScriptOptions): string {
     "Write-Host ''",
     'Write-Host "Xong: $ok cài đặt, $skip đã có sẵn, $fail lỗi." -ForegroundColor Green',
     "if ($fail -gt 0) { Write-Host \"Không cài được: $($failed -join ', ')\" -ForegroundColor Yellow }",
+    "if ($fail -gt 0) { Write-Host 'Mẹo: đóng ứng dụng đang chạy, tạm tắt trình diệt virus rồi chạy lại file này.' -ForegroundColor Yellow }",
     "Read-Host 'Nhấn Enter để đóng'",
     '',
   );
@@ -283,6 +294,7 @@ export function buildPowerShell(apps: SoftwareApp[], opts: ScriptOptions): strin
     "Write-Host ''",
     'Write-Host "Xong: $ok cài đặt, $skip đã có sẵn, $fail lỗi." -ForegroundColor Green',
     "if ($fail -gt 0) { Write-Host \"Không cài được: $($failed -join ', ')\" -ForegroundColor Yellow }",
+    "if ($fail -gt 0) { Write-Host 'Mẹo: đóng ứng dụng đang chạy, tạm tắt trình diệt virus rồi chạy lại file này.' -ForegroundColor Yellow }",
     "Read-Host 'Nhấn Enter để đóng'",
     '',
   );
