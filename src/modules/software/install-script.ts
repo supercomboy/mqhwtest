@@ -25,6 +25,12 @@ export interface ScriptOptions {
 
 type WingetApp = SoftwareApp & { wingetId: string };
 
+/**
+ * Mã thoát của winget khi gói đã ở bản mới nhất và không có gì để nâng cấp
+ * (APPINSTALLER_CLI_ERROR_UPDATE_NOT_APPLICABLE, 0x8A15002B).
+ */
+const EXIT_ALREADY_LATEST = -1978335189;
+
 /** Chỉ giữ app có wingetId hợp lệ để đưa vào script. */
 function withWinget(apps: SoftwareApp[]): WingetApp[] {
   return apps.filter(
@@ -35,6 +41,36 @@ function withWinget(apps: SoftwareApp[]): WingetApp[] {
 /** Bọc chuỗi trong nháy đơn của PowerShell, nhân đôi nháy đơn bên trong. */
 function quote(value: string): string {
   return `'${value.replace(/'/g, "''")}'`;
+}
+
+/**
+ * Khối cài một app + phân loại kết quả. winget trả mã 0x8A15002B khi app đã ở
+ * bản mới nhất — đó không phải lỗi, nên phải tách khỏi $fail.
+ */
+function appInstallBlock(app: WingetApp): string[] {
+  return [
+    '',
+    `Write-Host ${quote(`==> ${app.name}`)} -ForegroundColor Cyan`,
+    `winget install --id ${app.wingetId} --exact --silent --accept-package-agreements --accept-source-agreements`,
+    '$code = $LASTEXITCODE',
+    'if ($code -eq 0) { $ok++ }',
+    `elseif ($code -eq ${EXIT_ALREADY_LATEST}) {`,
+    '  $skip++',
+    `  Write-Host ${quote('   Đã ở bản mới nhất, bỏ qua.')} -ForegroundColor DarkGray`,
+    '} else {',
+    `  winget list --id ${app.wingetId} --exact --accept-source-agreements | Out-Null`,
+    '  if ($LASTEXITCODE -eq 0) {',
+    '    $skip++',
+    `    Write-Host ${quote('   Phần mềm đã có trên máy, không có bản nâng cấp.')} -ForegroundColor DarkGray`,
+    '  } else {',
+    '    $fail++',
+    `    $failed += ${quote(app.name)}`,
+    `    Write-Warning (${quote(
+      `Không cài được ${app.name} (mã 0x{0:X8}). Xem thông báo phía trên.`,
+    )} -f $code)`,
+    '  }',
+    '}',
+  ];
 }
 
 function stamp(date: Date): string {
@@ -185,26 +221,22 @@ export function buildBatch(apps: SoftwareApp[], opts: ScriptOptions): string {
     ...wingetRepairBlock(),
     '',
     '$ok = 0',
+    '$skip = 0',
     '$fail = 0',
+    '$failed = @()',
     '',
     `Write-Host 'Bắt đầu cài ${chosen.length} phần mềm...' -ForegroundColor Green`,
   ];
 
   for (const app of chosen) {
-    lines.push(
-      '',
-      `Write-Host ${quote(`==> ${app.name}`)} -ForegroundColor Cyan`,
-      `winget install --id ${app.wingetId} --exact --silent --accept-package-agreements --accept-source-agreements`,
-      `if ($LASTEXITCODE -eq 0) { $ok++ } else { $fail++; Write-Warning ${quote(
-        `Không cài được ${app.name}. Xem thông báo phía trên.`,
-      )} }`,
-    );
+    lines.push(...appInstallBlock(app));
   }
 
   lines.push(
     '',
     "Write-Host ''",
-    'Write-Host "Xong: $ok thành công, $fail lỗi." -ForegroundColor Green',
+    'Write-Host "Xong: $ok cài đặt, $skip đã có sẵn, $fail lỗi." -ForegroundColor Green',
+    "if ($fail -gt 0) { Write-Host \"Không cài được: $($failed -join ', ')\" -ForegroundColor Yellow }",
     "Read-Host 'Nhấn Enter để đóng'",
     '',
   );
@@ -235,26 +267,22 @@ export function buildPowerShell(apps: SoftwareApp[], opts: ScriptOptions): strin
     '}',
     '',
     '$ok = 0',
+    '$skip = 0',
     '$fail = 0',
+    '$failed = @()',
     '',
     `Write-Host 'Bắt đầu cài ${chosen.length} phần mềm...' -ForegroundColor Green`,
   ];
 
   for (const app of chosen) {
-    lines.push(
-      '',
-      `Write-Host ${quote(`==> ${app.name}`)} -ForegroundColor Cyan`,
-      `winget install --id ${app.wingetId} --exact --silent --accept-package-agreements --accept-source-agreements`,
-      `if ($LASTEXITCODE -eq 0) { $ok++ } else { $fail++; Write-Warning ${quote(
-        `Không cài được ${app.name}. Xem thông báo phía trên.`,
-      )} }`,
-    );
+    lines.push(...appInstallBlock(app));
   }
 
   lines.push(
     '',
     "Write-Host ''",
-    'Write-Host "Xong: $ok thành công, $fail lỗi." -ForegroundColor Green',
+    'Write-Host "Xong: $ok cài đặt, $skip đã có sẵn, $fail lỗi." -ForegroundColor Green',
+    "if ($fail -gt 0) { Write-Host \"Không cài được: $($failed -join ', ')\" -ForegroundColor Yellow }",
     "Read-Host 'Nhấn Enter để đóng'",
     '',
   );

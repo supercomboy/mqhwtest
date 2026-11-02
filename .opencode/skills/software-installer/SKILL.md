@@ -31,8 +31,9 @@ Khi làm việc với `src/modules/software/`, `scripts/check-catalog.mjs`, ho�
 - Payload bật `[Console]::OutputEncoding = [Text.Encoding]::UTF8` để tiếng Việt hiển thị đúng trong cửa sổ cmd.
 - Tự nâng quyền đúng một lần: kiểm tra `WindowsPrincipal.IsInRole(Administrator)`, nếu chưa thì `Start-Process -FilePath $env:ComSpec -ArgumentList '/c',('"'+$env:DC_SELF+'"') -Verb RunAs` rồi thoát.
 - Kiểm tra winget **trước** bằng `Get-Command winget`; nếu thiếu: chặn khi build < 17763; nếu không, hỏi `Read-Host` (mặc định N). Chỉ khi người dùng đồng ý mới tải 3 gói chính thức của Microsoft theo thứ tự VCLibs 14.00 x64 → Windows App Runtime 1.8 (`--quiet`) → App Installer **ghim phiên bản** (verify `Get-FileHash` SHA-256 trước khi `Add-AppxPackage`). Đây là ngoại lệ duy nhất của luật "không tải mã từ xa".
-- Mỗi app chạy `winget install --id <id> --exact --silent --accept-package-agreements --accept-source-agreements`; mã lỗi chỉ cảnh báo, **không dừng** các app sau.
-- Có tổng kết `$ok`/`$fail` và `Read-Host` để cửa sổ không đóng ngay.
+- Mỗi app chạy `winget install --id <id> --exact --silent --accept-package-agreements --accept-source-agreements`; **không dừng** các app sau khi một app lỗi.
+- Phân loại theo `$LASTEXITCODE`: `0` → `$ok`; `-1978335189` (`0x8A15002B`, app đã ở bản mới nhất) → `$skip` (không phải lỗi!); mã khác → kiểm chứng `winget list --id <id> --exact`, thấy app thì `$skip`, không thấy mới `$fail` + `Write-Warning` kèm mã hex `0x{0:X8}`.
+- Tổng kết `$ok`/`$skip`/`$fail`, in danh sách `$failed`, rồi `Read-Host` để cửa sổ không đóng ngay.
 - Không gọi API, không analytics, không tải gì khác ngoài 3 gói Microsoft nói trên.
 
 ## Giao diện
