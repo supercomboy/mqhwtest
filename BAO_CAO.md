@@ -284,7 +284,7 @@ Luồng: `catalog.json` → `catalog.ts` (kiểm tra) → `software.ts` (UI, `Se
 | WPS Office (36 app) | 02/11/2026 — `Kingsoft.WPSOffice` 12.2.0.23196 xác minh bằng `winget show --id Kingsoft.WPSOffice -e`; `check:catalog` PASS `OK: 36 apps / 9 categories (6 recommended)`; preview trên Render hiển thị `winget install --id Kingsoft.WPSOffice` |
 | `npm run build` sau khi sửa UI (03/11/2026) | PASS — 44 module · `OK: 36 apps / 9 categories (6 recommended)` · `SEO OK: 5 trang` |
 | Hallmark `sloplint` tĩnh trước → sau | **25 FAIL / 99 REFLEX / 14 WARN** → **21 / 99 / 11** (mất `62` reveal, `34` sticky, `48` màu ngoài token, `10a` transition width, `F3` text-wrap) |
-| Hallmark `sloplint --render` (5 URL × 8 độ rộng) trước → sau | **8 FAIL / 22 REFLEX / 9 WARN** → **5 FAIL / 15 REFLEX / 5 WARN**; `44b` (H1 dưới màn 1280) và `40` (select 1.55:1) đã hết, còn lại đúng luật `58` (mật độ chữ); nav wrap `49b` giảm còn 2 (home 320/375) |
+| Hallmark `sloplint --render` (5 URL × 8 độ rộng) trước → sau | **8 FAIL / 22 REFLEX / 9 WARN** → **5 FAIL / 15 REFLEX / 5 WARN**; `44b` (H1 dưới màn 1280) và `40` (select 1.55:1) đã hết, `44c`/`79` dead-space giảm nhờ #tool 110px; nav wrap `49b` vẫn 2 (home 320/375), gap `59` test-loa 46px (dynamic content limitation) |
 
 Công cụ kiểm thử: Chrome headless qua CDP (`Input.dispatchMouseEvent` thật, `Runtime.evaluate` đọc trạng thái) và Firefox qua WebDriver BiDi (Firefox chỉ có `ws://127.0.0.1:<port>/session`, không có route `/json/version`).
 

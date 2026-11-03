@@ -39,7 +39,7 @@
 
 .page h2 {
   font-size: clamp(22px, 3.5vw, 28px);
-  margin: 40px 0 14px;
+  margin: 72px 0 14px;
   text-wrap: balance;
 }
 
@@ -96,13 +96,17 @@
   margin-bottom: 12px;
 }
 
-/* Giữ không gian cho #tool trước khi module mount, tránh layout shift (CLS). */
+/* Giữ không gian cho #tool trước khi module mount, tránh layout shift (CLS).
+   Giảm từ 200px → 110px để cắt dead-space sau hero (Hallmark gate 44c/79),
+   vẫn đủ chỗ cho placeholder + nút hướng dẫn trước khi JS mount iframe.
+   padding-top: 1px chặn margin-collapse từ đoạn intro sang heading h2 đầu tiên. */
 #tool {
-  min-height: 200px;
+  min-height: 110px;
+  padding-top: 1px;
 }
 
 .faq {
-  margin: 56px 0 32px;
+  margin: 72px 0 32px;
 }
 
 .faq details {

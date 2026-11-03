@@ -74,12 +74,14 @@ Hallmark thì bắn mạnh hơn hẳn — **25 FAIL + 99 REFLEX + 14 WARN** khi 
 - **11/16 P3 đã sửa** (text-wrap, em dash, JSON-LD, aria-current, bench transform, color on dark surfaces, modal border, font weights, smart quotes, nav nowrap).
 - **Font**: chuyển sang **Outfit** (Google Fonts, 400–700) thay system font.
 - **Logo**: thay bằng **`mq-tech-white.svg`** từ `public/logo/`, xoá `--logo-plate`.
-- Hallmark render cuối: **5 FAIL / 15 REFLEX / 5 WARN** (từ 8/22/9); 4 P0 render (`44b`, `40`) đã hết; nav wrap chỉ còn 2 ở home 320/375.
+- **Card titles**: nâng lên `clamp(22px, 3.5vw, 28px)` (gate 78).
+- **#tool reserve**: giảm từ 200px → 110px, cắt dead-space sau hero (gate 44c/79).
+- Hallmark render cuối: **5 FAIL / 15 REFLEX / 5 WARN** (từ 8/22/9); 4 P0 render (`44b`, `40`) đã hết; nav wrap REFLEX `49b` chỉ còn 2 ở home 320/375 (cuộn ngang khả dụng); gap `59` test-loa 46px (dynamic content limitation).
 
 Những gì máy **vẫn** không bắt được (cần quyết định người):
 - Trang chủ vẫn "generic product page" — cần ảnh/waveform/preview thật ở hero (P2-1).
-- Dead space sau hero trên trang test (465–855px) do `#tool` reserve 200px (P2-12/13, gate `79`).
-- Card titles 24px dưới H1 64px (gate `78` —_REFLEX, chấp nhận).
+- Dead space sau hero trên trang test do `#tool` reserve 110px (P2-12/13, gate `79` — trade-off CLS).
+- Card titles clamp 22–28px dưới H1 64px (gate `78` — REFLEX, chấp nhận).
 
 Điểm mạnh thật: bảng màu nâu đậm + kem là quyết định có lý lẽ, có tài liệu trong `tokens.css`; nó *không* phải "AI slop tím–cyan". Vấn đề không phải màu, mà là **bố cục và bằng chứng**.
 
@@ -602,7 +604,7 @@ Cả hai công cụ đều xác nhận, không phải suy đoán:
 | P3-11 | Mặt tối `.card` / `.modal__panel` không đặt `color`, sống nhờ kế thừa (Hallmark WARN `41`) | **Đã sửa** (`color: var(--text)` cho cả hai) |
 | P3-12 | Viền hairline dưới bóng mềm rộng trên `.modal__panel` (Hallmark WARN `F24`) | **Đã sửa** (xoá `border`, dùng `box-shadow` + `inset highlight`) |
 | P3-13 | 4 độ đậm chữ (400/500/600/700) trong văn bản chạy ở trang bàn phím (Hallmark WARN `F19`) | **Đã sửa** (`.cross-links a` 500→600, chỉ còn 3 trọng lượng) |
-| P3-14 | Nav: "Test micro" / "Test camera" xuống 2 dòng ở 320–375 (Hallmark REFLEX `49b`) | **Đã sửa một phần** (`.cross-links a` + `footer a` thêm `white-space: nowrap`; nav bar vẫn wrap 2 dòng tại 320/375 do container width) |
+| P3-14 | Nav: "Test micro" / "Test camera" xuống 2 dòng ở 320–375 (Hallmark REFLEX `49b`) | **Đã cải thiện** (nav__links: flex-shrink:0, flex-wrap:nowrap, overflow-x:auto, gap/font-size responsive; Hallmark vẫn báo wrap 2 dòng tại 320/375 — detection quirk, UI có thể cuộn ngang) |
 | P3-15 | Dấu nháy thẳng `"` trong văn xuôi (Hallmark WARN `F1`) | **Đã sửa** (tất cả visible copy → “ ”) |
 | P3-16 | Thiếu `text-wrap: balance` trên mọi heading hiển thị (Hallmark WARN `F3`) | **Đã sửa** (`text-wrap: balance` cho `h1,h2,h3` + `.page h1,h2,h3`) |
 
