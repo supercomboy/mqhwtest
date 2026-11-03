@@ -19,7 +19,12 @@
 .page__header a {
   color: var(--text);
   text-decoration: none;
-  font-weight: 500;
+}
+
+/* Chỉ dùng 3 độ đậm chữ trong trang (400 thân, 600 tiêu đề, 700 <strong>):
+   bỏ 500 ở đây để không thêm bậc thừa (Hallmark F19). */
+.page__header a:first-child {
+  font-weight: 600;
 }
 
 .page__header a:hover {
@@ -167,7 +172,8 @@
   color: var(--text);
   text-decoration: none;
   font-size: 15px;
-  font-weight: 500;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
 .cross-links a:hover {
@@ -189,6 +195,7 @@ footer a {
   text-decoration: none;
   font-weight: 600;
   margin: 0 10px;
+  white-space: nowrap;
 }
 
 footer a:hover {

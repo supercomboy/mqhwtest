@@ -93,22 +93,18 @@ p {
   border-radius: 10px;
 }
 
-/* public/logo.png đã được cắt sát nội dung từ logo1.png: 805×216, nền trong suốt,
-   chừa 20px lề mỗi phía. Nhờ vậy CSS chỉ cần đặt đúng tỷ lệ, không phải cắt bằng offset. */
+/* Logo SVG trắng (mq-tech-white.svg) — tự scale, không cần calc tỷ lệ hay nền plate. */
 .nav__logo {
   position: relative;
   flex: none;
   display: block;
   height: var(--logo-h);
-  width: calc(var(--logo-h) * 805 / 216);
-  overflow: hidden;
-  background: var(--logo-plate);
-  border-radius: 10px;
+  width: auto;
 }
 
 .nav__logo-img {
   display: block;
-  width: 100%;
+  width: auto;
   height: 100%;
   max-width: none;
 }
@@ -167,7 +163,7 @@ main {
 
 .hero {
   text-align: center;
-  padding: 72px 0 64px;
+  padding: 64px 0 72px;
 }
 
 .hero__sub {
@@ -279,6 +275,13 @@ main {
   margin-inline: auto;
 }
 
+/* Bậc chữ trung gian: H1 hero 64px, heading section trước đây chỉ 32px nên nhảy
+   cóc. Nâng heading của hai khối cuối trang lên một bậc để có thứ tự rõ ràng. */
+.seo h2,
+.privacy h2 {
+  font-size: clamp(28px, 4vw, 40px);
+}
+
 /* Hiện dần khi cuộn. Chỉ ẩn khi JS đã chạy (html.js): nếu script lỗi hoặc bị chặn,
    nội dung vẫn hiện bình thường thay vì trắng trang. */
 .js .reveal {
@@ -317,7 +320,7 @@ main {
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 1280px;
+  max-width: 1040px;
   max-height: 92vh;
   max-height: 92dvh;
   overflow: hidden;
@@ -325,8 +328,9 @@ main {
   color: var(--text);
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
   backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
-  border: 1px solid var(--glass-border);
-  border-bottom: 0;
+  /* Không viền hairline: bóng mềm rộng cộng vệt sáng inset đã đủ tách tấm kính
+     khỏi nền. Viền 1px chồng lên bóng là dấu hiệu khung ghép tay (Hallmark F24). */
+  border: 0;
   border-radius: var(--radius-card) var(--radius-card) 0 0;
   box-shadow: var(--glass-shadow), var(--glass-highlight);
   animation: modal-in 300ms var(--ease);
@@ -417,7 +421,8 @@ body.is-locked {
     padding: 24px;
   }
   .modal__panel {
-    border-bottom: 1px solid var(--glass-border);
+    /* Không thêm viền hairline ở đây: bóng mềm rộng đã đủ tách tấm kính khỏi
+       nền, viền mảnh chồng lên bóng là dấu hiệu khung ghép tay (Hallmark F24). */
     border-radius: var(--radius-card);
   }
 }
@@ -445,6 +450,7 @@ body.is-locked {
   }
   .modal__panel {
     background: var(--surface);
+    color: var(--text);
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
   }
@@ -459,7 +465,9 @@ body.is-locked {
   }
   .modal__panel {
     background: var(--surface);
-    border-color: var(--text-soft);
+    color: var(--text);
+    /* Viền chỉ bật lại ở chế độ tương phản cao, nơi đường bao quan trọng hơn vẻ mềm. */
+    border: 1px solid var(--text-soft);
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
   }

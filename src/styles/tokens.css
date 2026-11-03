@@ -27,7 +27,8 @@
   --scrim: rgba(0, 0, 0, 0.6);  /* nền mờ cho chữ nổi trên mọi màu (bài kiểm tra màn hình) */
   --scrim-text: #ffffff;        /* chữ trên nền mờ đó */
 
-  --logo-plate: rgba(255, 255, 255, 0.92);  /* logo là mực đen nên cần đế sáng, nếu không sẽ chìm vào nền tối */
+  --logo-plate: rgba(255, 255, 255, 0);  /* logo trắng (SVG) nổi trực tiếp trên nền nâu, không cần đế */
+  --logo-src: /logo/mq-tech-white.svg;
 
   /* Kính mờ (glass) cho hộp thoại của cả 5 bài kiểm tra */
   --glass-bg: rgba(38, 35, 31, 0.68);           /* nền kính: đủ đục để chữ kem đạt AAA trên mọi vệt màu phía sau */
@@ -50,7 +51,7 @@
   --shadow-card: 0 8px 30px rgba(0, 0, 0, 0.4);
   --shadow-key: 0 1px 2px rgba(0, 0, 0, 0.4);
 
-  --font: -apple-system, 'SF Pro Display', 'SF Pro Text', 'Inter', system-ui, 'Segoe UI', Roboto, sans-serif;
+  --font: 'Outfit', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
   --dur: 400ms;
 }

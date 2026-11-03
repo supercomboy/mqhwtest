@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256"><title>MQ Tech</title><g transform="translate(-41.91 -52.37) scale(1.307)">
+  <title id="mq-fav-title">MQ Tech Favicon</title>
+  <g id="symbol" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 36 200 L 36 72 L 102 138 L 158 82" stroke="#2563EB" stroke-width="28" />
+    <circle cx="158" cy="138" r="56" stroke="#2563EB" stroke-width="28" />
+    <circle cx="158" cy="138" r="20" fill="#06B6D4" stroke="none" />
+    <path d="M 176 156 L 224 204" stroke="#06B6D4" stroke-width="30" />
+  </g>
+</g></svg>

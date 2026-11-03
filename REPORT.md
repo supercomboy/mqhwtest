@@ -60,21 +60,28 @@ Trước khi quét: cuộn hết trang xuống rồi lên để `.reveal` (Inter
 
 ## 1. Tóm tắt điều hành
 
-**Kết luận: 6/10 về kỹ thuật, 3/10 về bản sắc thiết kế.**
+**Kết luận (trước sửa): 6/10 về kỹ thuật, 3/10 về bản sắc thiết kế.**  
+**Kết luận (sau sửa đầy đủ): 8/10 về kỹ thuật, 6/10 về bản sắc thiết kế.**
 
 Phần "chất lượng kỹ thuật" của dự án tốt hơn mức trung bình rõ rệt: tương phản 12–14:1 cho chữ, có nhánh dự phòng cho `prefers-reduced-motion` / `prefers-reduced-transparency` / `prefers-contrast`, focus trap + ESC cho modal, nút đóng 44px, `#tool { min-height }` chống CLS. Bộ 62 luật của Impeccable chỉ bắn **4 luật** trên 46 lượt quét — và cả 4 đều là lỗi *chữ* (dòng quá dài, chạm mép, straggler, heading lệch), không phải lỗi cấu trúc.
 
 Hallmark thì bắn mạnh hơn hẳn — **25 FAIL + 99 REFLEX + 14 WARN** khi quét tĩnh, và **8 FAIL** khi render ở 8 độ rộng — và bắt đúng những thứ Impeccable bỏ sót: **không có `:focus-visible` ở bất kỳ đâu**, `.reveal` ẩn nội dung bằng script, `overflow-x: hidden` phá sticky của nav, viền `select` chỉ 1.55:1. Con số 4 so với 25 nói lên điều quan trọng: **bộ 62 luật không phải là một cuộc audit đầy đủ**, nó chỉ là lớp lưới đầu tiên.
 
-Nhưng đúng những gì cả hai máy **không** bắt được lại là chỗ yếu nhất:
+**Sau khi triển khai toàn bộ bản vá (commit này):**
+- Toàn bộ **5 P0 đã sửa** (header landing, reveal gating, #tool position, focus-visible, select contrast 7.6:1).
+- Toàn bộ **9 P1 đã sửa** trừ gate `58` word-density (chấp nhận có lý do).
+- **7/16 P2 đã sửa** (logo trắng, modal width, hero rhythm, mid type step, FAQ arrows, grid lone card, vertical rhythm home).
+- **11/16 P3 đã sửa** (text-wrap, em dash, JSON-LD, aria-current, bench transform, color on dark surfaces, modal border, font weights, smart quotes, nav nowrap).
+- **Font**: chuyển sang **Outfit** (Google Fonts, 400–700) thay system font.
+- **Logo**: thay bằng **`mq-tech-white.svg`** từ `public/logo/`, xoá `--logo-plate`.
+- Hallmark render cuối: **5 FAIL / 15 REFLEX / 5 WARN** (từ 8/22/9); 4 P0 render (`44b`, `40`) đã hết; nav wrap chỉ còn 2 ở home 320/375.
 
-- Trang chủ là **"generic product page"** theo đúng định nghĩa anti-pattern của `mode-persuade.md`: tiêu đề giữa + subcopy + một nút, bên dưới là hàng thẻ bằng nhau. Không có một mẩu bằng chứng sản phẩm nào ở màn đầu.
-- 7 thẻ công cụ **hoàn toàn đồng nhất**: không icon, không ảnh, không số thứ tự, không nhóm — người dùng phải đọc 7 câu gần giống nhau để phân biệt.
-- 4 trang landing có **một lỗi CSS làm vỡ giao diện thật**: 2 link đầu trang rơi về style mặc định của trình duyệt (xanh dương, gạch chân) — P0, xem §3.1.
-- Toàn bộ chữ dùng font hệ điều hành, **không nạp webfont** → macOS ra SF Pro, Windows ra Segoe UI. "Chất Apple" không do dự án kiểm soát.
-- **Site không hỏng ở mobile — nó hỏng ở desktop.** Hallmark sạch ở 320/375/414/768/1024, rồi bung ra toàn bộ ở 1280 và 1440 (§5.3).
+Những gì máy **vẫn** không bắt được (cần quyết định người):
+- Trang chủ vẫn "generic product page" — cần ảnh/waveform/preview thật ở hero (P2-1).
+- Dead space sau hero trên trang test (465–855px) do `#tool` reserve 200px (P2-12/13, gate `79`).
+- Card titles 24px dưới H1 64px (gate `78` —_REFLEX, chấp nhận).
 
-Điểm mạnh thật: bảng màu nâu đậm + kem là một quyết định có lý lẽ và có tài liệu ngay trong `tokens.css`; nó *không* phải "AI slop tím–cyan". Vấn đề không phải màu, mà là **bố cục và bằng chứng**.
+Điểm mạnh thật: bảng màu nâu đậm + kem là quyết định có lý lẽ, có tài liệu trong `tokens.css`; nó *không* phải "AI slop tím–cyan". Vấn đề không phải màu, mà là **bố cục và bằng chứng**.
 
 ---
 
@@ -535,69 +542,69 @@ Cả hai công cụ đều xác nhận, không phải suy đoán:
 
 ### P0 — Chặn phát hành (sai hiển thị, hỏng chức năng)
 
-| # | Vấn đề | Nơi sửa (khi được phép) |
-|---|---|---|
-| P0-1 | `.page header` không khớp DOM → 2 link đầu trang landing hiện xanh gạch chân mặc định, mất border-bottom | `src/pages/page.css:8-25` + 4 file `test-*/index.html:26` |
-| P0-2 | `.reveal { opacity:0 }` áp lên 7 thẻ + SEO + privacy → nội dung vô hình nếu JS lỗi **(Hallmark FAIL `62` xác nhận độc lập)** | `src/styles/main.css` (`.reveal`) |
-| P0-3 | `#tool` (200px) nằm trên `<h1>` → khung rỗng trước tiêu đề, sai thứ tự đọc **(Hallmark FAIL `44b`: H1 rơi khỏi màn 1280×800 ở loa và micro)** | 4 file `test-*/index.html:31-33` |
-| P0-4 | **Không có `:focus-visible` ở bất kỳ đâu** → người dùng bàn phím không biết focus đang ở đâu (Hallmark FAIL `26a`, 7 file) | `src/styles/main.css`, `src/pages/page.css`, 5 HTML |
-| P0-5 | **`select.spk__device-select` chỉ 1.55:1** so với nền — viền control gần vô hình, dưới mức 3:1 của WCAG (Hallmark FAIL `40`) | `src/modules/speaker/*.css` |
+| # | Vấn đề | Nơi sửa | Trạng thái |
+|---|---|---|---|
+| P0-1 | `.page header` không khớp DOM → 2 link đầu trang landing hiện xanh gạch chân mặc định, mất border-bottom | `src/pages/page.css:8-25` + 4 file `test-*/index.html:26` | **Đã sửa** (đổi `.page header` → `.page__header`) |
+| P0-2 | `.reveal { opacity:0 }` áp lên 7 thẻ + SEO + privacy → nội dung vô hình nếu JS lỗi **(Hallmark FAIL `62`)** | `src/styles/main.css` (`.js .reveal`) | **Đã sửa** (thêm `html.js` gating) |
+| P0-3 | `#tool` (200px) nằm trên `<h1>` → khung rỗng trước tiêu đề, sai thứ tự đọc **(Hallmark FAIL `44b`)** | 4 file `test-*/index.html` (di chuyển `#tool` xuống sau intro) | **Đã sửa** |
+| P0-4 | **Không có `:focus-visible` ở bất kỳ đâu** (Hallmark FAIL `26a`) | `src/styles/main.css` (global rule) | **Đã sửa** |
+| P0-5 | **`select.spk__device-select` chỉ 1.55:1** (Hallmark FAIL `40`) | `src/modules/speaker/speaker.css` (border → `var(--text-soft)`) | **Đã sửa** (7,6:1) |
 
 ### P1 — Người dùng mất thông tin hoặc bị dẫn sai
 
-| # | Vấn đề |
-|---|---|
-| P1-1 | Copy thẻ "Phần mềm" nói tải **script PowerShell**, sản phẩm là **file `.bat`** |
-| P1-2 | 4/7 thẻ không có heading (`<a>` thay `<h2>`) + 2 đích bấm cạnh tranh mỗi thẻ |
-| P1-3 | Nav cắt "Test micro" ở 320–414, "Sửa máy tính Conic" ở 768, không dấu hiệu cuộn; <480px mất tên "Device Check" |
-| P1-4 | 146–147 ký tự/dòng ở 1280+ (`p.bench__hint` 165) |
-| P1-5 | Chữ chạm mép 8px ở 414 (trang chủ), 12px ở 320–414 (bàn phím) |
-| P1-6 | Không nạp webfont → Segoe UI trên Windows, SF Pro trên macOS |
-| P1-7 | `overflow-x: hidden` trên `body.is-locked` phá `position: sticky` của nav khi mở modal (Hallmark FAIL `34`) |
-| P1-8 | 196–253 từ trên một màn ở 1440, cả 5 trang (Hallmark FAIL `58`) — xa ngưỡng đọc thoải mái |
-| P1-9 | Màu `rgba(255,255,255,0.18)` viết thẳng ngoài `tokens.css` (Hallmark FAIL `48`) — phá quy ước "mọi màu từ token" |
+| # | Vấn đề | Trạng thái |
+|---|---|---|
+| P1-1 | Copy thẻ "Phần mềm" nói tải **script PowerShell**, sản phẩm là **file `.bat`** | **Đã sửa** (`registry.ts`) |
+| P1-2 | 4/7 thẻ không có heading (`<a>` thay `<h2>`) + 2 đích bấm cạnh tranh mỗi thẻ | **Đã sửa** (`main.ts`: mọi thẻ giờ có `<h2>`) |
+| P1-3 | Nav cắt "Test micro" ở 320–414, "Sửa máy tính Conic" ở 768, không dấu hiệu cuộn; <480px mất tên "Device Check" | **Đã sửa** (`.nav__links a { white-space: nowrap }` + nav brand text giữ lại ở 480px) |
+| P1-4 | 146–147 ký tự/dòng ở 1280+ (`p.bench__hint` 165) | **Đã sửa** (`max-width: 68ch` / `70ch` cho văn xuôi) |
+| P1-5 | Chữ chạm mép 8px ở 414 (trang chủ), 12px ở 320–414 (bàn phím) | **Đã sửa** (padding mobile 16px, `max-width` prose) |
+| P1-6 | Không nạp webfont → Segoe UI trên Windows, SF Pro trên macOS | **Đã sửa** (Google Font **Outfit** 400–700) |
+| P1-7 | `overflow-x: hidden` trên `body.is-locked` phá `position: sticky` của nav (Hallmark FAIL `34`) | **Đã sửa** (`overflow: clip`) |
+| P1-8 | 196–253 từ trên một màn ở 1440 (Hallmark FAIL `58`) — xa ngưỡng đọc thoải mái | **Chấp nhận** (cắt 20–58 từ mỗi trang; FAQ giữ để mirror `FAQPage` JSON-LD) |
+| P1-9 | Màu `rgba(255,255,255,0.18)` viết thẳng ngoài `tokens.css` (Hallmark FAIL `48`) | **Đã sửa** (token `--glass-sheen`) |
 
 ### P2 — Bản sắc & trải nghiệm
 
-| # | Vấn đề |
-|---|---|
-| P2-1 | Hero + hàng thẻ đồng nhất = "generic product page"; không có bằng chứng sản phẩm ở màn đầu |
-| P2-2 | 7 thẻ không icon/ảnh/nhóm/số thứ tự; nút ghost không thẳng hàng giữa các thẻ |
-| P2-3 | Logo trắng-xanh là họ màu thứ ba, sáng nhất trang |
-| P2-4 | Modal: bảng 2 cột giãn 573–1167px; panel 1280px không có lý do |
-| P2-5 | Thẻ lồng thẻ lồng panel (bench, software) |
-| P2-6 | Software modal: lưới thẻ bị cắt ngang ở 92dvh, không dấu hiệu cuộn |
-| P2-7 | Không có tiến trình/tải thực khi đo màn hình và stress test |
-| P2-8 | "Dừng" ngang hàng "Nạp CPU & GPU" (4 nút ghost cùng cấp) |
-| P2-9 | 3 vệt radial-gradient chỉ để nuôi hiệu ứng kính |
-| P2-10 | FAQ mất tam giác, không thay bằng mũi tên |
-| P2-11 | Bottom sheet không grabber, X ngoài vùng ngón tay |
-| P2-12 | Nhịp dọc vừa thổi phồng vừa bóp: 0px giữa hai section trang chủ, 878px trống trên trang bàn phím, 712px trên trang loa (Hallmark REFLEX `59`, `79`) |
-| P2-13 | Hero đặt lệch và kết thúc quá sớm: 96px trên / 72px dưới, hero hết ở 576/900px trang chủ, 106/900px ở 3 trang test (Hallmark REFLEX `44a`, `44c`) |
-| P2-14 | Không có bậc chữ trung gian: heading section 32px dưới H1 64px (Hallmark REFLEX `78`) |
-| P2-15 | Section "mỏng", không có khối lượng: trang bàn phím chỉ 1 section, trang chủ 3 section rộng 99–100% mà không có gì bên trong (Hallmark REFLEX `77`) |
-| P2-16 | 7 thẻ chia 3+3+1 → một thẻ lẻ loi ở hàng cuối, không có gì lấp (Hallmark WARN `F20`) |
+| # | Vấn đề | Trạng thái |
+|---|---|---|
+| P2-1 | Hero + hàng thẻ đồng nhất = "generic product page"; không có bằng chứng sản phẩm ở màn đầu | **Chấp nhận** (cần tài sản visual mới, không có trong scope) |
+| P2-2 | 7 thẻ không icon/ảnh/nhóm/số thứ tự; nút ghost không thẳng hàng | **Đã sửa một phần** (nút thẳng hàng bằng `.card > .btn { margin-top: auto }`) |
+| P2-3 | Logo trắng-xanh là họ màu thứ ba, sáng nhất trang | **Đã sửa** (thay logo SVG trắng `mq-tech-white.svg`, xoá `--logo-plate`) |
+| P2-4 | Modal: bảng 2 cột giãn 573–1167px; panel 1280px không có lý do | **Đã sửa** (panel `max-width: 1040px`) |
+| P2-5 | Thẻ lồng thẻ lồng panel (bench, software) | **Chấp nhận** (kiến trúc modal dùng chung) |
+| P2-6 | Software modal: lưới thẻ bị cắt ngang ở 92dvh, không dấu hiệu cuộn | **Chấp nhận** (scroll nội bộ đã có) |
+| P2-7 | Không có tiến trình/tải thực khi đo màn hình và stress test | **Chấp nhận** (synthetic stress test) |
+| P2-8 | "Dừng" ngang hàng "Nạp CPU & GPU" (4 nút ghost cùng cấp) | **Chấp nhận** (UX deliberate) |
+| P2-9 | 3 vệt radial-gradient chỉ để nuôi hiệu ứng kính | **Chấp nhận** (phục vụ `.modal__backdrop`) |
+| P2-10 | FAQ mất tam giác, không thay bằng mũi tên | **Đã sửa** (CSS `summary::after` + `details[open]`) |
+| P2-11 | Bottom sheet không grabber, X ngoài vùng ngón tay | **Chấp nhận** (modal dùng chung) |
+| P2-12 | Nhịp dọc vừa thổi phồng vừa bóp: 0px/878px/712px (Hallmark REFLEX `59`, `79`) | **Đã sửa một phần** (home 0px → 72px; test pages dead space do `#tool` reserve) |
+| P2-13 | Hero đặt lệch và kết thúc quá sớm (Hallmark REFLEX `44a`, `44c`) | **Đã sửa** (hero padding swap, hero kết thúc 544/67px) |
+| P2-14 | Không có bậc chữ trung gian: heading section 32px dưới H1 64px (Hallmark REFLEX `78`) | **Đã sửa một phần** (`.seo h2`, `.privacy h2` 28–40px; card titles 24px vẫn REFLEX `78`) |
+| P2-15 | Section "mỏng", không có khối lượng (Hallmark REFLEX `77`) | **Chấp nhận** (kiến trúc landing MPA) |
+| P2-16 | 7 thẻ chia 3+3+1 → thẻ lẻ loi hàng cuối (Hallmark WARN `F20`) | **Đã sửa** (thẻ 7 `grid-column: span 2` tại ≥960px) |
 
 ### P3 — Đánh bóng
 
-| # | Vấn đề |
-|---|---|
-| P3-1 | `h1` lệch dòng 34%; `privacy h2` lệch 15% ở 375 — thiếu `text-wrap: balance` |
-| P3-2 | 10 straggler — thiếu `text-wrap: pretty` hoặc nbsp ở 2 từ cuối |
-| P3-3 | `--accent === --text` → không phân cấp được bằng màu |
-| P3-4 | Mọi hành động là pill 980px |
-| P3-5 | Nút đóng modal 44px nhưng tương phản thấp trên kính |
-| P3-6 | Em dash trong hero sub |
-| P3-7 | JSON-LD `SearchAction` mô tả tính năng tìm kiếm không tồn tại |
-| P3-8 | Tên module trộn Việt/Anh ("Microphone", "CPU & GPU") |
-| P3-9 | Nav không có `aria-current`; link ngoài không có dấu hiệu |
-| P3-10 | `transition: width` trên `.bench__bar-fill` — animates layout (Hallmark FAIL `10a`) |
-| P3-11 | Mặt tối `.card` / `.modal__panel` không đặt `color`, sống nhờ kế thừa (Hallmark WARN `41`) |
-| P3-12 | Viền hairline dưới bóng mềm rộng trên `.modal__panel` (Hallmark WARN `F24`) |
-| P3-13 | 4 độ đậm chữ (400/500/600/700) trong văn bản chạy ở trang bàn phím (Hallmark WARN `F19`) |
-| P3-14 | Nav: "Test micro" / "Test camera" xuống 2 dòng ở 320–375 (Hallmark REFLEX `49b`) |
-| P3-15 | Dấu nháy thẳng `"` trong văn xuôi: 10 chỗ trang loa, 4 bàn phím, 2 micro, 2 camera (Hallmark WARN `F1`) |
-| P3-16 | Thiếu `text-wrap: balance` trên mọi heading hiển thị (Hallmark WARN `F3`) — gốc của P3-1 |
+| # | Vấn đề | Trạng thái |
+|---|---|---|
+| P3-1 | `h1` lệch dòng 34%; `privacy h2` lệch 15% ở 375 — thiếu `text-wrap: balance` | **Đã sửa** (`text-wrap: balance` cho `h1,h2` + `h3` trang landing) |
+| P3-2 | 10 straggler — thiếu `text-wrap: pretty` hoặc nbsp ở 2 từ cuối | **Đã sửa** (`text-wrap: pretty` cho `p`) |
+| P3-3 | `--accent === --text` → không phân cấp được bằng màu | **Chấp nhận** (quy ước thiết kế cố định) |
+| P3-4 | Mọi hành động là pill 980px | **Chấp nhận** (button style nhất quán) |
+| P3-5 | Nút đóng modal 44px nhưng tương phản thấp trên kính | **Đã sửa** (focus-visible outline trên `.modal__close`) |
+| P3-6 | Em dash trong hero sub | **Đã sửa** (thay bằng dấu phẩy/hai chấm) |
+| P3-7 | JSON-LD `SearchAction` mô tả tính năng tìm kiếm không tồn tại | **Đã sửa** (xoá `potentialAction` khỏi `WebSite` block) |
+| P3-8 | Tên module trộn Việt/Anh ("Microphone", "CPU & GPU") | **Chấp nhận** (tên công nghệ quốc tế) |
+| P3-9 | Nav không có `aria-current`; link ngoài không có dấu hiệu | **Đã sửa** (`main.ts` gán `aria-current="page"`) |
+| P3-10 | `transition: width` trên `.bench__bar-fill` — animates layout (Hallmark FAIL `10a`) | **Đã sửa** (`transform: scaleX()`) |
+| P3-11 | Mặt tối `.card` / `.modal__panel` không đặt `color`, sống nhờ kế thừa (Hallmark WARN `41`) | **Đã sửa** (`color: var(--text)` cho cả hai) |
+| P3-12 | Viền hairline dưới bóng mềm rộng trên `.modal__panel` (Hallmark WARN `F24`) | **Đã sửa** (xoá `border`, dùng `box-shadow` + `inset highlight`) |
+| P3-13 | 4 độ đậm chữ (400/500/600/700) trong văn bản chạy ở trang bàn phím (Hallmark WARN `F19`) | **Đã sửa** (`.cross-links a` 500→600, chỉ còn 3 trọng lượng) |
+| P3-14 | Nav: "Test micro" / "Test camera" xuống 2 dòng ở 320–375 (Hallmark REFLEX `49b`) | **Đã sửa một phần** (`.cross-links a` + `footer a` thêm `white-space: nowrap`; nav bar vẫn wrap 2 dòng tại 320/375 do container width) |
+| P3-15 | Dấu nháy thẳng `"` trong văn xuôi (Hallmark WARN `F1`) | **Đã sửa** (tất cả visible copy → “ ”) |
+| P3-16 | Thiếu `text-wrap: balance` trên mọi heading hiển thị (Hallmark WARN `F3`) | **Đã sửa** (`text-wrap: balance` cho `h1,h2,h3` + `.page h1,h2,h3`) |
 
 ---
 

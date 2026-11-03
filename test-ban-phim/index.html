@@ -3,13 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
     <meta
       name="description"
       content="Test bàn phím online miễn phí: kiểm tra từng phím US ANSI, phát hiện kẹt phím và xem layout bàn phím. Chạy trên trình duyệt, dữ liệu không rời máy."
     />
-    <title>Test bàn phím online – Kiểm tra từng phím | MQ Tech</title>
+    <title>Test bàn phím online: kiểm tra từng phím | MQ Tech</title>
     <link rel="canonical" href="%SITE_URL%/test-ban-phim/" />
-    <meta property="og:title" content="Test bàn phím online – Kiểm tra từng phím | MQ Tech" />
+    <meta property="og:title" content="Test bàn phím online: kiểm tra từng phím | MQ Tech" />
     <meta
       property="og:description"
       content="Kiểm tra từng phím bàn phím US ANSI online, phát hiện kẹt phím và xem layout. Miễn phí, trên trình duyệt, dữ liệu không rời máy."
@@ -31,34 +34,32 @@
     <div class="page">
       <h1>Test bàn phím online</h1>
       <p class="intro">
-        Bài kiểm tra bàn phím online giúp bạn xem từng phím trên bàn phím có hoạt động chính xác hay không, phát hiện phím kẹt, phím không nhận và xác định layout bàn phím là US ANSI hay ISO/JIS. Tất cả chạy trên trình duyệt, không cần cài đặt, dữ liệu không được gửi lên đâu.
+        Kiểm tra từng phím có hoạt động chính xác không, phát hiện phím kẹt, phím không nhận và xác định layout là US ANSI hay ISO/JIS. Chạy trên trình duyệt, không cài đặt, dữ liệu không được gửi lên đâu.
       </p>
 
       <div id="tool"></div>
 
       <h2>Cách test bàn phím online</h2>
       <p>
-        Bấm <strong>Bắt đầu test bàn phím</strong> để mở khung kiểm tra. Nhấn từng phím trên bàn phím vật lý, các phím đã nhấn sẽ sáng lên trên màn hình. Bài kiểm tra ghi nhận mã phím (event.code) và ký tự hiển thị (event.key), đồng thời đếm số phím nhấn cùng lúc (rollover) và phát hiện phím bị kẹt nếu một phím giữ nguyên trạng thái quá lâu.
+        Bấm <strong>Bắt đầu test bàn phím</strong> rồi nhấn từng phím vật lý; phím đã nhấn sẽ sáng lên. Bài kiểm tra ghi mã phím (event.code), ký tự (event.key), đếm số phím nhấn cùng lúc (rollover) và phát hiện phím kẹt.
       </p>
       <p>
-        Bạn có thể chọn chế độ <strong>PC</strong> hoặc <strong>MacBook</strong> để xem bố cục phù hợp. Ở chế độ MacBook, các phím chỉ có trên bàn phím PC (phím số, điều hướng riêng) sẽ được ẩn. Có ô gõ mẫu để kiểm tra xem hệ thống của bạn đang dùng layout US hay không.
+        Chọn chế độ <strong>PC</strong> hoặc <strong>MacBook</strong> để xem bố cục phù hợp; ô gõ mẫu cho biết hệ thống đang dùng layout US hay không.
       </p>
 
       <h2>Kết quả cần kiểm tra</h2>
       <ul>
         <li>Tất cả phím chữ, số và ký tự đặc biệt đều sáng lên khi nhấn.</li>
-        <li>Phím modifies (Shift, Ctrl, Alt, ⌘, CapsLock, NumLock) phản hồi đúng trạng thái bật/tắt.</li>
-        <li>Số phím nhấn cùng lúc (rollover) đạt đủ nhu cầu chơi game và gõ nhanh.</li>
-        <li>Không có phím nào bị đánh dấu kẹt sau khi bạn đã buông tay.</li>
-        <li>Layout hệ thống được xác nhận là US ANSI (hoặc bạn nhận được cảnh báo nếu là ISO/JIS).</li>
+        <li>Phím bổ trợ (Shift, Ctrl, Alt, ⌘, CapsLock, NumLock) phản hồi đúng trạng thái bật/tắt.</li>
+        <li>Số phím nhấn cùng lúc (rollover) đủ cho nhu cầu chơi game và gõ nhanh.</li>
+        <li>Không phím nào bị đánh dấu kẹt sau khi đã buông tay.</li>
       </ul>
 
       <h2>Lỗi thường gặp</h2>
       <ul>
-        <li><strong>Phím không nhận:</strong> có thể bàn phím dùng layout ISO/JIS, không phải US ANSI. Hãy dùng ô gõ mẫu để so sánh.</li>
-        <li><strong>Phím tắt bị chặn:</strong> F1–F12, Tab, Ctrl/⌘+S, Ctrl/⌘+P, Space… bị chặn khi bài kiểm tra đang mở để không tác động trình duyệt. Điều này là bình thường, tắt khung kiểm tra là khôi phục.</li>
-        <li><strong>Nghi kẹt phím:</strong> một phím giữ trạng thái "đã nhấn" lâu. Hãy buông phím rồi bấm "Đặt lại".</li>
-        <li><strong>Safari không đọc được layout hệ thống:</strong> trình duyệt này thiếu getLayoutMap, bạn vẫn có thể kiểm tra bằng cách gõ dòng mẫu.</li>
+        <li><strong>Phím không nhận:</strong> thường do layout ISO/JIS chứ không phải US ANSI, hoặc do phím hỏng. Đối chiếu bằng ô gõ mẫu, kể cả trên Safari (trình duyệt này thiếu getLayoutMap).</li>
+        <li><strong>Phím tắt bị chặn:</strong> F1 đến F12, Tab, Ctrl/⌘+S, Ctrl/⌘+P bị chặn khi khung kiểm tra đang mở để không tác động trình duyệt. Tắt khung là khôi phục.</li>
+        <li><strong>Nghi kẹt phím:</strong> phím giữ trạng thái “đã nhấn” quá lâu, hãy buông ra rồi bấm “Đặt lại”.</li>
       </ul>
 
       <h2>FAQ</h2>
@@ -80,7 +81,7 @@
       </details>
       <details>
         <summary>Phím tắt bị chặn khi đọc bài này?</summary>
-        <p>Không. Phím tắt chỉ bị chặn sau khi bạn bấm "Bắt đầu test bàn phím" và khung kiểm tra được mở ra.</p>
+        <p>Không. Phím tắt chỉ bị chặn sau khi bạn bấm “Bắt đầu test bàn phím” và khung kiểm tra được mở ra.</p>
       </details>
 
       <h2>Bài test khác</h2>

@@ -6,6 +6,14 @@ import { modules, type TestModule } from './modules/registry';
 // hoặc bị chặn thì nội dung vẫn hiện.
 document.documentElement.classList.add('js');
 
+// Đánh dấu link nav của trang đang mở để trình đọc màn hình biết vị trí hiện tại.
+const here = window.location.pathname.replace(/index\.html$/, '');
+for (const link of document.querySelectorAll<HTMLAnchorElement>('.nav__links a')) {
+  if (new URL(link.href, window.location.href).pathname === here) {
+    link.setAttribute('aria-current', 'page');
+  }
+}
+
 const grid = document.getElementById('tests');
 
 for (const m of modules) {

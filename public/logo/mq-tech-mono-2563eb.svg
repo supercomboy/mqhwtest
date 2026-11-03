@@ -1,0 +1,16 @@
+<svg fill="#2563eb" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" role="img" aria-labelledby="mq-sym-title"><title>MQ Tech</title>
+  <title id="mq-sym-title">MQ Tech Logo Symbol</title>
+  <g id="symbol" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <!-- M Left Chassis & Valley in Electric Cobalt -->
+    <path d="M 38 198 L 38 74 L 102 138 L 158 82" stroke="#2563eb" stroke-width="22" />
+    
+    <!-- Q Technical Orbit Ring in Electric Cobalt -->
+    <circle cx="158" cy="138" r="56" stroke="#2563eb" stroke-width="22" />
+    
+    <!-- Central Compute Core Node in Cyber Cyan -->
+    <circle cx="158" cy="138" r="16" fill="#2563eb" stroke="none" />
+    
+    <!-- Q Hyperspeed Data Spur in Cyber Cyan (exact 45 degree) -->
+    <path d="M 176 156 L 222 202" stroke="#2563eb" stroke-width="24" />
+  </g>
+</svg>

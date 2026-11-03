@@ -3,6 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
     <meta
       name="description"
       content="Test bàn phím, loa, mic, camera online miễn phí. Kiểm tra thiết bị ngay trên trình duyệt, dữ liệu không rời máy. Bàn phím US ANSI, loa trái phải, micro ghi âm, camera webcam."
@@ -26,7 +29,7 @@
     <header class="nav" id="nav">
       <a class="nav__brand" href="#top">
         <span class="nav__logo">
-          <img class="nav__logo-img" src="/logo.png" alt="MQ Tech Computer Service" width="805" height="216" />
+          <img class="nav__logo-img" src="/logo/mq-tech-white.svg" alt="MQ Tech Computer Service" />
         </span>
         <span class="nav__brand-text">Device Check</span>
       </a>
@@ -42,7 +45,7 @@
     <main id="top">
       <section class="hero reveal">
         <h1>Kiểm tra thiết bị online: bàn phím, loa, mic, camera.</h1>
-        <p class="hero__sub">Bàn phím, loa, camera, microphone, màn hình, CPU &amp; GPU — và cài phần mềm hàng loạt, ngay trên trình duyệt. Không cài đặt, không tải dữ liệu lên máy chủ.</p>
+        <p class="hero__sub">Bàn phím, loa, camera, microphone, màn hình, CPU &amp; GPU, và cài phần mềm hàng loạt. Tất cả ngay trên trình duyệt. Không cài đặt, không tải dữ liệu lên máy chủ.</p>
         <a class="btn" href="#tests">Bắt đầu kiểm tra</a>
       </section>
 
@@ -51,19 +54,16 @@
       <section class="seo reveal" aria-label="Giới thiệu các bài kiểm tra thiết bị">
         <h2>Kiểm tra thiết bị online miễn phí</h2>
         <p>
-          Device Check của MQ Tech giúp bạn kiểm tra các thiết bị nhập xuất và truyền hình âm thanh trực tiếp trên trình duyệt, không cần cài đặt phần mềm và không gửi dữ liệu nào về máy chủ. Hình ảnh từ camera và âm thanh từ micro chỉ được xử lý trong máy của bạn, giúp bảo vệ quyền riêng tư trong mọi bài kiểm tra.
-        </p>
-        <p>
-          Dưới đây là các bài kiểm tra bạn có thể sử dụng ngay. Mỗi bài có công cụ chạy riêng, hướng dẫn và câu hỏi thường gặp, giúp bạn xác định nhanh thiết bị nào đang gặp sự cố trước khi đến cửa hàng sửa chữa.
+          Device Check kiểm tra thiết bị nhập xuất và âm thanh ngay trên trình duyệt, không cần cài đặt và không gửi dữ liệu nào về máy chủ. Hình ảnh từ camera và âm thanh từ micro chỉ được xử lý trong máy của bạn.
         </p>
         <ul class="seo__list">
-          <li><a href="/test-ban-phim/">Test bàn phím online</a> — kiểm tra từng phím US ANSI, phát hiện kẹt phím, xem layout và số phím nhấn cùng lúc.</li>
-          <li><a href="/test-loa/">Test loa online</a> — kiểm tra loa trái, phải và cả hai kênh, quét dải âm trầm đến bổng, phát bản nhạc mẫu.</li>
-          <li><a href="/test-micro/">Test micro online</a> — đo mức âm thời gian thực, ghi âm thử 5 giây và nghe lại, kiểm tra micro trước họp Zoom hoặc Teams.</li>
-          <li><a href="/test-camera/">Test camera online</a> — xem trước webcam, kiểm tra độ phân giải thực tế, FPS và chụp thử ảnh.</li>
+          <li><a href="/test-ban-phim/">Test bàn phím online</a>: kiểm tra từng phím US ANSI, phát hiện kẹt phím và layout.</li>
+          <li><a href="/test-loa/">Test loa online</a>: loa trái, phải và cả hai kênh, quét dải trầm đến bổng.</li>
+          <li><a href="/test-micro/">Test micro online</a>: đo mức âm thời gian thực, ghi âm thử 5 giây và nghe lại.</li>
+          <li><a href="/test-camera/">Test camera online</a>: xem trước webcam, độ phân giải thực tế và chụp thử.</li>
         </ul>
         <p>
-          Ngoài các bài kiểm tra thiết bị, trang còn hỗ trợ kiểm tra màn hình (điểm chết, loang sáng, dải xám), đo hiệu năng CPU &amp; GPU, và công cụ chọn phần mềm để tải script cài hàng loạt bằng winget. Tất cả miễn phí và chạy hoàn toàn trên trình duyệt của bạn.
+          Trang còn có bài kiểm tra màn hình, đo hiệu năng CPU &amp; GPU và công cụ tải một file cài hàng loạt bằng winget. Tất cả miễn phí.
         </p>
       </section>
 
@@ -88,12 +88,7 @@
         "@type": "WebSite",
         "name": "MQ Tech Computer Service",
         "url": "%SITE_URL%/",
-        "description": "Kiểm tra thiết bị online miễn phí: bàn phím, loa, microphone, camera webcam. Chạy trên trình duyệt, dữ liệu không rời máy.",
-        "potentialAction": {
-          "@type": "SearchAction",
-          "target": "%SITE_URL%/",
-          "query-input": "required"
-        }
+        "description": "Kiểm tra thiết bị online miễn phí: bàn phím, loa, microphone, camera webcam. Chạy trên trình duyệt, dữ liệu không rời máy."
       }
     </script>
     <script type="application/ld+json">
