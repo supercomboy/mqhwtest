@@ -4,3 +4,7 @@ dist/
 *.log
 .env
 .env.*
+
+# Cài cục bộ, không đưa lên git (xem README của pbakaus/impeccable)
+.opencode/skills/impeccable/
+.opencode/commands/impeccable.md
