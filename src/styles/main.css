@@ -19,6 +19,13 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Dấu focus dùng chung cho mọi control (bàn phím, không phải chuột). */
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
 /* Vệt màu lớn, cố định, trên nền trang chủ — để lớp kính của hộp thoại có thứ để làm mờ. */
 body::before {
   content: '';
@@ -38,6 +45,7 @@ h2 {
   letter-spacing: -0.02em;
   line-height: 1.1;
   margin: 0 0 12px;
+  text-wrap: balance;
 }
 
 h1 {
@@ -50,6 +58,7 @@ h2 {
 
 p {
   margin: 0 0 16px;
+  text-wrap: pretty;
 }
 
 .nav {
@@ -124,9 +133,15 @@ p {
 }
 
 @media (max-width: 480px) {
-  /* Logo ngang rộng hơn logo cũ; ẩn chữ để menu còn chỗ cuộn trên máy hẹp. */
+  /* Logo ngang rất rộng: thu nhỏ logo và giữ tên thương hiệu ở cỡ nhỏ,
+     thay vì ẩn hẳn tên như trước. */
+  .nav__brand {
+    --logo-h: 32px;
+    gap: 8px;
+  }
+
   .nav__brand-text {
-    display: none;
+    font-size: 13px;
   }
 }
 
@@ -152,7 +167,7 @@ main {
 
 .hero {
   text-align: center;
-  padding: 96px 0 72px;
+  padding: 72px 0 64px;
 }
 
 .hero__sub {
@@ -196,9 +211,28 @@ main {
   gap: 20px;
 }
 
+/* 7 thẻ trên lưới 3 cột để lại một thẻ lẻ loi ở hàng cuối — cho nó rộng 2 cột. */
+@media (min-width: 960px) {
+  .grid > .card:last-child:nth-child(3n + 1) {
+    grid-column: span 2;
+  }
+}
+
+.card h2 {
+  margin: 0;
+  font-size: clamp(20px, 3vw, 24px);
+}
+
+/* Nút trong thẻ luôn nằm sát đáy, thẳng hàng giữa các thẻ dù mô tả dài ngắn khác nhau. */
+.card > .btn {
+  margin-top: auto;
+  align-self: flex-start;
+}
+
 .card {
   padding: 32px;
   background: var(--surface);
+  color: var(--text);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-card);
   display: flex;
@@ -225,6 +259,13 @@ main {
   font-size: 18px;
 }
 
+/* Khối SEO: giới hạn độ dài dòng (trước đây 146 ký tự/dòng ở desktop) và
+   tách khỏi lưới thẻ bằng một khoảng thật, thay vì dính sát 0px. */
+.seo {
+  max-width: 70ch;
+  margin: 72px auto 0;
+}
+
 .privacy {
   margin-top: 72px;
   padding: 48px 24px;
@@ -233,13 +274,20 @@ main {
   border-radius: var(--radius-card);
 }
 
-.reveal {
+.privacy p {
+  max-width: 62ch;
+  margin-inline: auto;
+}
+
+/* Hiện dần khi cuộn. Chỉ ẩn khi JS đã chạy (html.js): nếu script lỗi hoặc bị chặn,
+   nội dung vẫn hiện bình thường thay vì trắng trang. */
+.js .reveal {
   opacity: 0;
   transform: translateY(16px);
   transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
 }
 
-.reveal.is-in {
+.js .reveal.is-in {
   opacity: 1;
   transform: none;
 }
@@ -274,6 +322,7 @@ main {
   max-height: 92dvh;
   overflow: hidden;
   background: var(--glass-bg);
+  color: var(--text);
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
   backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
   border: 1px solid var(--glass-border);
@@ -291,7 +340,7 @@ main {
   z-index: 0;
   pointer-events: none;
   border-radius: inherit;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0) 42%);
+  background: linear-gradient(180deg, var(--glass-sheen), transparent 42%);
 }
 
 .modal__panel:focus {
@@ -346,7 +395,9 @@ main {
 }
 
 body.is-locked {
-  overflow: hidden;
+  /* clip thay vì hidden: vẫn khoá cuộn nhưng không tạo scroll container,
+     nên position: sticky của .nav không bị phá khi mở modal. */
+  overflow: clip;
 }
 
 @keyframes modal-in {
@@ -427,7 +478,7 @@ body.is-locked {
   html {
     scroll-behavior: auto;
   }
-  .reveal {
+  .js .reveal {
     opacity: 1;
     transform: none;
     transition: none;

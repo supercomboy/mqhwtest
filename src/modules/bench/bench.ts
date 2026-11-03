@@ -196,7 +196,7 @@ export function mountBench(container: HTMLElement): () => void {
 
   function setProgress(pct: number): void {
     const value = Math.max(0, Math.min(100, Math.round(pct)));
-    benchBarFill.style.width = `${value}%`;
+    benchBarFill.style.transform = `scaleX(${value / 100})`;
     benchBar.setAttribute('aria-valuenow', String(value));
   }
 

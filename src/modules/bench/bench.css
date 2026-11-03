@@ -73,11 +73,13 @@
 }
 
 .bench__bar-fill {
-  width: 0;
+  width: 100%;
   height: 100%;
   border-radius: 980px;
   background: var(--accent);
-  transition: width var(--dur) var(--ease);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--dur) var(--ease);
 }
 
 @media (prefers-reduced-motion: reduce) {

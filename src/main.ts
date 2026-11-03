@@ -2,6 +2,10 @@ import './styles/tokens.css';
 import './styles/main.css';
 import { modules, type TestModule } from './modules/registry';
 
+// Đánh dấu JS đã chạy: CSS chỉ ẩn .reveal khi có class này, nên nếu script lỗi
+// hoặc bị chặn thì nội dung vẫn hiện.
+document.documentElement.classList.add('js');
+
 const grid = document.getElementById('tests');
 
 for (const m of modules) {
@@ -9,19 +13,21 @@ for (const m of modules) {
     const card = document.createElement('article');
     card.className = 'card reveal';
     card.id = m.id;
-    let titleEl: HTMLElement;
+
+    // Mọi thẻ đều có heading để outline của trang đầy đủ; thẻ có trang riêng
+    // thì tiêu đề là một link nằm bên trong <h2>.
+    const heading = document.createElement('h2');
     if (m.path) {
       const a = document.createElement('a');
       a.href = m.path;
       a.className = 'card__title-link';
       a.textContent = m.title;
-      titleEl = a;
+      heading.append(a);
     } else {
-      titleEl = document.createElement('h2');
-      titleEl.textContent = m.title;
+      heading.textContent = m.title;
     }
-    card.innerHTML = ``;
-    card.append(titleEl, document.createElement('p'));
+
+    card.append(heading, document.createElement('p'));
     const desc = card.querySelector('p')!;
     desc.textContent = m.description;
     const btn = document.createElement('button');

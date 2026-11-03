@@ -63,7 +63,7 @@ export const modules: TestModule[] = [
   {
     id: 'software',
     title: 'Phần mềm',
-    description: 'Chọn phần mềm cần cài và tải một script PowerShell cài hàng loạt bằng winget.',
+    description: 'Chọn phần mềm cần cài rồi tải một file .bat cài hàng loạt bằng winget.',
     actionLabel: 'Mở công cụ',
     mount: mountSoftware,
   },

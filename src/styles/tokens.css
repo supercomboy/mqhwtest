@@ -34,6 +34,7 @@
   --glass-bg-inner: rgba(255, 255, 255, 0.07);  /* kính nhạt hơn cho khung con bên trong */
   --glass-border: rgba(255, 255, 255, 0.12);    /* viền mảnh, sáng hơn nền */
   --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.14); /* vệt sáng mép trên */
+  --glass-sheen: rgba(255, 255, 255, 0.18);                   /* vệt sáng chéo trên mặt kính (.modal__panel::before) */
   --glass-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);             /* bóng ngoài mềm */
   --glass-blur: 24px;
   --glass-saturate: 180%;
