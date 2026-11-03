@@ -8,3 +8,8 @@ dist/
 # Cài cục bộ, không đưa lên git (xem README của pbakaus/impeccable)
 .opencode/skills/impeccable/
 .opencode/commands/impeccable.md
+
+# Cài cục bộ, không đưa lên git (xem README của nutlope/hallmark)
+.agents/skills/hallmark/
+skills-lock.json
+.hallmark/
