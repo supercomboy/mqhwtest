@@ -14,6 +14,7 @@ const PAGES = [
   { path: '/test-loa/', file: 'test-loa/index.html', priority: '0.9' },
   { path: '/test-micro/', file: 'test-micro/index.html', priority: '0.9' },
   { path: '/test-camera/', file: 'test-camera/index.html', priority: '0.9' },
+  { path: '/test-pin/', file: 'test-pin/index.html', priority: '0.9' },
 ] as const;
 
 const input = Object.fromEntries(

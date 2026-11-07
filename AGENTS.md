@@ -1,6 +1,6 @@
 # Device Check — hướng dẫn cho agent
 
-Website tĩnh kiểm tra bàn phím (chuẩn US), loa (1 file quét dải trầm/bổng + 2 bản nhạc mẫu), camera, microphone, màn hình, CPU & GPU (kiểm tra tải + benchmark), và công cụ chọn phần mềm để tải script cài hàng loạt bằng winget. Chạy hoàn toàn trong trình duyệt, đặt trên GitHub Pages. Giao diện tiếng Việt, kiểu Apple, chữ nâu nhạt.
+Website tĩnh kiểm tra bàn phím (chuẩn US), loa (1 file quét dải trầm/bổng + 2 bản nhạc mẫu), camera, microphone, màn hình, pin laptop (xả pin + tính % chai), CPU & GPU (kiểm tra tải + benchmark), và công cụ chọn phần mềm để tải script cài hàng loạt bằng winget. Chạy hoàn toàn trong trình duyệt, đặt trên GitHub Pages. Giao diện tiếng Việt, kiểu Apple, chữ nâu nhạt.
 
 ## Lệnh
 
@@ -32,6 +32,7 @@ Website tĩnh kiểm tra bàn phím (chuẩn US), loa (1 file quét dải trầm
 - `speaker-tester`: loa, file quét dải trầm/bổng và 2 bản nhạc mẫu
 - `camera-mic-tester`: camera và microphone
 - `display-tester`: màn hình
+- `battery-tester`: pin laptop (xả pin + tính % chai)
 - `bench-tester`: CPU & GPU (kiểm tra tải + benchmark)
 - `software-installer`: danh mục phần mềm và script cài hàng loạt bằng winget
 - `github-pages-deploy`: phát hành lên GitHub Pages

@@ -1,0 +1,334 @@
+/* Giao diện bài kiểm tra pin. Mọi màu/bo góc/bóng lấy từ src/styles/tokens.css. */
+.bat {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.bat__intro {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.bat__notice {
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--glass-bg-inner);
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.bat__notice:empty {
+  display: none;
+}
+
+.bat__section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--glass-bg-inner);
+}
+
+.bat__title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.bat__desc {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.bat__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.bat__actions .btn {
+  min-height: 44px;
+}
+
+.bat__actions .btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.bat__status {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.bat__hint {
+  margin: 0;
+  color: var(--text-soft);
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+/* ---- Ô nhập ---- */
+.bat__fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.bat__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.bat__field--inline {
+  min-width: 200px;
+}
+
+.bat__field-label {
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.bat__input {
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--surface-alt);
+  color: var(--text);
+  font: inherit;
+  font-size: 15px;
+}
+
+.bat__input--small {
+  max-width: 120px;
+}
+
+.bat__input:focus-visible {
+  outline: 3px solid var(--text-soft);
+  outline-offset: 2px;
+}
+
+.bat__select {
+  appearance: auto;
+}
+
+/* ---- Vòng tròn sức khoẻ pin ---- */
+.bat__cap-result {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+}
+
+.bat__ring {
+  width: 132px;
+  height: 132px;
+  flex: 0 0 auto;
+}
+
+.bat__ring-track {
+  fill: none;
+  stroke: var(--surface-alt);
+  stroke-width: 12;
+}
+
+.bat__ring-value {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 12;
+  stroke-linecap: round;
+  transition: stroke-dashoffset var(--dur) var(--ease);
+}
+
+.bat__ring-num {
+  fill: var(--text);
+  font-size: 26px;
+  font-weight: 600;
+}
+
+.bat__ring-cap {
+  fill: var(--text-soft);
+  font-size: 11px;
+}
+
+/* ---- Nhãn kết luận ---- */
+.bat__verdict {
+  margin: 0;
+  padding: 12px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--surface-alt);
+  font-size: 15px;
+  line-height: 1.5;
+  flex: 1 1 260px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.bat__verdict--ok {
+  color: var(--ok);
+}
+
+.bat__verdict--bad {
+  color: var(--bad);
+}
+
+.bat__verdict--big {
+  font-size: 20px;
+  font-weight: 600;
+  flex: none;
+}
+
+/* ---- Lưới số liệu ---- */
+.bat__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 8px;
+}
+
+.bat__row {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px 16px;
+  padding: 10px 14px;
+  border-radius: var(--radius-control);
+  background: var(--surface-alt);
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+.bat__row-label {
+  color: var(--text-soft);
+}
+
+.bat__row-value {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+/* ---- Biểu đồ ---- */
+.bat__chart-wrap {
+  overflow-x: auto;
+}
+
+.bat__chart {
+  width: 100%;
+  min-width: 280px;
+  max-width: 640px;
+  height: auto;
+  display: block;
+}
+
+.bat__chart-line {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.bat__chart-label {
+  fill: var(--text-soft);
+  font-size: 11px;
+}
+
+/* ---- Phần gập/mở ---- */
+.bat__details {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--surface-alt);
+  padding: 12px 14px;
+}
+
+.bat__details summary {
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.bat__details summary:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.bat__details-body {
+  margin-top: 10px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.bat__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.bat__table th,
+.bat__table td {
+  text-align: left;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--line);
+}
+
+.bat__table th {
+  color: var(--text-soft);
+  font-weight: 600;
+}
+
+/* ---- Nhập tay + khuyến nghị ---- */
+.bat__manual {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.bat__manual[hidden] {
+  display: none;
+}
+
+/* .btn của main.css đặt display:inline-block, đè mất style [hidden] của trình duyệt */
+.bat__actions .btn[hidden] {
+  display: none;
+}
+
+.bat__advice {
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.bat__notes {
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.bat__notes[hidden] {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bat__ring-value {
+    transition: none;
+  }
+}

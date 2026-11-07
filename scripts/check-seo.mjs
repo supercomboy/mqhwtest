@@ -14,6 +14,7 @@ const PAGES = [
   { file: 'test-loa/index.html', path: '/test-loa/' },
   { file: 'test-micro/index.html', path: '/test-micro/' },
   { file: 'test-camera/index.html', path: '/test-camera/' },
+  { file: 'test-pin/index.html', path: '/test-pin/' },
 ];
 
 const errors = [];

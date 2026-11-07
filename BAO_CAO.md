@@ -1,7 +1,7 @@
 # Báo cáo dự án Device Check
 
 > Website kiểm tra thiết bị & hiệu năng, chạy hoàn toàn trong trình duyệt, phát hành bằng GitHub Pages.
-> Báo cáo này ghi lại **toàn bộ thay đổi và công việc đã thực hiện** cho dự án (cập nhật lần cuối: 2026-10-31).
+> Báo cáo này ghi lại **toàn bộ thay đổi và công việc đã thực hiện** cho dự án (cập nhật lần cuối: 2026-11-07).
 
 - **Repo:** `github.com/supercomboy/mqhwtest` (nhánh `main`)
 - **Bản live:** https://supercomboy.github.io/mqhwtest/
@@ -14,13 +14,13 @@
 
 | Hạng mục | Nội dung |
 |---|---|
-| Số bài kiểm tra | **6** — Bàn phím, Loa, Camera, Microphone, Màn hình, CPU & GPU |
+| Số bài kiểm tra | **7** — Bàn phím, Loa, Camera, Microphone, Màn hình, Pin laptop, CPU & GPU |
 | Công cụ | **Cài phần mềm** — chọn app, tải một file `.bat` dùng winget |
-| Trang landing SEO | **4** — test-ban-phim, test-loa, test-micro, test-camera (MPA, SSR-ready HTML) |
+| Trang landing SEO | **5** — test-ban-phim, test-loa, test-micro, test-camera, test-pin (MPA, SSR-ready HTML) |
 | Danh mục phần mềm | **36 app / 9 nhóm**, 6 app “Cơ bản” trong `src/modules/software/catalog.json` |
 | Tổng mã nguồn `src/` | 40 file, ~230 KB (chưa tính `node_modules`) |
 | Số commit | 20 (từ 2026-10-19 đến 2026-10-31) |
-| Skill OpenCode | 8 skill trong `.opencode/skills/` |
+| Skill OpenCode | 9 skill trong `.opencode/skills/` |
 | Tài nguyên tĩnh | `public/logo.png` (805×216, 19 567 B), 3 file MP3 trong `public/audio/` |
 
 ## 2. Kiến trúc
@@ -31,6 +31,7 @@ src/main.ts                khởi động app, dựng thẻ bài kiểm tra và 
 src/modules/registry.ts    danh sách bài kiểm tra (id, title, description, mount)
 src/modules/<id>/          mã từng bài kiểm tra (module độc lập, tự dọn dẹp khi rời)
 src/modules/bench/         mã bài CPU & GPU
+src/modules/battery/       mã bài pin laptop (xả pin + tính % chai)
 src/modules/software/      catalog phần mềm + sinh script winget
 src/styles/tokens.css      màu, font, bo góc, bóng, easing (nguồn duy nhất của màu)
 src/styles/main.css        layout chung, class .btn / .btn--ghost / .grid
@@ -81,6 +82,11 @@ Xem mục 5.
 - Tick chọn app → tải `device-check-apps.bat` (một file, nháy đúp là chạy), tự xin quyền Administrator một lần rồi chạy `winget install` cho từng app; có nút “Chọn bộ cơ bản”, tìm kiếm không dấu, xem trước script và sao chép lệnh.
 - Trang không tự cài, không gửi lựa chọn; mỗi app có link trang chủ để tải thủ công.
 
+### 3.8 Pin laptop (`battery`) — xả pin + tính % chai *(mới, 07-11)*
+- Đo tốc độ xả pin thật qua Battery API (Chrome/Edge): lấy mẫu mỗi 30 giây + sự kiện `levelchange`, tự tạm dừng khi cắm sạc, tính **%/giờ** chỉ trên các đoạn không sạc.
+- Tính % chai từ hai số người dùng nhập (dung lượng thiết kế vs dung lượng đầy, cùng đơn vị Wh/mAh) — chi tiết ở mục 14.
+- Firefox/Safari không có Battery API → tự chuyển **chế độ nhập tay** (hai mốc % + thời điểm).
+
 ## 4. Lịch sử thay đổi (theo commit)
 
 | # | Commit | Ngày | Nội dung | File chính |
@@ -114,6 +120,7 @@ Xem mục 5.
 | 27 | (commit này) | 02-11 | **Thử lại bằng trình cài đặt của hãng**: khi cài im lặng lỗi (ví dụ Zalo `0xC0000005`) thì mở lại không `--silent`, kiểm tra bằng `winget list` rồi mới tính lỗi; thêm dòng mẹo và ghi chú trong giao diện | `src/modules/software/install-script.ts`, `src/modules/software/software.ts`, `BAO_CAO.md`, `.opencode/skills/software-installer/SKILL.md` |
 | 28 | (commit này) | 03-11 | **Font Outfit + Logo SVG trắng**: thêm Google Font Outfit (400-700), đổi font toàn site, thay logo bằng `mq-tech-white.svg` từ folder `public/logo/`, xoá `--logo-plate` | `index.html`, `test-*/index.html`, `src/styles/tokens.css`, `src/styles/main.css` |
 | 29 | (commit này) | 03-11 | **Sửa loạt lỗi UI từ audit** (REPORT.md): header 4 trang landing hết vỡ, nội dung không còn ẩn khi JS lỗi, :focus-visible toàn cục, #tool xuống dưới <h1>, viền select loa 1.55:1 thành 7.6:1, token --glass-sheen, overflow: clip giữ sticky, giới hạn dòng 68-70ch, text-wrap: balance/pretty, lưới thẻ 7 ô, thanh tiến trình bench chạy bằng transform | src/styles/main.css, src/styles/tokens.css, src/pages/page.css, src/main.ts, src/modules/registry.ts, src/modules/speaker/speaker.css, src/modules/bench/bench.css, src/modules/bench/bench.ts, test-*/index.html, REPORT.md |
+| 30 | (commit này) | 07-11 | **Thêm bài kiểm tra Pin laptop**: đo xả pin (%/giờ) + tính % chai, trang landing `/test-pin/`, chế độ nhập tay, mock `?mock=1`; kèm 2 fix khi test Firefox (CSS `[hidden]` cho nút đo, neo nav trang chủ) | `src/modules/battery/*`, `test-pin/index.html`, `src/pages/test-pin.ts`, `registry.ts`, `vite.config.ts`, `scripts/check-seo.mjs`, `index.html`, `test-*/index.html`, `AGENTS.md`, `.opencode/skills/battery-tester/`, `BAO_CAO.md` |
 
 ## 5. Module CPU & GPU — chi tiết
 
@@ -377,6 +384,7 @@ public/                   logo.png
 | `/test-loa/` | test loa online | Landing + công cụ |
 | `/test-micro/` | test micro online | Landing + công cụ |
 | `/test-camera/` | test camera online | Landing + công cụ |
+| `/test-pin/` | test xả pin laptop | Landing + công cụ (thêm 07-11) |
 
 ### 13.2 Thay đổi kỹ thuật
 - `vite.config.ts`: 5 `rollupOptions.input` (index + 4 trang test), `SITE_URL` (mặc định `https://mqtech.onrender.com`, override bằng env), plugin thay `%SITE_URL%`/`%PAGE_PATH%` trong HTML, meta robots build-time (`VITE_NOINDEX=1` → noindex,nofollow cho GitHub Pages), sinh `dist/sitemap.xml` + `dist/robots.txt` (Sitemap line, priority 1.0 trang chủ / 0.9 trang test, lastmod ngày build).
@@ -423,3 +431,54 @@ Mỗi trang test 700–1.000 từ tiếng Việt, không template trống, có H
 - Nút "Mở bài kiểm tra" trên 4 thẻ trang chủ đã căn đều thẳng hàng: `.card p { flex: 1; }` đẩy phần mô tả giãn giữa, nút đậu đáy card (commit mục UI). Không thay đổi màu/font, chỉ dùng các biến từ tokens.css.
 - Không analytics/cookie, không quảng cáo trả phí, không doorway page, không schema giả.
 - Khuyến nghị: tên miền riêng thay `*.onrender.com` (chỉ sửa `SITE_URL`).
+
+## 14. Module Pin laptop (`battery`) — xả pin + tính % chai (07-11)
+
+### 14.1 Vì sao phải nhập tay phần dung lượng
+Battery API của trình duyệt chỉ cho đọc: mức pin (%), đang sạc hay không. API **không** cho đọc dung lượng thiết kế (mWh), dung lượng đầy hiện tại hay số chu kỳ sạc — nên phần trăm chai không thể tự tính trong trình duyệt. Trang giải quyết bằng hai nửa bổ trợ nhau:
+1. **Xả pin thật** — đo trực tiếp qua Battery API (Chrome/Edge).
+2. **% chai** — người dùng nhập 2 số từ báo cáo pin của hệ điều hành (Windows: `powercfg /batteryreport` → DESIGN CAPACITY / FULL CHARGE CAPACITY; macOS: System Information → Power; Linux: `upower -i`). Gợi ý nằm trong khối `<details>` gọn 3 dòng.
+
+### 14.2 Thành phần
+
+| File | Vai trò |
+|---|---|
+| `src/modules/battery/battery.ts` | Giao diện + điều khiển phiên đo (mount/cleanup, Wake Lock, worker tải) |
+| `src/modules/battery/capacity.ts` | Toán thuần: sức khoẻ pin, xếp loại chai, định dạng số/giờ |
+| `src/modules/battery/drain.ts` | Nguồn pin (thật/mô phỏng), thống kê xả, bất thường, lưu phiên `localStorage` |
+| `src/modules/battery/load-worker.ts` | Worker tạo tải CPU (lặp vô hạn, giống cách bench làm) |
+| `src/modules/battery/battery.css` | Style tokens-only, tiền tố `.bat__*` |
+| `.opencode/skills/battery-tester/SKILL.md` | Skill mô tả công thức, quy tắc, cách kiểm thử |
+
+### 14.3 Công thức
+- Sức khoẻ pin = dung lượng đầy ÷ dung lượng thiết kế × 100 (chặn 0–100 hiển thị); **% chai = 100 − sức khoẻ**.
+- Xếp loại: ≥90 Tốt · 80–89 Chai nhẹ · 65–79 Chai rõ · <65 Chai nặng (ghi chú ngưỡng bảo hành phổ biến 80%).
+- Tốc độ xả **%/giờ = Σ Δmức pin ÷ Σ thời gian**, chỉ cộng trên các đoạn liên tiếp **không cắm sạc** (pha sạc giữa chừng không làm sai lệch); cần ≥5 phút không sạc mới hiện số.
+- Còn lại (giờ) = mức hiện tại ÷ tốc độ; tổng thời lượng = 100 ÷ tốc độ; ETA = (mức hiện tại − mức đích) ÷ tốc độ.
+- Công suất trung bình (W) = (%/giờ ÷ 100) × dung lượng đầy Wh — chỉ khi đơn vị là Wh.
+- Bất thường: có mẫu đang sạc giữa phiên · tụt ≥5% trong ≤2 phút ("pin ảo") · đứng yên >30 phút khi đang tải nặng · máy tự tắt ở mức ≥5% (người dùng nhập).
+
+### 14.4 Hành vi chính
+- Lấy mẫu mỗi 30 giây + mỗi sự kiện `levelchange`/`chargingchange`; cắm sạc → ghi mẫu `charging` và loại khỏi tốc độ.
+- Wake Lock giữ màn hình (tự xin lại khi quay lại tab), phiên lưu `localStorage` (`mqhwtest.battery.session.v1`); tải lại trang có phiên chưa kết thúc (<24h) → gợi ý "Tiếp tục phiên trước".
+- Tải thêm để xả nhanh: Tắt / Vừa (nửa CPU) / Tối đa (toàn CPU) qua `load-worker.ts` (storm vô hạn, main thread tự `terminate()`).
+- Chế độ nhập tay (Firefox/Safari hoặc số liệu cũ): hai mốc % + thời điểm `datetime-local` → cùng bộ công thức.
+- Kết luận gộp + khuyến nghị; xuất kết quả: sao chép hoặc tải `ket-qua-kiem-tra-pin.txt`.
+- Dọn dẹp: dừng timer, gỡ listener Battery, terminate worker, nhả Wake Lock, gỡ listener `visibilitychange`, `root.remove()`.
+
+### 14.5 Kết quả kiểm thử (Chrome, bản build `dist/`, 07-11)
+- `npm run build` xanh: tsc + catalog + vite + **check-seo 6 trang** (thêm `/test-pin/`).
+- Tính chai: nhập 5000/4100 Wh → vòng tròn **82%**, "✓ Chai nhẹ — chai 18% — đã mất 900 Wh" (đúng 4100/5000).
+- Mock `?mock=1`: pin giả tụt 1%/8s — mức pin, đã xả, biểu đồ, bảng mẫu cập nhật đúng; tốc độ hiển thị "chưa đủ 5 phút" cho tới đủ điều kiện (đúng thiết kế).
+- Phục hồi phiên: đo → reload → hiện "Có phiên đo trước chưa kết thúc (30 mẫu…)", dung lượng được điền lại, bấm tiếp tục giữ nguyên elapsed.
+- Nhập tay 95%→40% trong 1 giờ: **55%/giờ**, còn lại 44 phút, tổng 1 giờ 49 phút, đến đích (20%) 22 phút — khớp toàn bộ công thức.
+- Bất thường: nhập "máy tắt ở 30%" → kết luận hiện "⚠ Máy tự tắt khi pin còn 30% — pin tụt đột ngột…".
+- Trang chủ: thẻ "Pin laptop" nằm giữa Màn hình và CPU & GPU, tiêu đề link về `/test-pin/`; nav + footer + SEO list có liên kết.
+- **Firefox (thật, bản build `dist/`)**: không có Battery API → nút "Bắt đầu đo xả" ẩn đúng, nhập tay tự bật, có thông báo hướng dẫn; tính chai 5000/4100 → 82% "Chai nhẹ"; nhập tay 95%→40%/1 giờ → 55%/giờ, còn lại 44 phút, tổng 1 giờ 49 phút, ETA 22 phút, công suất TB 2.255 W; kết luận gộp + khuyến nghị hiện đúng; neo nav "Test xả pin" cuộn tới đúng thẻ pin. Đạt tiêu chí "chạy được trên Chrome và ít nhất một trình duyệt khác".
+- Fix phát hiện khi kiểm thử Firefox: (1) thêm `.bat__actions .btn[hidden] { display:none }` — `.btn { display:inline-block }` của main.css đè style `[hidden]` mặc định của trình duyệt nên nút đo vẫn hiện trên máy thiếu API; (2) nav trang chủ trỏ `#test-*` trong khi id thẻ là id module — sửa cả 5 link thành `#keyboard`, `#speaker`, `#microphone`, `#camera`, `#battery` (lỗi có từ trước, không riêng module pin).
+- Đã xử lý: không có Battery API (ẩn nút đo, hiện nhập tay), `getBattery()` bị chặn/ném lỗi (fallback như không có API), Wake Lock bị từ chối (im lặng, đo vẫn chạy), `localStorage` đầy/riêng tư (bỏ qua, phiên chỉ sống trong tab).
+
+### 14.6 Giới hạn
+- Mức pin từ Battery API làm tròn theo %, nên với pin tụt chậm cần đo ≥30 phút để %/giờ ổn định.
+- Trên máy để bàn (không có pin), trình duyệt luôn báo 100% + đang sạc — bài này dành cho laptop (đã ghi trong FAQ).
+- Phần % chai phụ thuộc người dùng nhập đúng 2 số từ báo cáo hệ điều hành.

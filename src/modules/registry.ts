@@ -1,5 +1,6 @@
 // Danh sách bài kiểm tra và công cụ. Thêm mục mới = thêm một entry ở đây + một thư mục trong src/modules/<id>/.
 import { mountBench } from './bench';
+import { mountBattery } from './battery';
 import { mountCamera } from './camera';
 import { mountDisplay } from './display';
 import { mountKeyboard } from './keyboard';
@@ -8,7 +9,7 @@ import { mountSoftware } from './software';
 import { mountSpeaker } from './speaker';
 
 export interface TestModule {
-  id: 'keyboard' | 'speaker' | 'camera' | 'microphone' | 'display' | 'bench' | 'software';
+  id: 'keyboard' | 'speaker' | 'camera' | 'microphone' | 'display' | 'battery' | 'bench' | 'software';
   title: string;
   description: string;
   /** Đường dẫn landing page của bài kiểm tra, nếu có (dùng làm liên kết tiêu đề thẻ trên trang chủ). */
@@ -53,6 +54,13 @@ export const modules: TestModule[] = [
     title: 'Màn hình',
     description: 'Điểm chết, loang sáng, dải xám và độ giật hình.',
     mount: mountDisplay,
+  },
+  {
+    id: 'battery',
+    title: 'Pin laptop',
+    description: 'Đo tốc độ xả pin thật (%/giờ) và tính phần trăm chai từ dung lượng thiết kế so với dung lượng hiện tại.',
+    path: '/test-pin/',
+    mount: mountBattery,
   },
   {
     id: 'bench',
