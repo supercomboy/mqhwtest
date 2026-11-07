@@ -17,6 +17,7 @@ for (const link of document.querySelectorAll<HTMLAnchorElement>('.nav__links a')
 const grid = document.getElementById('tests');
 
 for (const m of modules) {
+  if (m.hidden) continue;
   if (grid) {
     const card = document.createElement('article');
     card.className = 'card reveal';

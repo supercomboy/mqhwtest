@@ -15,7 +15,7 @@
 | Hạng mục | Nội dung |
 |---|---|
 | Số bài kiểm tra | **7** — Bàn phím, Loa, Camera, Microphone, Màn hình, Pin laptop, CPU & GPU |
-| Công cụ | **Cài phần mềm** — chọn app, tải một file `.bat` dùng winget |
+| Công cụ | **Cài phần mềm** — chọn app, tải một file `.bat` dùng winget *(đang ẩn khỏi trang chủ từ 07-11, xem lịch sử commit 31)* |
 | Trang landing SEO | **5** — test-ban-phim, test-loa, test-micro, test-camera, test-pin (MPA, SSR-ready HTML) |
 | Danh mục phần mềm | **36 app / 9 nhóm**, 6 app “Cơ bản” trong `src/modules/software/catalog.json` |
 | Tổng mã nguồn `src/` | 40 file, ~230 KB (chưa tính `node_modules`) |
@@ -77,7 +77,7 @@ Nguyên tắc kiến trúc áp dụng cho **mọi** module:
 ### 3.6 CPU & GPU (`bench`) — kiểm tra tải + benchmark *(mới)*
 Xem mục 5.
 
-### 3.7 Phần mềm (`software`) — chọn app, tải script cài hàng loạt *(mới)*
+### 3.7 Phần mềm (`software`) — chọn app, tải script cài hàng loạt *(mới — đang ẩn khỏi trang chủ)*
 - 36 app / 9 nhóm: Trình duyệt, Liên lạc, Văn phòng & PDF, Media & đồ họa, Tiện ích & lưu trữ, Lập trình & runtime, Bảo mật & giải trí, Công cụ kiểm thử, Hỗ trợ từ xa.
 - Tick chọn app → tải `device-check-apps.bat` (một file, nháy đúp là chạy), tự xin quyền Administrator một lần rồi chạy `winget install` cho từng app; có nút “Chọn bộ cơ bản”, tìm kiếm không dấu, xem trước script và sao chép lệnh.
 - Trang không tự cài, không gửi lựa chọn; mỗi app có link trang chủ để tải thủ công.
@@ -121,6 +121,7 @@ Xem mục 5.
 | 28 | (commit này) | 03-11 | **Font Outfit + Logo SVG trắng**: thêm Google Font Outfit (400-700), đổi font toàn site, thay logo bằng `mq-tech-white.svg` từ folder `public/logo/`, xoá `--logo-plate` | `index.html`, `test-*/index.html`, `src/styles/tokens.css`, `src/styles/main.css` |
 | 29 | (commit này) | 03-11 | **Sửa loạt lỗi UI từ audit** (REPORT.md): header 4 trang landing hết vỡ, nội dung không còn ẩn khi JS lỗi, :focus-visible toàn cục, #tool xuống dưới <h1>, viền select loa 1.55:1 thành 7.6:1, token --glass-sheen, overflow: clip giữ sticky, giới hạn dòng 68-70ch, text-wrap: balance/pretty, lưới thẻ 7 ô, thanh tiến trình bench chạy bằng transform | src/styles/main.css, src/styles/tokens.css, src/pages/page.css, src/main.ts, src/modules/registry.ts, src/modules/speaker/speaker.css, src/modules/bench/bench.css, src/modules/bench/bench.ts, test-*/index.html, REPORT.md |
 | 30 | (commit này) | 07-11 | **Thêm bài kiểm tra Pin laptop**: đo xả pin (%/giờ) + tính % chai, trang landing `/test-pin/`, chế độ nhập tay, mock `?mock=1`; kèm 2 fix khi test Firefox (CSS `[hidden]` cho nút đo, neo nav trang chủ) | `src/modules/battery/*`, `test-pin/index.html`, `src/pages/test-pin.ts`, `registry.ts`, `vite.config.ts`, `scripts/check-seo.mjs`, `index.html`, `test-*/index.html`, `AGENTS.md`, `.opencode/skills/battery-tester/`, `BAO_CAO.md` |
+| 31 | (commit này) | 07-11 | **Ẩn mục Phần mềm** khỏi trang chủ: thêm cờ `hidden` vào `TestModule` (module vẫn còn nguyên, bỏ cờ để hiện lại); bỏ nhắc winget trong hero, SEO prose và privacy của trang chủ | `src/modules/registry.ts`, `src/main.ts`, `index.html`, `BAO_CAO.md` |
 
 ## 5. Module CPU & GPU — chi tiết
 

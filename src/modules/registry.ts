@@ -18,6 +18,8 @@ export interface TestModule {
   actionLabel?: string;
   /** Dựng bài kiểm tra vào `container`, trả về hàm dọn dẹp (gỡ listener, giải phóng tài nguyên). */
   mount?: (container: HTMLElement) => () => void;
+  /** Ẩn thẻ khỏi trang chủ mà không xoá module (bỏ cờ này để hiện lại). */
+  hidden?: boolean;
 }
 
 export const modules: TestModule[] = [
@@ -69,10 +71,12 @@ export const modules: TestModule[] = [
     mount: mountBench,
   },
   {
+    // Ẩn tạm khỏi trang chủ từ 07-11; xoá cờ `hidden` để hiện lại.
     id: 'software',
     title: 'Phần mềm',
     description: 'Chọn phần mềm cần cài rồi tải một file .bat cài hàng loạt bằng winget.',
     actionLabel: 'Mở công cụ',
+    hidden: true,
     mount: mountSoftware,
   },
 ];
