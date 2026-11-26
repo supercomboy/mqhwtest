@@ -337,13 +337,21 @@ export function mountDisplay(container: HTMLElement): () => void {
   }
 
   // ---- Vòng lặp cho bài chuyển động ----
+  // Chỉ đo các thứ cố định (khung, ô vuông) một lần khi dựng và khi đổi cỡ khung.
+  // offsetWidth mỗi requestAnimationFrame buộc trình duyệt tính lại layout
+  // 60 lần/giây, đủ để gây giật trên máy yếu.
+  let blockWidth = 0;
+  function measureLayout(): void {
+    blockWidth = square.offsetWidth || 90;
+    const squareHeight = square.offsetHeight || 90;
+    square.style.top = `${Math.round((size.h - squareHeight) / 2)}px`;
+  }
+
   function tick(now: number): void {
     if (!running || disposed) return;
     const slide = SLIDES[index];
     if (slide.kind === 'motion') {
-      const trackWidth = size.w;
-      const blockWidth = square.offsetWidth || 90;
-      const distance = trackWidth + blockWidth;
+      const distance = size.w + blockWidth;
       const progress = ((now - passStart) % PASS_MS) / PASS_MS;
       const x = Math.round(progress * distance - blockWidth);
       square.style.transform = `translate3d(${x}px, 0, 0)`;
@@ -353,6 +361,7 @@ export function mountDisplay(container: HTMLElement): () => void {
 
   function startLoop(): void {
     if (!rafId) {
+      measureLayout();
       passStart = performance.now();
       rafId = requestAnimationFrame(tick);
     }
@@ -510,6 +519,7 @@ export function mountDisplay(container: HTMLElement): () => void {
     observer = new ResizeObserver(() => {
       if (!running) return;
       sizeCanvas();
+      measureLayout();
       draw();
     });
     observer.observe(stage);

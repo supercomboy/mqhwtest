@@ -46,12 +46,15 @@ function isInteractiveTarget(target: EventTarget | null): boolean {
  */
 const FUNCTION_KEYS = new Set<string>(Array.from({ length: 12 }, (_, i) => `F${i + 1}`));
 
-/** Phím điều hướng và phím hệ thống cần chặn hành vi mặc định (cuộn trang, lùi lịch sử, menu). */
+/**
+ * Phím điều hướng và phím hệ thống cần chặn hành vi mặc định (cuộn trang, lùi lịch sử, menu).
+ * Tab không nằm trong danh sách: chặn nó sẽ nhốt người dùng bàn phím trong bài kiểm tra
+ * (WCAG 2.1.2 No Keyboard Trap). Sự kiện keydown vẫn bắn nên Tab vẫn được ghi nhận.
+ */
 const PREVENT_CODES = new Set<string>([
   'Space',
   'Backspace',
   'ContextMenu',
-  'Tab',
   'ArrowUp',
   'ArrowDown',
   'ArrowLeft',
@@ -91,11 +94,8 @@ function shouldPrevent(e: KeyboardEvent): boolean {
   // Ngoài ô nhập: chặn mọi tổ hợp có phím bổ trợ (Ctrl/⌘+F, +S, +P, +D, Ctrl+phím số…).
   if (e.ctrlKey || e.metaKey || e.altKey) return true;
 
-  // Vẫn để Tab, Space và Enter kích hoạt nút hoặc ô nhập đang được focus.
-  if (
-    (e.code === 'Tab' || e.code === 'Space' || e.code === 'Enter') &&
-    isInteractiveTarget(e.target)
-  ) {
+  // Vẫn để Space và Enter kích hoạt nút hoặc ô nhập đang được focus.
+  if ((e.code === 'Space' || e.code === 'Enter') && isInteractiveTarget(e.target)) {
     return false;
   }
 
@@ -206,6 +206,9 @@ export function mountKeyboard(container: HTMLElement): () => void {
 
   // ---- Bàn phím: các khối đặt cạnh nhau trên một hàng, co giãn theo khung chứa ----
   const stage = el('div', 'kbm__stage kbm__stage--pc');
+  // Sơ đồ phím chỉ để nhìn: trình đọc màn hình đi thẳng tới nhật ký phím (live region)
+  // thay vì đọc hàng trăm nhãn phím.
+  stage.setAttribute('aria-hidden', 'true');
   const kb = el('div', 'kb');
   const mainBlock = el('div', 'kb__main-block');
   const fnRow = el('div', 'kb-grid');
@@ -318,7 +321,7 @@ export function mountKeyboard(container: HTMLElement): () => void {
   const hint = el(
     'p',
     'kbm__hint',
-    'Khi bài kiểm tra đang mở, phím tắt của trình duyệt (F1–F12, Tab, Ctrl/⌘+S, Ctrl/⌘+P, Ctrl/⌘+F…) đều bị chặn để không tác động tới trình duyệt. Vài tổ hợp do hệ điều hành giữ riêng như Ctrl/⌘+T, Ctrl+Tab, Alt+Tab, phím Windows/⌘ và phím Fn thì trang web không chặn được — không tính là lỗi.',
+    'Khi bài kiểm tra đang mở, phím tắt của trình duyệt (F1–F12, Ctrl/⌘+S, Ctrl/⌘+P, Ctrl/⌘+F…) đều bị chặn để không tác động tới trình duyệt. Phím Tab vẫn hoạt động bình thường để bạn chuyển ra khỏi bài kiểm tra. Vài tổ hợp do hệ điều hành giữ riêng như Ctrl/⌘+T, Ctrl+Tab, Alt+Tab, phím Windows/⌘ và phím Fn thì trang web không chặn được — không tính là lỗi.',
   );
 
   root.append(bar, mobileNotice, notice, stage, meta, logBox, hint);

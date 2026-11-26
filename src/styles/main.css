@@ -19,6 +19,14 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Chữ gợi ý trong ô nhập: mặc định trình duyệt dùng xám #757575 (3,1:1 trên
+   nền nâu). --text (13,8:1) và bỏ opacity mặc định của UA; chữ gợi ý 17px nên
+   không dùng --text-soft (chỉ dành cho chữ >= 18px). */
+::placeholder {
+  color: var(--text);
+  opacity: 1;
+}
+
 /* Dấu focus dùng chung cho mọi control (bàn phím, không phải chuột). */
 :focus-visible {
   outline: 3px solid var(--accent);
@@ -173,6 +181,103 @@ p {
   }
 }
 
+/* Menu gọn cho màn hình hẹp. Sáu link không vừa một hàng dưới ~840px; trước
+   đây thanh nav cuộn ngang và giấu mất link mà không có dấu hiệu cuộn. Giờ
+   chúng nằm trong một nút mở ra danh sách: không link nào bị ẩn, không phải
+   cuộn theo chiều ngang (WCAG 1.4.10 Reflow). */
+.nav__menu {
+  position: relative;
+  display: none;
+  margin-left: auto;
+}
+
+.nav__menu-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--line);
+  border-radius: 980px;
+  background: var(--glass-bg-inner);
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 500;
+  list-style: none;
+  cursor: pointer;
+  transition: background var(--dur) var(--ease);
+}
+
+.nav__menu-toggle::-webkit-details-marker {
+  display: none;
+}
+
+/* Mũi tên vẽ bằng viền, không phải ký tự — cùng độ dày với các nét khác. */
+.nav__menu-toggle::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+  transition: transform var(--dur) var(--ease);
+}
+
+.nav__menu[open] .nav__menu-toggle::after {
+  transform: translateY(1px) rotate(-135deg);
+}
+
+.nav__menu-toggle:hover {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.nav__menu-panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 20;
+  display: grid;
+  gap: 2px;
+  min-width: 240px;
+  padding: 8px;
+  background: var(--surface);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+
+.nav__menu-panel a {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: var(--radius-control);
+  color: var(--text);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.nav__menu-panel a:hover,
+.nav__menu-panel a:focus-visible {
+  background: var(--surface-alt);
+}
+
+@media (max-width: 840px) {
+  .nav__links {
+    display: none;
+  }
+
+  .nav__menu {
+    display: block;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav__menu-toggle,
+  .nav__menu-toggle::after {
+    transition: none;
+  }
+}
+
 main {
   max-width: 1080px;
   margin: 0 auto;
@@ -273,10 +378,11 @@ main {
   font-size: 18px;
 }
 
-/* Khối SEO: giới hạn độ dài dòng (trước đây 146 ký tự/dòng ở desktop) và
-   tách khỏi lưới thẻ bằng một khoảng thật, thay vì dính sát 0px. */
+/* Khối SEO: giới hạn độ dài dòng và tách khỏi lưới thẻ bằng một khoảng thật,
+   thay vì dính sát 0px. Dùng em chứ không dùng ch: 1ch (bề rộng số 0) rộng
+   hơn ký tự thường, nên 70ch vẫn cho ra dòng ~100 ký tự; 34em ≈ 75 ký tự. */
 .seo {
-  max-width: 70ch;
+  max-width: 34em;
   margin: 72px auto 0;
 }
 
@@ -289,8 +395,58 @@ main {
 }
 
 .privacy p {
-  max-width: 62ch;
+  max-width: 34em;
   margin-inline: auto;
+}
+
+/* Link trần trong nội dung (khối SEO, danh sách, footer). Không có rule nào
+   style chúng trước đây nên trình duyệt vẽ màu xanh tím mặc định (#9e9eff) —
+   lạc khỏi bảng màu và tương phản kém trên nền nâu. */
+.seo a,
+.site-footer a {
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--text) 40%, transparent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
+  border-radius: 4px;
+}
+
+.seo a:hover,
+.site-footer a:hover {
+  text-decoration-color: currentColor;
+}
+
+.site-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px 6px;
+  margin-top: 56px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+  color: var(--text);
+}
+
+/* Link footer có vùng bấm 44px; gạch chân bỏ đi vì nút đã dễ thấy. */
+.site-footer a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 8px;
+  color: var(--text);
+  text-decoration: none;
+  border-radius: var(--radius-control);
+}
+
+.site-footer a:hover {
+  color: var(--text);
+  background: var(--surface-alt);
+}
+
+.site-footer .sep {
+  color: var(--text);
 }
 
 /* Bậc chữ trung gian: H1 hero 64px, heading section trước đây chỉ 32px nên nhảy

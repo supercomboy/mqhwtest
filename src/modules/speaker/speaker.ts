@@ -233,22 +233,36 @@ export function mountSpeaker(container: HTMLElement): () => void {
     audio.addEventListener('error', () => {
       notice(`Không tải được file âm thanh “${track.title}”.`);
     });
-    audio.addEventListener('timeupdate', () => {
-      if (!seeking && Number.isFinite(audio.duration) && audio.duration > 0) {
+    /** Đưa thanh tiến trình về đúng vị trí phát hiện tại của audio. */
+    const syncProgress = (): void => {
+      if (Number.isFinite(audio.duration) && audio.duration > 0) {
         progress.value = String(Math.round((audio.currentTime / audio.duration) * 1000));
       }
+    };
+
+    audio.addEventListener('timeupdate', () => {
+      if (!seeking) syncProgress();
       updateTime();
     });
+
+    /**
+     * Kết thúc thao tác kéo. pointerup không phải lúc nào cũng tới (con trỏ rời thanh,
+     * hệ điều hành huỷ gesture), nên pointercancel/lostpointercapture cũng phải nhả cờ —
+     * nếu không thanh tiến trình sẽ đứng yên dù nhạc vẫn chạy.
+     */
+    const endSeek = (): void => {
+      if (!seeking) return;
+      seeking = false;
+      syncProgress();
+    };
 
     progress.addEventListener('pointerdown', () => {
       seeking = true;
     });
-    progress.addEventListener('pointerup', () => {
-      seeking = false;
-    });
-    progress.addEventListener('change', () => {
-      seeking = false;
-    });
+    progress.addEventListener('pointerup', endSeek);
+    progress.addEventListener('pointercancel', endSeek);
+    progress.addEventListener('lostpointercapture', endSeek);
+    progress.addEventListener('change', endSeek);
     progress.addEventListener('input', () => {
       if (Number.isFinite(audio.duration) && audio.duration > 0) {
         audio.currentTime = (Number(progress.value) / 1000) * audio.duration;

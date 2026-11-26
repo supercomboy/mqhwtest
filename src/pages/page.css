@@ -28,7 +28,9 @@
 }
 
 .page__header a:hover {
-  color: var(--text-soft);
+  color: var(--text);
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
 .page h1 {
@@ -50,11 +52,13 @@
   text-wrap: balance;
 }
 
+/* 34em ≈ 75 ký tự/dòng. Dùng em thay ch vì 1ch (bề rộng số 0) rộng hơn ký
+   tự thường: 68ch vẫn cho ra dòng gần 100 ký tự. */
 .page p,
 .page li {
   font-size: 17px;
   line-height: 1.6;
-  max-width: 68ch;
+  max-width: 34em;
   margin: 0 0 16px;
   color: var(--text);
 }
@@ -76,7 +80,7 @@
 
 .page .intro {
   font-size: 20px;
-  max-width: 720px;
+  max-width: 34em;
   margin: 0 0 32px;
   color: var(--text-soft);
 }
@@ -91,7 +95,7 @@
 }
 
 .tool-wrap .start-note {
-  color: var(--text-soft);
+  color: var(--text);
   font-size: 17px;
   margin-bottom: 12px;
 }
@@ -190,7 +194,7 @@ footer {
   padding: 32px 0 20px;
   margin-top: 56px;
   text-align: center;
-  color: var(--text-soft);
+  color: var(--text);
   font-size: 15px;
 }
 
@@ -203,11 +207,13 @@ footer a {
 }
 
 footer a:hover {
-  color: var(--text-soft);
+  color: var(--text);
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
 footer .sep {
-  color: var(--text-soft);
+  color: var(--text);
   margin: 0 6px;
 }
 

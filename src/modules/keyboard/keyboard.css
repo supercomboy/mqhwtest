@@ -239,20 +239,21 @@
   display: none;
 }
 
+/* Nhãn phím dưới ~12px vẫn đọc được nhờ chặn dưới 11px thay vì 10px, và cho
+   nhãn dài xuống dòng thay vì cắt mất chữ khi phím hẹp. */
 .kb-key {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1px;
   min-width: 0;
   border: 1px solid var(--line);
   border-radius: var(--kb-radius);
   background: var(--surface);
   box-shadow: var(--shadow-key);
   color: var(--text);
-  font-size: clamp(10px, calc(var(--u) * 0.24), 15px);
+  font-size: clamp(11px, calc(var(--u) * 0.24), 15px);
   line-height: 1;
   overflow: hidden;
   user-select: none;
@@ -275,7 +276,7 @@
 }
 
 .kb-key-stack > .kb-key {
-  font-size: clamp(8px, calc(var(--u) * 0.19), 12px);
+  font-size: clamp(10px, calc(var(--u) * 0.19), 12px);
 }
 
 /* Phím fn của MacBook: có thật trên máy nhưng trình duyệt không báo sự kiện,
@@ -310,9 +311,10 @@
 }
 
 /* Nhãn dài như "⌘ command": chữ nhỏ hơn và cho xuống dòng để vừa phím 1,25u,
+/* Nhãn dài như "⌘ command": chữ nhỏ hơn và cho xuống dòng để vừa phím 1,25u,
    nhờ vậy không bao giờ bị cắt mất chữ. */
 .kb-key--label-sm {
-  font-size: clamp(8px, calc(var(--u) * 0.19), 12px);
+  font-size: clamp(11px, calc(var(--u) * 0.19), 12px);
 }
 
 .kb-key--label-sm .kb-key__label {
@@ -324,7 +326,7 @@
   position: absolute;
   top: calc(var(--u) * 0.06);
   left: calc(var(--u) * 0.1);
-  font-size: clamp(8px, calc(var(--u) * 0.19), 12px);
+  font-size: clamp(10px, calc(var(--u) * 0.19), 12px);
   opacity: 0.65;
   max-width: 100%;
   overflow: hidden;
@@ -332,15 +334,15 @@
   white-space: nowrap;
 }
 
-/* Ẩn nhãn Shift khi cỡ chữ của nó sẽ nhỏ hơn 8px: u*0,19 < 8px → u < 42,1px.
-   PC: u = w/23 → w < 968px. MacBook: u = w/14,5 → w < 610px. */
-@container (max-width: 968px) {
+/* Ẩn nhãn Shift khi cỡ chữ của nó sẽ nhỏ hơn 10px: u*0,19 < 10px → u < 52,6px.
+   PC: u = w/23 → w < 1211px. MacBook: u = w/14,5 → w < 763px. */
+@container (max-width: 1210px) {
   .kbm__stage--pc .kb-key__shift {
     display: none;
   }
 }
 
-@container (max-width: 610px) {
+@container (max-width: 763px) {
   .kbm__stage--mac .kb-key__shift {
     display: none;
   }
@@ -442,6 +444,7 @@
 }
 
 .kbm__hint {
+  max-width: 34em;
   margin: 0;
   font-size: 14px;
   color: var(--text);

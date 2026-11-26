@@ -41,6 +41,19 @@
         <a href="#battery">Test xả pin</a>
         <a href="https://coniccomputer.com/" title="Sửa máy tính Conic">Sửa máy tính Conic</a>
       </nav>
+      <!-- Màn hình hẹp: 6 link không vừa một hàng nên gộp vào nút mở danh sách.
+           Không ẩn link nào, không phải cuộn ngang (WCAG 1.4.10 Reflow). -->
+      <details class="nav__menu">
+        <summary class="nav__menu-toggle">Bài test</summary>
+        <nav class="nav__menu-panel" aria-label="Bài kiểm tra">
+          <a href="#keyboard">Test bàn phím</a>
+          <a href="#speaker">Test loa</a>
+          <a href="#microphone">Test micro</a>
+          <a href="#camera">Test camera</a>
+          <a href="#battery">Test xả pin</a>
+          <a href="https://coniccomputer.com/" title="Sửa máy tính Conic">Sửa máy tính Conic</a>
+        </nav>
+      </details>
     </header>
 
     <main id="top">

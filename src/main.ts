@@ -8,10 +8,31 @@ document.documentElement.classList.add('js');
 
 // Đánh dấu link nav của trang đang mở để trình đọc màn hình biết vị trí hiện tại.
 const here = window.location.pathname.replace(/index\.html$/, '');
-for (const link of document.querySelectorAll<HTMLAnchorElement>('.nav__links a')) {
+for (const link of document.querySelectorAll<HTMLAnchorElement>('.nav__links a, .nav__menu-panel a')) {
   if (new URL(link.href, window.location.href).pathname === here) {
     link.setAttribute('aria-current', 'page');
   }
+}
+
+// Menu nav ở màn hình hẹp: <details> không tự đóng sau khi chọn link, khi bấm
+// ra ngoài hay khi nhấn Escape. Đóng lại để danh sách không che nội dung.
+const navMenu = document.querySelector<HTMLDetailsElement>('.nav__menu');
+
+if (navMenu) {
+  navMenu.addEventListener('click', (e) => {
+    if ((e.target as Element).closest('a')) navMenu.open = false;
+  });
+
+  document.addEventListener('click', (e) => {
+    if (navMenu.open && !navMenu.contains(e.target as Node)) navMenu.open = false;
+  });
+
+  navMenu.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && navMenu.open) {
+      navMenu.open = false;
+      navMenu.querySelector('summary')?.focus();
+    }
+  });
 }
 
 const grid = document.getElementById('tests');
@@ -101,6 +122,12 @@ function openTest(m: TestModule): void {
     ).filter((el) => !el.hasAttribute('disabled'));
 
   const onKeydown = (e: KeyboardEvent): void => {
+    // Escape đóng hộp thoại theo WAI-ARIA APG; focus được trả về nút đã mở nó.
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      closeActiveModal?.();
+      return;
+    }
     if (e.key !== 'Tab') return;
     const items = focusables();
     if (items.length === 0) return;

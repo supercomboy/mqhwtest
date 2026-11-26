@@ -6,6 +6,9 @@
 }
 
 .bat__intro {
+  /* 34em ≈ 75 ký tự/dòng ở cỡ 15px, để câu giới thiệu dài không chạy hết
+     bề ngang hộp thoại (~150 ký tự). */
+  max-width: 34em;
   margin: 0;
   font-size: 15px;
   line-height: 1.5;
@@ -157,7 +160,7 @@
 }
 
 .bat__ring-cap {
-  fill: var(--text-soft);
+  fill: var(--text);
   font-size: 11px;
 }
 
@@ -238,7 +241,7 @@
 }
 
 .bat__chart-label {
-  fill: var(--text-soft);
+  fill: var(--text);
   font-size: 11px;
 }
 
@@ -281,7 +284,7 @@
 }
 
 .bat__table th {
-  color: var(--text-soft);
+  color: var(--text);
   font-weight: 600;
 }
 

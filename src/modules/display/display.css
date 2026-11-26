@@ -101,6 +101,8 @@
 
 /* Khối vuông chạy ngang: chỉ animate transform (không dùng left) cho mượt.
    Màu nền được đặt từ display.ts. */
+/* Vị trí dọc đặt từ display.ts: top: calc(50% - 45px) sẽ lệch khi ô vuông không
+   còn đúng 90px, nên measureLayout() căn giữa theo chiều cao thật. */
 .dsp-square {
   position: absolute;
   top: calc(50% - 45px);
